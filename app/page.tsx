@@ -72,62 +72,76 @@ export default function LandingPage() {
             </nav>
 
             {/* Hero Section */}
-            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 min-h-screen flex items-center overflow-hidden">
-                <div className="container mx-auto px-6 relative z-10">
-                    <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            <section className="relative pt-32 pb-20 lg:pt-0 min-h-screen flex items-center overflow-hidden">
+                {/* Background Gradients */}
+                <div className="absolute top-0 right-0 w-[80%] h-full bg-gradient-to-l from-brand-yellow/5 to-transparent pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-[50%] h-[50%] bg-gradient-to-t from-brand-yellow/5 to-transparent pointer-events-none rounded-full blur-3xl opacity-20" />
+
+                <div className="container mx-auto px-6 relative z-10 h-full">
+                    <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center h-full">
 
                         {/* Left Column: Copy + Risk Check Card */}
-                        <div className="lg:col-span-5 flex flex-col gap-8">
+                        <div className="lg:col-span-5 flex flex-col gap-8 py-10">
                             <div className="space-y-6">
-                                <Badge variant="outline" className="border-brand-yellow/20 text-brand-yellow bg-brand-yellow/5 px-3 py-1 rounded-full uppercase tracking-wider text-[10px] font-semibold w-fit">
+                                <Badge variant="outline" className="border-brand-yellow/20 text-brand-yellow bg-brand-yellow/5 px-3 py-1 rounded-full uppercase tracking-wider text-[10px] font-bold w-fit shadow-[0_0_15px_rgba(250,204,21,0.1)]">
                                     Public Beta Live
                                 </Badge>
-                                <h1 className="text-4xl lg:text-5xl/tight font-extrabold text-white tracking-tight">
-                                    Know Your DOT <span className="text-brand-yellow">Risk</span> Before It Escalates
+                                <h1 className="text-4xl lg:text-6xl font-extrabold text-white tracking-tighter leading-[1.1]">
+                                    Know Your <span className="text-brand-yellow relative inline-block">
+                                        Risk
+                                        <svg className="absolute w-full h-3 -bottom-1 left-0 text-brand-yellow opacity-40" viewBox="0 0 100 10" preserveAspectRatio="none">
+                                            <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="2" fill="none" />
+                                        </svg>
+                                    </span>
+                                    <br /> Before It Escalates
                                 </h1>
-                                <p className="text-lg text-slate-400 leading-relaxed max-w-lg">
+                                <p className="text-lg text-slate-400 leading-relaxed max-w-lg font-medium">
                                     DOT inspection patterns translated into clear signals. Track risk shifts before audits, OOS events, and insurance hikes.
                                 </p>
                             </div>
 
-                            {/* Risk Check Form - Styled like the 'Booking' card */}
-                            <div className="bg-slate-900/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 shadow-2xl ring-1 ring-white/5 relative overflow-hidden group">
+                            {/* Risk Check Form - High Fidelity Glass Card */}
+                            <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl ring-1 ring-white/5 relative overflow-hidden group hover:border-white/20 transition-all duration-300">
                                 {/* Subtle gradient glow */}
-                                <div className="absolute -top-24 -right-24 w-48 h-48 bg-brand-yellow/5 rounded-full blur-3xl pointer-events-none" />
+                                <div className="absolute -top-24 -right-24 w-48 h-48 bg-brand-yellow/10 rounded-full blur-3xl pointer-events-none" />
 
-                                <div className="flex items-center gap-3 mb-6">
-                                    <div className="w-10 h-10 rounded-full bg-brand-yellow/10 flex items-center justify-center text-brand-yellow">
-                                        <ShieldCheck className="w-5 h-5" />
+                                <div className="flex items-center gap-3 mb-6 relative z-10">
+                                    <div className="w-10 h-10 rounded-xl bg-brand-yellow text-brand-dark flex items-center justify-center shadow-lg shadow-brand-yellow/20">
+                                        <ShieldCheck className="w-6 h-6" />
                                     </div>
-                                    <h3 className="text-lg font-bold text-white">Check Risk Score</h3>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-white leading-tight">Check Risk Score</h3>
+                                        <p className="text-xs text-slate-400 font-medium">Instant FMCSA Analysis</p>
+                                    </div>
                                 </div>
 
-                                <form onSubmit={handleSubmit} className="space-y-4">
-                                    <div className="space-y-1.5">
-                                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide ml-1">US DOT Number</label>
-                                        <Input
-                                            type="text"
-                                            placeholder="e.g. 1234567"
-                                            value={dotNumber}
-                                            onChange={(e) => setDotNumber(e.target.value)}
-                                            required
-                                            disabled={loading}
-                                            className="bg-brand-dark/50 border-white/10 text-white placeholder:text-slate-600 focus:border-brand-yellow/50 focus:ring-brand-yellow/20 h-12 rounded-xl"
-                                        />
+                                <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-1.5 col-span-2 sm:col-span-1">
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">US DOT Number</label>
+                                            <Input
+                                                type="text"
+                                                placeholder="e.g. 1234567"
+                                                value={dotNumber}
+                                                onChange={(e) => setDotNumber(e.target.value)}
+                                                required
+                                                disabled={loading}
+                                                className="bg-brand-dark/80 border-white/5 text-white placeholder:text-slate-600 focus:border-brand-yellow/50 focus:ring-brand-yellow/20 h-11 rounded-lg font-mono tracking-wide"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5 col-span-2 sm:col-span-1">
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Company Name</label>
+                                            <Input
+                                                type="text"
+                                                placeholder="(Optional)"
+                                                disabled={loading}
+                                                className="bg-brand-dark/80 border-white/5 text-white placeholder:text-slate-600 focus:border-brand-yellow/50 focus:ring-brand-yellow/20 h-11 rounded-lg"
+                                            />
+                                        </div>
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide ml-1">Company Name <span className="text-slate-600 normal-case tracking-normal font-normal">(Optional)</span></label>
-                                        <Input
-                                            type="text"
-                                            placeholder="Acme Trucking Inc."
-                                            disabled={loading}
-                                            className="bg-brand-dark/50 border-white/10 text-white placeholder:text-slate-600 focus:border-brand-yellow/50 focus:ring-brand-yellow/20 h-12 rounded-xl"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-1.5">
-                                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide ml-1">Email Address</label>
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Email Address</label>
                                         <Input
                                             type="email"
                                             placeholder="safety@carrier.com"
@@ -135,13 +149,13 @@ export default function LandingPage() {
                                             onChange={(e) => setEmail(e.target.value)}
                                             required
                                             disabled={loading}
-                                            className="bg-brand-dark/50 border-white/10 text-white placeholder:text-slate-600 focus:border-brand-yellow/50 focus:ring-brand-yellow/20 h-12 rounded-xl"
+                                            className="bg-brand-dark/80 border-white/5 text-white placeholder:text-slate-600 focus:border-brand-yellow/50 focus:ring-brand-yellow/20 h-11 rounded-lg"
                                         />
                                     </div>
 
                                     {/* Result Message */}
                                     {result && (
-                                        <div className={`p-3 rounded-lg flex items-start gap-3 ${result.success
+                                        <div className={`p-3 rounded-lg flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300 ${result.success
                                                 ? 'bg-green-500/10 border border-green-500/20'
                                                 : 'bg-red-500/10 border border-red-500/20'
                                             }`}>
@@ -156,7 +170,7 @@ export default function LandingPage() {
                                                     {result.message}
                                                 </p>
                                                 {result.carrierName && (
-                                                    <p className="text-xs text-slate-400 mt-1 truncate">
+                                                    <p className="text-xs text-slate-400 mt-1 truncate font-mono">
                                                         {result.carrierName}
                                                     </p>
                                                 )}
@@ -168,22 +182,22 @@ export default function LandingPage() {
                                         <Button
                                             type="submit"
                                             disabled={loading}
-                                            className="w-full h-14 bg-brand-yellow hover:bg-yellow-400 text-brand-dark font-bold text-lg rounded-xl shadow-lg shadow-brand-yellow/20 transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                            className="w-full h-12 bg-brand-yellow hover:bg-[#E5BC14] text-brand-dark font-bold text-base rounded-lg shadow-[0_4px_14px_0_rgba(250,204,21,0.39)] hover:shadow-[0_6px_20px_rgba(250,204,21,0.23)] hover:-translate-y-0.5 transition-all duration-200"
                                         >
                                             {loading ? (
                                                 <>
-                                                    <Loader2 className="mr-2 w-5 h-5 animate-spin" />
-                                                    Checking...
+                                                    <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                                                    Analyzing...
                                                 </>
                                             ) : (
                                                 <>
-                                                    Check Risk (Free)
-                                                    <ArrowRight className="ml-2 w-5 h-5" />
+                                                    Check Risk Score
+                                                    <ArrowRight className="ml-2 w-4 h-4" />
                                                 </>
                                             )}
                                         </Button>
-                                        <p className="text-center text-xs text-slate-500 mt-3 font-medium">
-                                            No credit card required. Instant snapshot.
+                                        <p className="text-center text-[10px] text-slate-500 mt-3 font-medium tracking-wide">
+                                            NO CREDIT CARD REQUIRED • INSTANT SNAPSHOT
                                         </p>
                                     </div>
                                 </form>
@@ -191,12 +205,11 @@ export default function LandingPage() {
                         </div>
 
                         {/* Right Column: Hero Image */}
-                        <div className="lg:col-span-7 relative h-full min-h-[400px] flex items-center justify-center lg:justify-end">
+                        <div className="lg:col-span-7 relative h-[50vh] lg:h-full min-h-[400px] flex items-center justify-center lg:justify-end overflow-visible">
                             {/* Background Glow */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-yellow/5 rounded-full blur-[100px] -z-10" />
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-brand-yellow/5 rounded-full blur-[120px] -z-10" />
 
-                            <div className="relative w-full max-w-[800px] lg:-mr-24 xl:-mr-48 transform hover:scale-[1.01] transition-transform duration-700 ease-out">
-                                {/* Fallback container if image fails */}
+                            <div className="relative w-full max-w-[1000px] lg:-mr-32 xl:-mr-48 2xl:-mr-64 transform transition-transform duration-700 hover:scale-[1.02] ease-out">
                                 <div className="aspect-[16/10] relative">
                                     <Image
                                         src="/images/hero-truck.png"
@@ -204,7 +217,8 @@ export default function LandingPage() {
                                         fill
                                         className="object-contain drop-shadow-2xl"
                                         priority
-                                        sizes="(max-width: 768px) 100vw, 800px"
+                                        sizes="(max-width: 768px) 100vw, 1000px"
+                                        quality={100}
                                     />
                                 </div>
                             </div>

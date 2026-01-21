@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google"; // Import Inter
 import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"] }); // Configure Inter
 
 export const metadata: Metadata = {
   title: "DOT Risk Radar",
@@ -13,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className={`${inter.className} antialiased`}>
         {children}
       </body>
     </html>
