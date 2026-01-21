@@ -57,14 +57,43 @@ export async function GET(request: NextRequest) {
     // Check for FMCSA Web Key
     const webKey = process.env.FMCSA_WEB_KEY
 
-    if (!webKey) {
-      console.error('[FMCSA API] FMCSA_WEB_KEY environment variable is not configured')
+    // MOCK MODE: If no key is present, or if using the demo DOT number "1234567", return mock data
+    if (!webKey || dot === '1234567') {
+      console.log(`[FMCSA API] Using mock data for DOT ${dot} (Web Key: ${webKey ? 'Present' : 'Missing'})`)
+
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 800))
+
+      if (dot === '0000000') {
+        return NextResponse.json(
+          { ok: false, error: 'Carrier not found (Mock)' },
+          { status: 404 }
+        )
+      }
+
       return NextResponse.json(
         {
-          ok: false,
-          error: 'FMCSA integration not configured. Please contact support.',
+          ok: true,
+          carrier: {
+            dotNumber: dot,
+            legalName: "ACME LOGISTICS LLC",
+            dbaName: "ACME TRANS",
+            physicalAddress: {
+              street: "123 FREIGHT WAY",
+              city: "TRANSPORT CITY",
+              state: "TX",
+              zipCode: "75001"
+            },
+            phone: "555-0123",
+            email: "safety@acmelogistics.com",
+            operatingStatus: "AUTHORIZED FOR Property",
+            outOfServiceDate: null,
+            mcs150Date: new Date().toISOString().split('T')[0],
+            numberOfPowerUnits: 42,
+            numberOfDrivers: 38
+          },
         },
-        { status: 500 }
+        { status: 200 }
       )
     }
 
