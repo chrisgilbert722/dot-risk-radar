@@ -117,6 +117,16 @@ export default function LandingPage() {
                                     </div>
 
                                     <div className="space-y-1.5">
+                                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide ml-1">Company Name <span className="text-slate-600 normal-case tracking-normal font-normal">(Optional)</span></label>
+                                        <Input
+                                            type="text"
+                                            placeholder="Acme Trucking Inc."
+                                            disabled={loading}
+                                            className="bg-brand-dark/50 border-white/10 text-white placeholder:text-slate-600 focus:border-brand-yellow/50 focus:ring-brand-yellow/20 h-12 rounded-xl"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1.5">
                                         <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide ml-1">Email Address</label>
                                         <Input
                                             type="email"
@@ -131,20 +141,18 @@ export default function LandingPage() {
 
                                     {/* Result Message */}
                                     {result && (
-                                        <div className={`p-3 rounded-lg flex items-start gap-3 ${
-                                            result.success
+                                        <div className={`p-3 rounded-lg flex items-start gap-3 ${result.success
                                                 ? 'bg-green-500/10 border border-green-500/20'
                                                 : 'bg-red-500/10 border border-red-500/20'
-                                        }`}>
+                                            }`}>
                                             {result.success ? (
                                                 <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
                                             ) : (
                                                 <XCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                                             )}
                                             <div className="flex-1 min-w-0">
-                                                <p className={`text-sm font-semibold ${
-                                                    result.success ? 'text-green-400' : 'text-red-400'
-                                                }`}>
+                                                <p className={`text-sm font-semibold ${result.success ? 'text-green-400' : 'text-red-400'
+                                                    }`}>
                                                     {result.message}
                                                 </p>
                                                 {result.carrierName && (
