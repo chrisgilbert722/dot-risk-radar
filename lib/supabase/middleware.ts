@@ -30,21 +30,21 @@ export async function updateSession(request: NextRequest) {
           }[]
         ) {
           cookiesToSet.forEach(({ name, value, options }) => {
-            if (options) {
-              request.cookies.set(name, value, options)
-            } else {
-              request.cookies.set(name, value)
-            }
+            request.cookies.set({
+              name,
+              value,
+              ...(options ?? {})
+            })
           })
           supabaseResponse = NextResponse.next({
             request,
           })
           cookiesToSet.forEach(({ name, value, options }) => {
-            if (options) {
-              supabaseResponse.cookies.set(name, value, options)
-            } else {
-              supabaseResponse.cookies.set(name, value)
-            }
+            supabaseResponse.cookies.set({
+              name,
+              value,
+              ...(options ?? {})
+            })
           })
         },
       },
