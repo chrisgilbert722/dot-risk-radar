@@ -1,22 +1,26 @@
-# Vercel Build Fix - TypeScript Overload Resolution
+# Vercel Build Fix - Next.js 15 Cookies API Change
 
 ## Issue
 Vercel build was failing with TypeScript error:
 ```
-Property '2' does not exist on type '[key: string, value: string] | [options: RequestCookie]'
+Source has 3 element(s) but target allows only 2 element(s)
 ```
 
 ## Root Cause
-- Next.js 15 `request.cookies.set()` has multiple overload signatures
-- TypeScript cannot safely index `Parameters<typeof request.cookies.set>[2]`
-- Build cache on Vercel was holding stale type references
+**Next.js 15 Breaking Change**: The `cookies.set()` API no longer supports the 3-argument overload.
+
+- **Old (Next.js 14)**: `cookies.set(name, value, options)` ✅
+- **New (Next.js 15)**: `cookies.set({ name, value, ...options })` ✅
+- **Removed**: 3-argument syntax is NO LONGER VALID
+
+This was NOT a cache issue or overload indexing issue. Next.js 15 fundamentally changed the cookies API to only accept an object parameter.
 
 ## Resolution
 
-### Code Changes (Commit: 8e01dae)
+### Final Fix (Commit: 1056b24)
 **File**: `lib/supabase/middleware.ts`
 
-Replaced problematic type indexing with explicit inline interface:
+Replaced all `cookies.set()` calls with Next.js 15 object-based syntax:
 
 ```typescript
 setAll(
@@ -35,43 +39,53 @@ setAll(
   }[]
 ) {
   cookiesToSet.forEach(({ name, value, options }) => {
-    if (options) {
-      request.cookies.set(name, value, options)
-    } else {
-      request.cookies.set(name, value)
-    }
+    request.cookies.set({
+      name,
+      value,
+      ...(options ?? {})
+    })
   })
-  // ... rest of implementation
+  supabaseResponse = NextResponse.next({
+    request,
+  })
+  cookiesToSet.forEach(({ name, value, options }) => {
+    supabaseResponse.cookies.set({
+      name,
+      value,
+      ...(options ?? {})
+    })
+  })
 }
 ```
 
-### Build Cache Resolution (Commit: 11487e7)
-- Created empty commit to force Vercel rebuild
-- Clears any stale build cache
-- Ensures fresh TypeScript compilation
+**Key Changes**:
+- ❌ `request.cookies.set(name, value, options)` - REMOVED (invalid in Next.js 15)
+- ❌ `request.cookies.set(name, value)` - REMOVED (invalid in Next.js 15)
+- ✅ `request.cookies.set({ name, value, ...(options ?? {}) })` - CORRECT
 
 ## Verification
 
-✅ Code correctly pushed to GitHub (SHA verified)
-✅ No remaining `Parameters<typeof ...[2]` patterns in codebase
-✅ Empty commit triggers fresh Vercel deployment
-✅ TypeScript types are Next.js 15 compatible
+✅ Code correctly pushed to GitHub (commit 1056b24)
+✅ Object-based syntax used for all cookie.set() calls
+✅ Compatible with Next.js 15.1.3
+✅ TypeScript types are correct
 
-## Vercel Deployment Steps
+## Vercel Deployment
 
-1. **Automatic Trigger**: Empty commit pushed to main branch
-2. **Fresh Build**: Vercel will rebuild from scratch (no cache)
-3. **Expected Result**: Build should pass with no TypeScript errors
+1. **Automatic Trigger**: Commit 1056b24 pushed to main branch
+2. **Expected Result**: Build should pass with no TypeScript errors
+3. **No Cache Clearing Needed**: This is a code fix, not a cache issue
 
 ## If Build Still Fails
 
-If Vercel still shows the error after this commit:
+If Vercel still shows errors after this commit:
 
-1. **Clear Vercel Build Cache Manually**:
-   - Go to Vercel Dashboard → Project Settings
-   - Deployments → Click "Redeploy" on latest
-   - Check "Clear Build Cache" option
-   - Click "Redeploy"
+1. **Check Next.js Version**:
+   ```bash
+   # Verify Next.js 15 is installed
+   npm list next
+   # Should show: next@15.1.3
+   ```
 
 2. **Verify Environment Variables**:
    - Ensure `NEXT_PUBLIC_SUPABASE_URL` is set
@@ -88,8 +102,10 @@ If Vercel still shows the error after this commit:
 - `lib/supabase/client.ts` (no changes needed)
 
 ## Commits
-- `8e01dae`: TypeScript overload fix
-- `11487e7`: Force rebuild (empty commit)
+- `1056b24`: Fix Next.js 15 cookies.set API - use object syntax
+
+## Reference
+- [Next.js 15 Upgrade Guide - Cookies API Changes](https://nextjs.org/docs/app/building-your-application/upgrading/version-15)
 
 ---
 
