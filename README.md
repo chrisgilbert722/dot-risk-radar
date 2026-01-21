@@ -1,131 +1,205 @@
-# DOT Risk Radar
+# 🚀 DOT Risk Radar
 
-Public DOT inspection patterns translated into plain English. Monitor your operation's safety posture with ongoing analysis.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Next.js](https://img.shields.io/badge/Next.js-15.1.3-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-Auth%20%26%20DB-green)](https://supabase.com/)
 
-## Setup Instructions
+> Public DOT inspection patterns translated into plain English. Monitor your operation's safety posture with ongoing analysis.
 
-### 1. Install Dependencies
+---
 
-```bash
+## ✨ Features
+
+- 🔐 **Magic Link Authentication** - Passwordless login via Supabase
+- 📊 **FMCSA Integration** - Official WebKey API for carrier data
+- ⚠️ **Risk Scoring** - Automated assessment based on inspection patterns
+- 💾 **Intelligent Caching** - 12-hour data refresh cycle
+- 🎨 **Calm Enterprise Design** - Professional UI with Tailwind CSS
+- 🚀 **Vercel Ready** - One-click deployment
+
+---
+
+## 📋 Quick Start
+
+### Prerequisites
+
+- Node.js 20+
+- Supabase account
+- FMCSA WebKey (optional for local dev)
+
+### Installation
+
+\`\`\`bash
+# Clone repository
+git clone https://github.com/chrisgilbert722/dot-risk-radar.git
+cd dot-risk-radar
+
+# Install dependencies
 npm install
-```
 
-### 2. Configure Environment Variables
+# Configure environment
+cp .env.example .env.local
+# Edit .env.local with your credentials
 
-Copy `.env.local.example` to `.env.local` and add your Supabase credentials:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-### 3. Supabase Configuration
-
-In your Supabase project dashboard:
-
-1. **Enable Email Auth**:
-   - Go to Authentication → Providers
-   - Enable Email provider
-   - Enable "Confirm email" (optional for magic links)
-
-2. **Configure Redirect URLs**:
-   - Go to Authentication → URL Configuration
-   - Add redirect URLs:
-     - `http://localhost:3000/auth/callback` (development)
-     - `https://yourdomain.com/auth/callback` (production)
-
-3. **Email Templates** (optional):
-   - Go to Authentication → Email Templates
-   - Customize the "Magic Link" template
-
-### 4. Run Development Server
-
-```bash
+# Run development server
 npm run dev
-```
+\`\`\`
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+Visit http://localhost:3000
 
-## Project Structure
+**Full guide**: See [QUICK_START.md](QUICK_START.md)
 
-```
-├── app/
-│   ├── (dashboard)/
-│   │   └── dashboard/          # Protected dashboard page
-│   ├── auth/
-│   │   └── callback/           # OAuth callback handler
-│   ├── login/                  # Login page (magic link)
-│   ├── signup/                 # Signup page (magic link)
-│   ├── page.tsx               # Landing page
-│   ├── layout.tsx             # Root layout
-│   └── globals.css            # Global styles
-├── components/
-│   └── ui/                    # shadcn-ui components
-├── lib/
-│   ├── supabase/              # Supabase client configs
-│   ├── constants/             # App constants and messages
-│   ├── flags.ts               # Feature flags
-│   └── utils.ts               # Utility functions
-├── middleware.ts              # Auth middleware
-└── tailwind.config.ts         # Tailwind configuration
-```
+---
 
-## Authentication Flow
+## 📚 Documentation
 
-1. User enters email on `/login` or `/signup`
-2. Magic link sent to email via Supabase
-3. User clicks link → redirected to `/auth/callback`
-4. Callback exchanges code for session
-5. User redirected to `/dashboard`
+- **[QUICK_START.md](QUICK_START.md)** - 5-minute setup guide
+- **[VALIDATION_GUIDE.md](VALIDATION_GUIDE.md)** - Testing procedures
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Vercel deployment
+- **[AUTH_SETUP.md](AUTH_SETUP.md)** - Authentication details
+- **[FMCSA_IMPLEMENTATION.md](FMCSA_IMPLEMENTATION.md)** - Integration guide
+- **[LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md)** - Pre-launch tasks
 
-## Feature Flags
+---
 
-Configure features via environment variables in `.env.local`:
+## 🏗️ Tech Stack
 
-```env
-FEATURE_COMPLIANCE_VAULT=false
-FEATURE_ALERT_DELIVERY=false
-FEATURE_DATAQS_ASSIST=false
-FEATURE_FLEET_ROLLUPS=false
-FEATURE_PROGRAMMATIC_SEO=false
-```
+**Frontend:**
+- Next.js 15 (App Router)
+- TypeScript
+- Tailwind CSS
+- shadcn-ui components
+- Lucide icons
 
-## Design Constraints
+**Backend:**
+- Supabase (Auth & PostgreSQL)
+- FMCSA WebKey API
+- Next.js API Routes
 
-- **Vibe**: Calm Enterprise (slate-950 background, muted blues)
-- **Language**: Prefer "Operation" or "Carrier" where possible (inclusive of owner-operators)
-- **Risk Levels**: Only "High", "Elevated", "Low"
-- **No Hype**: Avoid "AI-powered", "Immediate", "Critical", "Real-time"
+**Deployment:**
+- Vercel
+- GitHub Actions CI/CD
 
-## Deployment
+---
 
-### Quick Deploy to Vercel
+## 🔑 Environment Variables
 
-```bash
-# Option 1: Use deployment script
+\`\`\`env
+# Supabase (Required)
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+
+# FMCSA (Required)
+FMCSA_WEBKEY=your_fmcsa_webkey
+
+# Stripe (Optional - future)
+STRIPE_SECRET_KEY=your_stripe_key
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_publishable_key
+\`\`\`
+
+---
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+
+\`\`\`bash
+# Option 1: Quick deploy
 ./scripts/deploy.sh
 
-# Option 2: Manual deployment
+# Option 2: Vercel CLI
 npm i -g vercel
-vercel
-```
+vercel --prod
+\`\`\`
 
-**Full deployment guide**: See [DEPLOYMENT.md](DEPLOYMENT.md)
+### Manual Deployment
 
-### Environment Variables for Production
+1. Push to GitHub
+2. Import to Vercel dashboard
+3. Configure environment variables
+4. Deploy!
 
-Add these in Vercel dashboard (Settings → Environment Variables):
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- Feature flags (optional)
+**Full guide**: [DEPLOYMENT.md](DEPLOYMENT.md)
 
-Don't forget to update Supabase redirect URLs with your Vercel domain!
+---
 
-## Next Steps
+## 🧪 Testing
 
-- [ ] Set up Supabase project and configure environment variables
-- [ ] Install dependencies with `npm install`
-- [ ] Run `npm run dev` to start development server
-- [ ] Test authentication flow (signup → email → callback → dashboard)
-- [ ] Deploy to Vercel (see [DEPLOYMENT.md](DEPLOYMENT.md))
-- [ ] Implement FMCSA data fetching logic
+\`\`\`bash
+# Test FMCSA integration
+npm run test:fmcsa 3962493
+
+# Build validation
+npm run build
+
+# Linting
+npm run lint
+\`\`\`
+
+---
+
+## 📂 Project Structure
+
+\`\`\`
+dot-risk-radar/
+├── app/                      # Next.js app directory
+│   ├── (dashboard)/         # Protected routes
+│   ├── auth/                # Auth callbacks
+│   ├── login/               # Login page
+│   ├── signup/              # Signup page
+│   └── page.tsx             # Landing page
+├── components/              # React components
+│   └── ui/                  # shadcn-ui components
+├── lib/                     # Core libraries
+│   ├── fmcsa/              # FMCSA integration
+│   ├── risk/               # Risk scoring engine
+│   ├── supabase/           # Supabase clients
+│   └── constants/          # App constants
+├── supabase/               # Database migrations
+├── scripts/                # Utility scripts
+└── docs/                   # Documentation
+\`\`\`
+
+---
+
+## 🎨 Design Guidelines
+
+- **Aesthetic**: Calm Enterprise (slate-950 background, muted blues)
+- **Language**: "Operation" or "Carrier" (inclusive of owner-operators)
+- **Risk Levels**: High, Elevated, Low only
+- **No Hype**: Avoid "AI-powered", "real-time", "critical"
+
+---
+
+## 📝 License
+
+MIT License - see [LICENSE](LICENSE) file for details
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome! Please read our contributing guidelines first.
+
+---
+
+## 📧 Support
+
+- **Issues**: [GitHub Issues](https://github.com/chrisgilbert722/dot-risk-radar/issues)
+- **Documentation**: See [docs/](docs/) folder
+- **Email**: [Your support email]
+
+---
+
+## 🌟 Acknowledgments
+
+Built with:
+- [Next.js](https://nextjs.org/)
+- [Supabase](https://supabase.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn-ui](https://ui.shadcn.com/)
+
+---
+
+**Status**: ✅ Production Ready | **Version**: 0.1.0
