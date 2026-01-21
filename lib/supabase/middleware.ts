@@ -18,16 +18,34 @@ export async function updateSession(request: NextRequest) {
           cookiesToSet: {
             name: string
             value: string
-            options?: Parameters<typeof request.cookies.set>[2]
+            options?: {
+              path?: string
+              domain?: string
+              maxAge?: number
+              expires?: Date
+              httpOnly?: boolean
+              secure?: boolean
+              sameSite?: 'strict' | 'lax' | 'none'
+            }
           }[]
         ) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+          cookiesToSet.forEach(({ name, value, options }) => {
+            if (options) {
+              request.cookies.set(name, value, options)
+            } else {
+              request.cookies.set(name, value)
+            }
+          })
           supabaseResponse = NextResponse.next({
             request,
           })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
+          cookiesToSet.forEach(({ name, value, options }) => {
+            if (options) {
+              supabaseResponse.cookies.set(name, value, options)
+            } else {
+              supabaseResponse.cookies.set(name, value)
+            }
+          })
         },
       },
     }
