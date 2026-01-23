@@ -121,20 +121,20 @@ export default function LandingPage() {
 
             {/* --- PHASE 2 & 9: HERO SECTION --- */}
             <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-[90vh] flex items-center">
-                {/* Image 1: Background Layer with Refined Overlay (15-20% reduction) */}
+                {/* Image 1: Background Layer with Refined Overlay (Darker Cinematic) */}
                 <div className="absolute inset-0 z-0 select-none">
                     <Image
-                        src="/images/hero-officer.jpg"
+                        src="/images/hero-inspection.jpg"
                         alt="Roadside Inspection"
                         fill
-                        className="object-cover opacity-60 mix-blend-normal"
+                        className="object-cover opacity-70 mix-blend-normal"
                         priority
                     />
                     {/* Directional Gradient: Dark on left (text), transparent on right (visual) - Navy Gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/90 to-brand-dark/30" />
                     {/* Bottom Vignette */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
-                    <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay" />
                     <div className="absolute inset-0 bg-grid-slate opacity-10" />
                 </div>
 
@@ -240,7 +240,7 @@ export default function LandingPage() {
                         <div className="relative p-8 md:p-12 group md:hover:w-[45%] transition-all duration-500 ease-in-out min-h-[400px] flex flex-col overflow-hidden border-r border-slate-800">
                             {/* NEW BACKGROUND: Red Truck Inspection */}
                             <Image
-                                src="/images/inspection-red.jpg"
+                                src="/images/chaos-inspection.png"
                                 alt="Inspection Chaos"
                                 fill
                                 className="object-cover opacity-100 grayscale hover:grayscale-0 transition-all duration-700"
@@ -251,7 +251,7 @@ export default function LandingPage() {
                             <div className="absolute inset-0 bg-gradient-to-t from-red-950/80 via-transparent to-slate-950/80 mix-blend-overlay" />
 
                             {/* Scrolling Terminal Effect - BRIGHTER & GLOWING */}
-                            <div className="absolute inset-0 opacity-20 font-mono text-xs leading-none text-red-500 pointer-events-none select-none z-0 group-hover:opacity-30 transition-opacity text-glow-red-subtle">
+                            <div className="absolute inset-0 opacity-40 font-mono text-xs leading-none text-code-red pointer-events-none select-none z-0 group-hover:opacity-60 transition-opacity">
                                 <div className="absolute inset-0 animate-[terminal-scroll_20s_linear_infinite] group-hover:animate-[terminal-scroll_2s_linear_infinite]">
                                     {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
                                     {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
@@ -385,12 +385,12 @@ export default function LandingPage() {
             <section className="py-24 border-t border-slate-800 relative overflow-hidden bg-slate-950">
                 <div className="absolute inset-0 z-0">
                     <Image
-                        src="/images/driver-leaning.jpg"
+                        src="/images/driver-rest.jpg"
                         alt="Testimonial Background"
                         fill
-                        className="object-cover opacity-60 mix-blend-normal"
+                        className="object-cover opacity-50 mix-blend-normal blur-[6px]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/40" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/95 to-brand-dark/60" />
                     <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay" />
                 </div>
 
@@ -438,13 +438,13 @@ export default function LandingPage() {
                 {/* Image 5 Background - Brightened */}
                 <div className="absolute inset-0 z-0">
                     <Image
-                        src="/images/chrome-semi.png"
+                        src="/images/cta-sunset.jpg"
                         alt="Final Call"
                         fill
                         className="object-cover opacity-100 mix-blend-normal"
                     />
                     {/* Lighter Gradient for Confidence */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/80" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-brand-dark/80 via-brand-dark/60 to-brand-dark/80" />
                     <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay" />
                 </div>
 
