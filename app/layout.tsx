@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google"; // Import Inter
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] }); // Configure Inter
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "DOT Risk Radar",
-  description: "Public DOT inspection patterns translated into plain English. Monitor your operation's safety posture with ongoing analysis.",
+  title: "DOT Risk Radar | Operational Intelligence",
+  description: "Public FMCSA inspection signals translated into a real-time risk radar for your operation.",
 };
 
 export default function RootLayout({
@@ -15,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+    <html lang="en" className="dark">
+      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-brand-dark text-slate-100 selection:bg-emerald-500/30`}>
         {children}
       </body>
     </html>
