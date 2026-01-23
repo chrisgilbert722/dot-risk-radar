@@ -121,17 +121,17 @@ export default function LandingPage() {
 
             {/* --- PHASE 2 & 9: HERO SECTION --- */}
             <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-[90vh] lg:min-h-[800px] flex items-center">
-                {/* Image 1: Background Layer with Refined Overlay (Darker Cinematic) */}
+                {/* Image 1: Background Layer with Refined Overlay (Inspector Focus) */}
                 <div className="absolute inset-0 z-0 select-none">
                     <Image
-                        src="/images/hero-inspection-v2.png"
+                        src="/images/hero-inspector-clipboard.jpg"
                         alt="Roadside Inspection"
                         fill
-                        className="object-cover opacity-80 mix-blend-normal"
+                        className="object-cover opacity-60 mix-blend-normal"
                         priority
                     />
                     {/* Directional Gradient: Dark on left (text), transparent on right (visual) - Navy Gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/95 to-brand-dark/40" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/95 to-brand-dark/20" />
                     {/* Bottom Vignette */}
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay" />
