@@ -237,13 +237,12 @@ export default function LandingPage() {
 
                     <div className="grid md:grid-cols-2 gap-0 rounded-lg overflow-hidden shadow-2xl relative min-h-[500px]">
                         {/* LEFT: CHAOS (Red Truck + Dark Glass Overlay) */}
-                        <div className="relative p-8 md:p-12 group md:hover:w-[45%] transition-all duration-500 ease-in-out min-h-[400px] flex flex-col overflow-hidden border-r border-slate-800">
-                            {/* NEW BACKGROUND: Red Truck Inspection */}
+                        <div className="relative p-8 md:p-12 group min-h-[400px] flex flex-col overflow-hidden border-r border-slate-800">
                             <Image
                                 src="/images/chaos-inspection.png"
                                 alt="Inspection Chaos"
                                 fill
-                                className="object-cover opacity-100 grayscale hover:grayscale-0 transition-all duration-700"
+                                className="object-cover opacity-100 grayscale hover:grayscale-0 transition-opacity duration-700"
                             />
 
                             {/* Dark Glass Overlay (Not Flat Black) */}
@@ -281,7 +280,7 @@ export default function LandingPage() {
                         </div>
 
                         {/* RIGHT: CONTROL (Glassmorphism + Progressive Reveal) */}
-                        <div className="tactical-glass p-8 md:p-12 relative group md:hover:w-[55%] transition-all duration-500 ease-in-out min-h-[400px] flex flex-col justify-end overflow-hidden">
+                        <div className="tactical-glass p-8 md:p-12 relative group min-h-[400px] flex flex-col justify-end overflow-hidden">
                             {/* Radar Background Interaction */}
                             <div className="absolute top-0 right-0 p-6 pointer-events-none opacity-20 group-hover:opacity-60 transition-opacity duration-700">
                                 <Radar className="w-32 h-32 text-emerald-500 group-hover:animate-[radar-expand_3s_ease-out_infinite]" />
