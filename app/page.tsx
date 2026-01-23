@@ -1,315 +1,439 @@
 'use client'
 
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, BarChart3, ShieldCheck, TrendingUp, Eye, CheckCircle, XCircle, Loader2 } from 'lucide-react';
-import { useState, FormEvent } from 'react';
+import {
+    AlertTriangle,
+    ShieldCheck,
+    Activity,
+    Search,
+    ArrowRight,
+    FileText,
+    Lock,
+    Radar,
+    Siren,
+    CheckCircle2,
+    XCircle,
+    TrendingUp
+} from 'lucide-react';
 
 export default function LandingPage() {
-    const [dotNumber, setDotNumber] = useState('')
-    const [email, setEmail] = useState('')
-    const [loading, setLoading] = useState(false)
-    const [result, setResult] = useState<{ success: boolean; message: string; carrierName?: string } | null>(null)
+    const [dotNumber, setDotNumber] = useState('');
+    const [isTyping, setIsTyping] = useState(false);
+    const [activeTestimonial, setActiveTestimonial] = useState(0);
 
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault()
-        setLoading(true)
-        setResult(null)
-
-        try {
-            const response = await fetch(`/api/fmcsa/carrier?dot=${encodeURIComponent(dotNumber)}`)
-            const data = await response.json()
-
-            if (data.ok) {
-                setResult({
-                    success: true,
-                    message: 'Carrier found!',
-                    carrierName: data.carrier?.carrier?.legalName || data.carrier?.legalName || 'Unknown Carrier'
-                })
-            } else {
-                setResult({
-                    success: false,
-                    message: data.error || 'Failed to fetch carrier data'
-                })
-            }
-        } catch (error) {
-            setResult({
-                success: false,
-                message: 'Network error. Please try again.'
-            })
-        } finally {
-            setLoading(false)
+    // Typing effect logic for input
+    useEffect(() => {
+        if (dotNumber.length > 0) {
+            setIsTyping(true);
+            const timer = setTimeout(() => setIsTyping(false), 2000);
+            return () => clearTimeout(timer);
+        } else {
+            setIsTyping(false);
         }
-    }
+    }, [dotNumber]);
+
+    // Auto-rotate testimonials
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
+        }, 6000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const testimonials = [
+        {
+            quote: "We didn’t realize our DOT risk had quietly escalated until this flagged it.",
+            role: "Fleet Owner",
+            size: "12 Trucks"
+        },
+        {
+            quote: "This showed us patterns we weren’t watching — inspections were increasing before we felt it.",
+            role: "Safety Director",
+            size: "45 Trucks"
+        },
+        {
+            quote: "Now we know where we stand every week. No surprises.",
+            role: "Operations Manager",
+            size: "28 Trucks"
+        },
+        {
+            quote: "The OOS alerts alone saved us from a conditional rating.",
+            role: "Compliance Lead",
+            size: "18 Trucks"
+        }
+    ];
 
     return (
-        <div className="min-h-screen bg-brand-dark text-slate-100 selection:bg-brand-yellow/30 font-sans overflow-x-hidden">
+        <div className="min-h-screen bg-brand-dark text-slate-100 font-sans selection:bg-risk-elevated/30 overflow-x-hidden">
 
             {/* Navbar */}
-            <nav className="fixed w-full z-50 top-0 border-b border-white/5 bg-brand-dark/80 backdrop-blur-md">
+            <nav className="fixed w-full z-50 top-0 border-b border-slate-800 bg-brand-dark/90 backdrop-blur-md">
                 <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-brand-yellow rounded-lg flex items-center justify-center">
-                            <div className="w-3 h-3 bg-brand-dark rounded-full" />
+                    <div className="flex items-center gap-3">
+                        <div className="relative">
+                            <div className="w-8 h-8 rounded border border-risk-elevated/50 bg-risk-elevated/10 flex items-center justify-center">
+                                <Radar className="w-5 h-5 text-risk-elevated animate-pulse" />
+                            </div>
+                            <div className="absolute -top-1 -right-1 w-2 h-2 bg-risk-elevated rounded-full animate-ping" />
                         </div>
-                        <span className="text-xl font-bold tracking-tight text-white">DOT Risk Radar</span>
+                        <span className="text-xl font-bold tracking-tight text-white uppercase font-mono">
+                            DOT <span className="text-risk-elevated">RISK RADAR</span>
+                        </span>
                     </div>
 
-                    <div className="flex items-center gap-8">
-                        <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
-                            Sign In
+                    <div className="flex items-center gap-6">
+                        <Link href="/login" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors font-mono uppercase tracking-wider">
+                            // Login
                         </Link>
-                        <Button asChild className="hidden sm:flex bg-transparent border border-brand-yellow/20 text-brand-yellow hover:bg-brand-yellow/10 hover:text-brand-yellow rounded-full px-6 h-10">
+                        <Button asChild className="bg-risk-elevated text-brand-dark hover:bg-amber-400 font-bold px-6 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] transition-all">
                             <Link href="/signup">
-                                Get Started
+                                GET ACCESS
                             </Link>
                         </Button>
                     </div>
                 </div>
             </nav>
 
-            {/* Hero Section */}
-            <section className="relative pt-32 pb-20 lg:pt-0 min-h-screen flex items-center overflow-hidden">
-                {/* Background Gradients */}
-                <div className="absolute top-0 right-0 w-[80%] h-full bg-gradient-to-l from-brand-yellow/5 to-transparent pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-[50%] h-[50%] bg-gradient-to-t from-brand-yellow/5 to-transparent pointer-events-none rounded-full blur-3xl opacity-20" />
+            {/* PHASE 2: HIGH-CONVERSION HERO */}
+            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+                {/* Background Grid */}
+                <div className="absolute inset-0 bg-grid-slate pointer-events-none opacity-20" />
+                <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-risk-elevated/5 to-transparent skew-x-12 opacity-30 pointer-events-none" />
 
-                <div className="container mx-auto px-6 relative z-10 h-full">
-                    <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center h-full">
+                <div className="container mx-auto px-6 relative z-10">
+                    <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
 
-                        {/* Left Column: Copy + Risk Check Card */}
-                        <div className="lg:col-span-5 flex flex-col gap-8 py-10">
-                            <div className="space-y-6">
-                                <Badge variant="outline" className="border-brand-yellow/20 text-brand-yellow bg-brand-yellow/5 px-3 py-1 rounded-full uppercase tracking-wider text-[10px] font-bold w-fit shadow-[0_0_15px_rgba(250,204,21,0.1)]">
-                                    Public Beta Live
-                                </Badge>
-                                <h1 className="text-4xl lg:text-6xl font-extrabold text-white tracking-tighter leading-[1.1]">
-                                    Know Your <span className="text-brand-yellow relative inline-block">
-                                        Risk
-                                        <svg className="absolute w-full h-3 -bottom-1 left-0 text-brand-yellow opacity-40" viewBox="0 0 100 10" preserveAspectRatio="none">
-                                            <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="2" fill="none" />
-                                        </svg>
-                                    </span>
-                                    <br /> Before It Escalates
-                                </h1>
-                                <p className="text-lg text-slate-400 leading-relaxed max-w-lg font-medium">
-                                    DOT inspection patterns translated into clear signals. Track risk shifts before audits, OOS events, and insurance hikes.
-                                </p>
+                        {/* LEFT COLUMN */}
+                        <div className="flex-1 w-full text-center lg:text-left order-1">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-risk-elevated/10 border border-risk-elevated/20 text-xs font-bold font-mono text-risk-elevated mb-6 uppercase tracking-widest animate-pulse">
+                                <span className="w-2 h-2 rounded-full bg-risk-elevated" />
+                                Public Beta Now Live
                             </div>
 
-                            {/* Risk Check Form - High Fidelity Glass Card */}
-                            <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl ring-1 ring-white/5 relative overflow-hidden group hover:border-white/20 transition-all duration-300">
-                                {/* Subtle gradient glow */}
-                                <div className="absolute -top-24 -right-24 w-48 h-48 bg-brand-yellow/10 rounded-full blur-3xl pointer-events-none" />
+                            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tighter text-white mb-6 uppercase">
+                                See Your <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-risk-elevated to-amber-200">
+                                    DOT Risk
+                                </span> <br />
+                                Before Inspectors Do
+                            </h1>
 
-                                <div className="flex items-center gap-3 mb-6 relative z-10">
-                                    <div className="w-10 h-10 rounded-xl bg-brand-yellow text-brand-dark flex items-center justify-center shadow-lg shadow-brand-yellow/20">
-                                        <ShieldCheck className="w-6 h-6" />
+                            <p className="text-lg md:text-xl text-slate-400 max-w-lg mx-auto lg:mx-0 leading-relaxed mb-8">
+                                Public FMCSA inspection signals translated into a real-time risk radar for your operation.
+                            </p>
+
+                            {/* Mobile Stacking Logic: Input comes AFTER visual on mobile in regular flow, but visually we handle strict order below */}
+                            <div className="hidden lg:block">
+                                <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} />
+                            </div>
+                        </div>
+
+                        {/* RIGHT COLUMN (VISUAL) - ORDER 2 on Desktop, ORDER 2 on Mobile (sandwiched) */}
+                        {/* BUT User spec says: 1. Headline, 2. Subheadline, 3. Visual, 4. Input */}
+                        {/* My code structure: Left Col (Head/Sub) -> Right Col (Visual) -> Left Col (Input [Mobile only]) */}
+
+                        <div className="flex-1 w-full order-2 lg:order-2">
+                            <div className="relative w-full aspect-video md:aspect-[4/3] bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-lg overflow-hidden shadow-2xl group">
+                                {/* Dashboard Header */}
+                                <div className="h-8 bg-slate-900 border-b border-slate-800 flex items-center px-4 justify-between">
+                                    <div className="flex gap-1.5">
+                                        <div className="w-2.5 h-2.5 rounded-full bg-slate-700" />
+                                        <div className="w-2.5 h-2.5 rounded-full bg-slate-700" />
+                                        <div className="w-2.5 h-2.5 rounded-full bg-slate-700" />
                                     </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold text-white leading-tight">Check Risk Score</h3>
-                                        <p className="text-xs text-slate-400 font-medium">Instant FMCSA Analysis</p>
+                                    <div className="font-mono text-[10px] text-slate-500 uppercase tracking-widest">
+                                        Live Monitoring /// Active
                                     </div>
                                 </div>
 
-                                <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-1.5 col-span-2 sm:col-span-1">
-                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">US DOT Number</label>
-                                            <Input
-                                                type="text"
-                                                placeholder="e.g. 1234567"
-                                                value={dotNumber}
-                                                onChange={(e) => setDotNumber(e.target.value)}
-                                                required
-                                                disabled={loading}
-                                                className="bg-brand-dark/80 border-white/5 text-white placeholder:text-slate-600 focus:border-brand-yellow/50 focus:ring-brand-yellow/20 h-11 rounded-lg font-mono tracking-wide"
-                                            />
-                                        </div>
-                                        <div className="space-y-1.5 col-span-2 sm:col-span-1">
-                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Company Name</label>
-                                            <Input
-                                                type="text"
-                                                placeholder="(Optional)"
-                                                disabled={loading}
-                                                className="bg-brand-dark/80 border-white/5 text-white placeholder:text-slate-600 focus:border-brand-yellow/50 focus:ring-brand-yellow/20 h-11 rounded-lg"
-                                            />
-                                        </div>
-                                    </div>
+                                {/* Dashboard Content */}
+                                <div className="p-6 relative">
+                                    {/* Radar Animation */}
+                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] bg-radar-gradient animate-pulse opacity-20 pointer-events-none" />
 
-                                    <div className="space-y-1.5">
-                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">Email Address</label>
-                                        <Input
-                                            type="email"
-                                            placeholder="safety@carrier.com"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            required
-                                            disabled={loading}
-                                            className="bg-brand-dark/80 border-white/5 text-white placeholder:text-slate-600 focus:border-brand-yellow/50 focus:ring-brand-yellow/20 h-11 rounded-lg"
-                                        />
-                                    </div>
-
-                                    {/* Result Message */}
-                                    {result && (
-                                        <div className={`p-3 rounded-lg flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300 ${result.success
-                                                ? 'bg-green-500/10 border border-green-500/20'
-                                                : 'bg-red-500/10 border border-red-500/20'
-                                            }`}>
-                                            {result.success ? (
-                                                <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                                            ) : (
-                                                <XCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
-                                            )}
-                                            <div className="flex-1 min-w-0">
-                                                <p className={`text-sm font-semibold ${result.success ? 'text-green-400' : 'text-red-400'
-                                                    }`}>
-                                                    {result.message}
-                                                </p>
-                                                {result.carrierName && (
-                                                    <p className="text-xs text-slate-400 mt-1 truncate font-mono">
-                                                        {result.carrierName}
-                                                    </p>
-                                                )}
+                                    <div className="grid grid-cols-2 gap-4 mb-4">
+                                        <div className="p-4 bg-slate-800/50 rounded border border-slate-700/50">
+                                            <div className="text-xs text-slate-400 font-mono mb-1">RISK LEVEL</div>
+                                            <div className="text-2xl font-bold font-mono text-risk-elevated flex items-center gap-2">
+                                                ELEVATED
+                                                <AlertTriangle className="w-5 h-5 text-risk-elevated" />
                                             </div>
                                         </div>
-                                    )}
-
-                                    <div className="pt-2">
-                                        <Button
-                                            type="submit"
-                                            disabled={loading}
-                                            className="w-full h-12 bg-brand-yellow hover:bg-[#E5BC14] text-brand-dark font-bold text-base rounded-lg shadow-[0_4px_14px_0_rgba(250,204,21,0.39)] hover:shadow-[0_6px_20px_rgba(250,204,21,0.23)] hover:-translate-y-0.5 transition-all duration-200"
-                                        >
-                                            {loading ? (
-                                                <>
-                                                    <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-                                                    Analyzing...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    Check Risk Score
-                                                    <ArrowRight className="ml-2 w-4 h-4" />
-                                                </>
-                                            )}
-                                        </Button>
-                                        <p className="text-center text-[10px] text-slate-500 mt-3 font-medium tracking-wide">
-                                            NO CREDIT CARD REQUIRED • INSTANT SNAPSHOT
-                                        </p>
+                                        <div className="p-4 bg-slate-800/50 rounded border border-slate-700/50">
+                                            <div className="text-xs text-slate-400 font-mono mb-1">ISS TREND</div>
+                                            <div className="text-2xl font-bold font-mono text-risk-high flex items-center gap-2">
+                                                +12.4%
+                                                <TrendingUp className="w-5 h-5 text-risk-high" />
+                                            </div>
+                                        </div>
                                     </div>
-                                </form>
-                            </div>
-                        </div>
 
-                        {/* Right Column: Hero Image */}
-                        <div className="lg:col-span-7 relative h-[50vh] lg:h-full min-h-[400px] flex items-center justify-center lg:justify-end overflow-visible">
-                            {/* Background Glow */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-brand-yellow/5 rounded-full blur-[120px] -z-10" />
-
-                            <div className="relative w-full max-w-[1000px] lg:-mr-32 xl:-mr-48 2xl:-mr-64 transform transition-transform duration-700 hover:scale-[1.02] ease-out">
-                                <div className="aspect-[16/10] relative">
-                                    <Image
-                                        src="/images/hero-truck.png"
-                                        alt="Commercial Truck Modern Hero"
-                                        fill
-                                        className="object-contain drop-shadow-2xl"
-                                        priority
-                                        sizes="(max-width: 768px) 100vw, 1000px"
-                                        quality={100}
-                                    />
+                                    {/* Mock Graph */}
+                                    <div className="h-32 w-full bg-slate-800/30 rounded border border-slate-700/30 relative overflow-hidden flex items-end px-2 pt-8 gap-1">
+                                        {[40, 35, 55, 45, 60, 75, 65, 80, 70, 85, 90, 85, 95].map((h, i) => (
+                                            <div key={i} className={`flex-1 rounded-t-sm ${h > 70 ? 'bg-risk-high/80' : 'bg-emerald-500/50'}`} style={{ height: `${h}%` }} />
+                                        ))}
+                                        {/* Scan Line */}
+                                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-risk-elevated/10 to-transparent w-[2px] h-full translate-x-0 animate-scan-horizontal" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        {/* MOBILE INPUT (Visible only on mobile, Order 3) */}
+                        <div className="w-full order-3 lg:hidden mt-4">
+                            <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} />
+                        </div>
+
                     </div>
                 </div>
             </section>
 
-            {/* Social Proof Strip */}
-            <section className="border-y border-white/5 bg-slate-900/30 backdrop-blur-sm py-8 lg:py-10">
+            {/* PHASE 3: VISUAL PROOF (Chaos vs Control) */}
+            <section className="py-20 bg-slate-900 border-y border-slate-800">
                 <div className="container mx-auto px-6">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-8 opacity-60">
-                        <span className="text-sm font-semibold text-slate-400 tracking-wider uppercase">
-                            Trust indicators based on public data
-                        </span>
-                        <div className="flex flex-wrap items-center gap-8 lg:gap-12 grayscale hover:grayscale-0 transition-all duration-500">
-                            <div className="flex items-center gap-2">
-                                <div className="h-6 w-6 rounded bg-slate-400/20" />
-                                <span className="font-bold text-slate-300">FMCSA DATA</span>
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">What Inspectors See (You Don’t)</h2>
+                        <p className="text-slate-400 max-w-2xl mx-auto">
+                            The FMCSA database is full of raw data signals that trigger audits. We translate the noise into clarity.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-0 border border-slate-700 rounded-lg overflow-hidden">
+                        {/* LEFT: CHAOS */}
+                        <div className="bg-[#0f1219] p-8 md:p-12 relative overflow-hidden border-b md:border-b-0 md:border-r border-slate-700 group md:hover:w-[45%] transition-all duration-500 ease-in-out">
+                            <div className="absolute inset-0 opacity-10 font-mono text-xs overflow-hidden leading-none text-red-500 pointer-events-none select-none">
+                                {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL ").join(" ")}
                             </div>
-                            <div className="flex items-center gap-2">
-                                <div className="h-6 w-6 rounded bg-slate-400/20" />
-                                <span className="font-bold text-slate-300">SAFER WEB</span>
+                            <div className="relative z-10">
+                                <div className="inline-flex items-center gap-2 mb-6 text-red-500 font-mono text-sm tracking-wider uppercase">
+                                    <XCircle className="w-4 h-4" /> Unprocessed Data
+                                </div>
+                                <h3 className="text-2xl font-bold text-white mb-4">Overwhelming Noise</h3>
+                                <ul className="space-y-4 text-slate-400 font-mono text-sm">
+                                    <li className="flex items-center gap-3 text-red-400">
+                                        <AlertTriangle className="w-4 h-4 shrink-0" />
+                                        <span>Hidden violation clusters</span>
+                                    </li>
+                                    <li className="flex items-center gap-3 text-red-400">
+                                        <AlertTriangle className="w-4 h-4 shrink-0" />
+                                        <span>Rising OOS percentage</span>
+                                    </li>
+                                    <li className="flex items-center gap-3 text-red-400">
+                                        <AlertTriangle className="w-4 h-4 shrink-0" />
+                                        <span>Audit triggers unnoticed</span>
+                                    </li>
+                                </ul>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <div className="h-6 w-6 rounded bg-slate-400/20" />
-                                <span className="font-bold text-slate-300">DOT CENSUS</span>
+                        </div>
+
+                        {/* RIGHT: CONTROL */}
+                        <div className="bg-slate-800/30 p-8 md:p-12 relative group md:hover:w-[55%] transition-all duration-500 ease-in-out">
+                            <div className="inline-flex items-center gap-2 mb-6 text-emerald-400 font-mono text-sm tracking-wider uppercase">
+                                <CheckCircle2 className="w-4 h-4" /> Risk Radar Analysis
                             </div>
+                            <h3 className="text-2xl font-bold text-white mb-4">Actionable Intelligence</h3>
+                            <ul className="space-y-4 text-slate-300 font-mono text-sm">
+                                <li className="flex items-center gap-3">
+                                    <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">01</div>
+                                    <span>Predictive score stabilization</span>
+                                </li>
+                                <li className="flex items-center gap-3">
+                                    <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">02</div>
+                                    <span>Plain-English pattern alerts</span>
+                                </li>
+                                <li className="flex items-center gap-3">
+                                    <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">03</div>
+                                    <span>Pre-audit intervention signals</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Features Grid */}
-            <section className="py-24 bg-brand-dark relative z-10">
+            {/* HOW IT WORKS */}
+            <section className="py-24 border-b border-slate-800">
                 <div className="container mx-auto px-6">
-                    <div className="text-center max-w-2xl mx-auto mb-16">
-                        <h2 className="text-3xl font-bold text-white mb-4">Complete Operational Visibility</h2>
-                        <p className="text-slate-400">Everything you need to stay ahead of auditors and insurance renewals.</p>
+                    <div className="grid md:grid-cols-3 gap-12 text-center">
+                        <div>
+                            <div className="w-16 h-16 mx-auto bg-slate-800 rounded-lg flex items-center justify-center border border-slate-700 mb-6 font-mono text-2xl font-bold text-risk-elevated">01</div>
+                            <h4 className="text-xl font-bold text-white mb-2">Enter DOT Number</h4>
+                            <p className="text-slate-400">Instant connection to public FMCSA records.</p>
+                        </div>
+                        <div>
+                            <div className="w-16 h-16 mx-auto bg-slate-800 rounded-lg flex items-center justify-center border border-slate-700 mb-6 font-mono text-2xl font-bold text-risk-elevated">02</div>
+                            <h4 className="text-xl font-bold text-white mb-2">We Analyze Signals</h4>
+                            <p className="text-slate-400">Algorithms scan for patterns, not just single violations.</p>
+                        </div>
+                        <div>
+                            <div className="w-16 h-16 mx-auto bg-slate-800 rounded-lg flex items-center justify-center border border-slate-700 mb-6 font-mono text-2xl font-bold text-risk-elevated">03</div>
+                            <h4 className="text-xl font-bold text-white mb-2">See Risk Trends</h4>
+                            <p className="text-slate-400">Get alerted before your safety rating takes a hit.</p>
+                        </div>
                     </div>
+                </div>
+            </section>
 
+            {/* FEATURE GRID */}
+            <section className="py-24 bg-slate-900/50">
+                <div className="container mx-auto px-6">
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {/* Feature 1 */}
-                        <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-brand-yellow/30 hover:bg-white/[0.04] transition-all group">
-                            <div className="w-12 h-12 rounded-xl bg-brand-yellow/10 text-brand-yellow flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <BarChart3 className="w-6 h-6" />
-                            </div>
-                            <h3 className="text-lg font-bold text-white mb-2">Pattern Analysis</h3>
-                            <p className="text-sm text-slate-400">Detect trends in your inspection data that trigger audits.</p>
-                        </div>
+                        <FeatureCard
+                            icon={Radar}
+                            title="Continuous Monitoring"
+                            desc="Prevents surprise score jumps by watching 24/7."
+                        />
+                        <FeatureCard
+                            icon={TrendingUp}
+                            title="Risk Trend Detection"
+                            desc="Prevents creeping violation patterns from escalating."
+                        />
+                        <FeatureCard
+                            icon={Siren}
+                            title="Early Warning Alerts"
+                            desc="Prevents silent issues from becoming audits."
+                        />
+                        <FeatureCard
+                            icon={Lock}
+                            title="Compliance Vault"
+                            desc="Prevents lost history during insurance renewals."
+                        />
+                    </div>
+                </div>
+            </section>
 
-                        {/* Feature 2 */}
-                        <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-brand-yellow/30 hover:bg-white/[0.04] transition-all group">
-                            <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <TrendingUp className="w-6 h-6" />
-                            </div>
-                            <h3 className="text-lg font-bold text-white mb-2">Risk Trending</h3>
-                            <p className="text-sm text-slate-400">Historical tracking of your safety posture over time.</p>
-                        </div>
+            {/* TESTIMONIALS */}
+            <section className="py-24 border-t border-slate-800 relative overflow-hidden">
+                <div className="absolute inset-0 bg-brand-dark/95 z-10" />
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10" />
 
-                        {/* Feature 3 */}
-                        <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-brand-yellow/30 hover:bg-white/[0.04] transition-all group">
-                            <div className="w-12 h-12 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <ShieldCheck className="w-6 h-6" />
+                <div className="container mx-auto px-6 relative z-20">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="bg-slate-900/80 backdrop-blur-md border border-slate-700 p-8 md:p-12 rounded-2xl relative">
+                            {/* Quote Icon */}
+                            <div className="absolute top-8 left-8 text-risk-elevated/20">
+                                <FileText className="w-16 h-16" />
                             </div>
-                            <h3 className="text-lg font-bold text-white mb-2">OOS Detection</h3>
-                            <p className="text-sm text-slate-400">Instant alerts for Out-of-Service violations.</p>
-                        </div>
 
-                        {/* Feature 4 */}
-                        <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-brand-yellow/30 hover:bg-white/[0.04] transition-all group">
-                            <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <Eye className="w-6 h-6" />
+                            <div className="relative pt-10 text-center">
+                                <p className="text-2xl md:text-3xl font-medium text-slate-200 leading-relaxed mb-8">
+                                    "{testimonials[activeTestimonial].quote}"
+                                </p>
+
+                                <div className="flex flex-col items-center">
+                                    <div className="text-risk-elevated font-bold uppercase tracking-wider text-sm mb-1">
+                                        {testimonials[activeTestimonial].role}
+                                    </div>
+                                    <div className="text-slate-500 font-mono text-sm">
+                                        Operation Size: {testimonials[activeTestimonial].size}
+                                    </div>
+                                </div>
                             </div>
-                            <h3 className="text-lg font-bold text-white mb-2">Compliance View</h3>
-                            <p className="text-sm text-slate-400">See what insurance underwriters see when they look at you.</p>
+
+                            {/* Indicators */}
+                            <div className="flex justify-center gap-2 mt-8">
+                                {testimonials.map((_, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => setActiveTestimonial(i)}
+                                        className={`w-2 h-2 rounded-full transition-all ${i === activeTestimonial ? 'bg-risk-elevated w-6' : 'bg-slate-700 hover:bg-slate-600'
+                                            }`}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Simple Footer */}
-            <footer className="py-12 border-t border-white/5 bg-brand-dark text-slate-500 text-sm">
-                <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <p>&copy; {new Date().getFullYear()} DOT Risk Radar. All rights reserved.</p>
-                    <div className="flex gap-8">
-                        <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-                        <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
+            {/* HIGH CONVERSION BLOCK */}
+            <section className="py-24 bg-brand-dark">
+                <div className="container mx-auto px-6">
+                    <div className="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-8 md:p-20 text-center">
+                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+                            Know Your DOT Risk <br /> <span className="text-slate-500">Before It Becomes a Problem</span>
+                        </h2>
+                        <div className="max-w-xl mx-auto">
+                            <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} />
+                        </div>
                     </div>
                 </div>
+            </section>
+
+            {/* FOOTER */}
+            <footer className="py-12 border-t border-slate-800 bg-brand-dark text-slate-500 text-sm font-mono text-center">
+                <p>&copy; {new Date().getFullYear()} DOT RISK RADAR. MISSION CRITICAL INTELLIGENCE.</p>
             </footer>
         </div>
     );
+}
+
+// Input Component extracted for re-use
+function HeroInput({ dotNumber, setDotNumber, isTyping }: { dotNumber: string, setDotNumber: (v: string) => void, isTyping: boolean }) {
+    return (
+        <div className="w-full">
+            <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-risk-elevated to-amber-600 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                <div className="relative flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1 relative">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <Search className="h-5 w-5 text-slate-500" />
+                        </div>
+                        <Input
+                            type="text"
+                            placeholder="ENTER DOT NUMBER"
+                            className="pl-11 bg-slate-900/90 border-slate-700 text-white h-14 text-lg focus:border-risk-elevated focus:ring-risk-elevated/20 rounded-lg font-mono tracking-wider uppercase placeholder:text-slate-600"
+                            value={dotNumber}
+                            onChange={(e) => setDotNumber(e.target.value)}
+                        />
+                    </div>
+                    <Button className="h-14 px-8 bg-risk-elevated hover:bg-amber-400 text-brand-dark font-bold rounded-lg text-lg uppercase tracking-wide min-w-[200px] transition-all relative overflow-hidden">
+                        {isTyping ? (
+                            <span className="flex items-center gap-2 animate-pulse">
+                                <Activity className="w-5 h-5 animate-spin" />
+                                Scanning...
+                            </span>
+                        ) : (
+                            <span className="flex items-center gap-2">
+                                Check Risk (Free) <ArrowRight className="w-5 h-5" />
+                            </span>
+                        )}
+                    </Button>
+                </div>
+            </div>
+
+            {/* Dynamic Help Text */}
+            <div className="mt-3 flex items-center justify-between px-1 h-6 transition-all duration-300">
+                <span className={`text-xs font-mono transition-colors duration-300 ${isTyping ? 'text-emerald-400' : 'text-slate-500'}`}>
+                    {isTyping ? "Analyzing inspections, OOS trends, violation velocity..." : "No credit card. No sales calls."}
+                </span>
+                {isTyping && (
+                    <div className="flex gap-1">
+                        <div className="w-1 h-1 bg-emerald-500 rounded-full animate-bounce delay-0" />
+                        <div className="w-1 h-1 bg-emerald-500 rounded-full animate-bounce delay-150" />
+                        <div className="w-1 h-1 bg-emerald-500 rounded-full animate-bounce delay-300" />
+                    </div>
+                )}
+            </div>
+        </div>
+    )
+}
+
+function FeatureCard({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) {
+    return (
+        <div className="p-6 bg-slate-900 border border-slate-800 rounded hover:border-risk-elevated/30 transition-all group">
+            <div className="w-12 h-12 bg-slate-800 rounded flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Icon className="w-6 h-6 text-risk-elevated" />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
+            <p className="text-sm text-slate-400 leading-relaxed max-w-[90%]">
+                {desc}
+            </p>
+        </div>
+    )
 }
