@@ -121,19 +121,20 @@ export default function LandingPage() {
 
             {/* --- PHASE 2 & 9: HERO SECTION --- */}
             <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-[90vh] flex items-center">
-                {/* Image 1: Background Layer with Refined Overlay */}
+                {/* Image 1: Background Layer with Refined Overlay (15-20% reduction) */}
                 <div className="absolute inset-0 z-0 select-none">
                     <Image
                         src="/images/hero-officer.jpg"
                         alt="Roadside Inspection"
                         fill
-                        className="object-cover opacity-70 mix-blend-normal"
+                        className="object-cover opacity-60 mix-blend-normal"
                         priority
                     />
-                    {/* Directional Gradient: Dark on left (text), transparent on right (visual) */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/80 to-brand-dark/20" />
+                    {/* Directional Gradient: Dark on left (text), transparent on right (visual) - Navy Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent" />
                     {/* Bottom Vignette */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay" />
                     <div className="absolute inset-0 bg-grid-slate opacity-10" />
                 </div>
 
@@ -166,7 +167,7 @@ export default function LandingPage() {
 
                         {/* RIGHT COLUMN (VISUAL) - ORDER 2 Mobile Stickiness Enforced */}
                         <div className="flex-1 w-full order-2 lg:order-2">
-                            <div className="relative w-full aspect-video md:aspect-[4/3] bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-lg overflow-hidden shadow-2xl group ring-1 ring-white/10">
+                            <div className="relative w-full aspect-video md:aspect-[4/3] tactical-glass rounded-lg overflow-hidden shadow-2xl group ring-1 ring-white/10">
                                 {/* Tactical Header */}
                                 <div className="h-8 bg-slate-950 border-b border-slate-800 flex items-center px-4 justify-between">
                                     <div className="flex gap-1.5">
@@ -187,14 +188,14 @@ export default function LandingPage() {
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4 mb-4 z-10">
-                                        <div className="p-4 bg-slate-800/80 rounded border border-slate-700/50 backdrop-blur-sm">
+                                        <div className="p-4 bg-slate-800/40 rounded border border-white/5 backdrop-blur-sm">
                                             <div className="text-xs text-slate-400 font-mono mb-1">RISK LEVEL</div>
                                             <div className="text-2xl font-bold font-mono text-risk-elevated flex items-center gap-2 text-glow-amber">
                                                 ELEVATED
                                                 <AlertTriangle className="w-5 h-5 text-risk-elevated" />
                                             </div>
                                         </div>
-                                        <div className="p-4 bg-slate-800/80 rounded border border-slate-700/50 backdrop-blur-sm">
+                                        <div className="p-4 bg-slate-800/40 rounded border border-white/5 backdrop-blur-sm">
                                             <div className="text-xs text-slate-400 font-mono mb-1">ISS TREND</div>
                                             <div className="text-2xl font-bold font-mono text-risk-high flex items-center gap-2 text-glow-red">
                                                 +12.4%
@@ -204,7 +205,7 @@ export default function LandingPage() {
                                     </div>
 
                                     {/* Graph */}
-                                    <div className="flex-1 bg-slate-900/50 rounded border border-slate-700/30 relative overflow-hidden flex items-end px-2 pt-8 gap-1 z-10">
+                                    <div className="flex-1 bg-slate-900/30 rounded border border-white/5 relative overflow-hidden flex items-end px-2 pt-8 gap-1 z-10">
                                         {[40, 35, 55, 45, 60, 75, 65, 80, 70, 85, 90, 85, 95].map((h, i) => (
                                             <div key={i} className={`flex-1 rounded-t-sm transition-all duration-1000 ${h > 70 ? 'bg-risk-high shadow-[0_0_10px_rgba(239,68,68,0.3)]' : 'bg-emerald-500/50'}`} style={{ height: `${h}%` }} />
                                         ))}
@@ -223,9 +224,10 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* --- PHASE 5: VISUAL PROOF (Refined with Image 2) --- */}
-            <section className="py-20 bg-slate-950 border-y border-slate-800">
-                <div className="container mx-auto px-6">
+            {/* --- PHASE 5: VISUAL PROOF (Refined with Image 2 + Glassmorphism) --- */}
+            <section className="py-20 bg-slate-950 border-y border-slate-800 relative">
+                <div className="absolute inset-0 bg-noise opacity-50 mix-blend-soft-light pointer-events-none" />
+                <div className="container mx-auto px-6 relative z-10">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">What Inspectors See (You Don’t)</h2>
                         <p className="text-slate-400 max-w-2xl mx-auto text-lg">
@@ -233,75 +235,73 @@ export default function LandingPage() {
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-0 border border-slate-800 rounded-lg overflow-hidden shadow-2xl">
-                        {/* LEFT: CHAOS (Image 2 BG) */}
-                        <div className="relative p-8 md:p-12 border-b md:border-b-0 md:border-r border-slate-800 group md:hover:w-[45%] transition-all duration-500 ease-in-out min-h-[400px] flex flex-col overflow-hidden">
-                            {/* Image 2 Background */}
+                    <div className="grid md:grid-cols-2 gap-0 rounded-lg overflow-hidden shadow-2xl relative">
+                        {/* LEFT: CHAOS (Red Truck + Dark Glass Overlay) */}
+                        <div className="relative p-8 md:p-12 group md:hover:w-[45%] transition-all duration-500 ease-in-out min-h-[400px] flex flex-col overflow-hidden border-r border-slate-800">
+                            {/* NEW BACKGROUND: Red Truck Inspection */}
                             <Image
                                 src="/images/inspection-red.jpg"
                                 alt="Inspection Chaos"
                                 fill
-                                className="object-cover opacity-30 mix-blend-luminosity grayscale group-hover:grayscale-0 transition-all duration-700"
+                                className="object-cover opacity-100 grayscale hover:grayscale-0 transition-all duration-700"
                             />
-                            <div className="absolute inset-0 bg-red-950/30 mix-blend-multiply group-hover:bg-red-900/40 transition-colors" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
 
-                            {/* Scrolling Terminal Effect */}
-                            <div className="absolute inset-0 opacity-10 font-mono text-xs leading-none text-red-500 pointer-events-none select-none z-0 group-hover:opacity-20 transition-opacity">
-                                <div className="absolute inset-0 animate-[terminal-scroll_20s_linear_infinite] group-hover:animate-[terminal-scroll_5s_linear_infinite]">
-                                    {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL ").join(" ")}
-                                    {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL ").join(" ")}
+                            {/* Dark Glass Overlay (Not Flat Black) */}
+                            <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm mix-blend-multiply transition-all duration-700 group-hover:bg-slate-900/60" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-red-950/80 via-transparent to-slate-950/80 mix-blend-overlay" />
+
+                            {/* Scrolling Terminal Effect - BRIGHTER & GLOWING */}
+                            <div className="absolute inset-0 opacity-20 font-mono text-xs leading-none text-red-500 pointer-events-none select-none z-0 group-hover:opacity-30 transition-opacity text-glow-red-subtle">
+                                <div className="absolute inset-0 animate-[terminal-scroll_20s_linear_infinite] group-hover:animate-[terminal-scroll_2s_linear_infinite]">
+                                    {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
+                                    {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
                                 </div>
                             </div>
 
-                            <div className="relative z-10 mt-auto">
-                                <div className="inline-flex items-center gap-2 mb-6 text-red-500 font-mono text-sm tracking-wider uppercase bg-black/60 px-3 py-1 rounded backdrop-blur-sm border border-red-500/30 group-hover:bg-red-950/80 group-hover:border-red-500 transition-colors">
+                            <div className="relative z-10 mt-auto tactical-glass rounded-lg p-6">
+                                <div className="inline-flex items-center gap-2 mb-4 text-red-500 font-mono text-sm tracking-wider uppercase bg-black/40 px-3 py-1 rounded border border-red-500/30">
                                     <XCircle className="w-4 h-4" /> Unprocessed Data
                                 </div>
                                 <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-red-100 transition-colors">Overwhelming Noise</h3>
                                 <ul className="space-y-4 text-slate-300 font-mono text-sm">
-                                    <li className="flex items-center gap-3 group-hover:translate-x-1 transition-transform duration-300">
-                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500 group-hover:text-red-400 group-hover:drop-shadow-[0_0_8px_rgba(239,68,68,0.5)] transition-all" />
+                                    <li className="flex items-center gap-3 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-white">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500 group-hover:animate-pulse" />
                                         <span>Hidden violation clusters</span>
                                     </li>
-                                    <li className="flex items-center gap-3 group-hover:translate-x-1 transition-transform duration-300 delay-75">
-                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500 group-hover:text-red-400 group-hover:drop-shadow-[0_0_8px_rgba(239,68,68,0.5)] transition-all" />
+                                    <li className="flex items-center gap-3 transition-transform duration-300 delay-75 group-hover:translate-x-1 group-hover:text-white">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500 group-hover:animate-pulse" />
                                         <span>Rising OOS percentage</span>
                                     </li>
-                                    <li className="flex items-center gap-3 group-hover:translate-x-1 transition-transform duration-300 delay-150">
-                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500 group-hover:text-red-400 group-hover:drop-shadow-[0_0_8px_rgba(239,68,68,0.5)] transition-all" />
+                                    <li className="flex items-center gap-3 transition-transform duration-300 delay-150 group-hover:translate-x-1 group-hover:text-white">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500 group-hover:animate-pulse" />
                                         <span>Audit triggers unnoticed</span>
-                                    </li>
-                                    {/* Reveal on hover */}
-                                    <li className="flex items-center gap-3 opacity-0 h-0 group-hover:h-auto group-hover:opacity-100 transition-all duration-500 delay-300 text-red-300">
-                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
-                                        <span>CRITICAL: 395.8(e) Pattern</span>
                                     </li>
                                 </ul>
                             </div>
                         </div>
 
-                        {/* RIGHT: CONTROL */}
-                        <div className="bg-slate-900 p-8 md:p-12 relative group md:hover:w-[55%] transition-all duration-500 ease-in-out min-h-[400px] flex flex-col justify-end">
-                            <div className="absolute top-0 right-0 p-6 pointer-events-none opacity-20">
-                                <Radar className="w-32 h-32 text-emerald-500" />
+                        {/* RIGHT: CONTROL (Glassmorphism + Progressive Reveal) */}
+                        <div className="tactical-glass p-8 md:p-12 relative group md:hover:w-[55%] transition-all duration-500 ease-in-out min-h-[400px] flex flex-col justify-end overflow-hidden">
+                            {/* Radar Background Interaction */}
+                            <div className="absolute top-0 right-0 p-6 pointer-events-none opacity-20 group-hover:opacity-60 transition-opacity duration-700">
+                                <Radar className="w-32 h-32 text-emerald-500 group-hover:animate-[radar-expand_3s_ease-out_infinite]" />
                             </div>
 
-                            <div className="inline-flex items-center gap-2 mb-6 text-emerald-400 font-mono text-sm tracking-wider uppercase bg-emerald-950/30 px-3 py-1 rounded border border-emerald-500/20 w-fit">
+                            <div className="inline-flex items-center gap-2 mb-6 text-emerald-400 font-mono text-sm tracking-wider uppercase bg-emerald-950/30 px-3 py-1 rounded border border-emerald-500/20 w-fit group-hover:bg-emerald-900/50 group-hover:border-emerald-400 transition-colors">
                                 <CheckCircle2 className="w-4 h-4" /> Risk Radar Analysis
                             </div>
                             <h3 className="text-2xl font-bold text-white mb-4">Actionable Intelligence</h3>
-                            <ul className="space-y-4 text-slate-300 font-mono text-sm">
-                                <li className="flex items-center gap-3">
-                                    <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">01</div>
+                            <ul className="space-y-4 text-slate-300 font-mono text-sm transform transition-all">
+                                <li className="flex items-center gap-3 group-hover:text-white transition-colors">
+                                    <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs group-hover:bg-emerald-500 group-hover:text-slate-900 transition-colors duration-500">01</div>
                                     <span>Predictive score stabilization</span>
                                 </li>
-                                <li className="flex items-center gap-3">
-                                    <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">02</div>
+                                <li className="flex items-center gap-3 opacity-50 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                                    <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs group-hover:bg-emerald-500 group-hover:text-slate-900 transition-colors duration-500">02</div>
                                     <span>Plain-English pattern alerts</span>
                                 </li>
-                                <li className="flex items-center gap-3">
-                                    <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">03</div>
+                                <li className="flex items-center gap-3 opacity-50 group-hover:opacity-100 transition-opacity duration-500 delay-200">
+                                    <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs group-hover:bg-emerald-500 group-hover:text-slate-900 transition-colors duration-500">03</div>
                                     <span>Pre-audit intervention signals</span>
                                 </li>
                             </ul>
@@ -388,14 +388,15 @@ export default function LandingPage() {
                         src="/images/driver-leaning.jpg"
                         alt="Testimonial Background"
                         fill
-                        className="object-cover opacity-30 mix-blend-normal"
+                        className="object-cover opacity-60 mix-blend-normal"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/95 to-brand-dark/40" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/40" />
+                    <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay" />
                 </div>
 
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="max-w-4xl mx-auto">
-                        <div className="bg-slate-900/60 backdrop-blur-md border border-slate-700 p-8 md:p-16 rounded-2xl relative shadow-2xl">
+                        <div className="tactical-glass p-8 md:p-16 rounded-2xl relative shadow-2xl">
                             {/* Quote Icon */}
                             <div className="absolute top-8 left-8 text-risk-elevated/20">
                                 <FileText className="w-16 h-16" />
@@ -434,21 +435,23 @@ export default function LandingPage() {
 
             {/* --- PHASE 7: HIGH CONVERSION BLOCK (Image 5 BG) --- */}
             <section className="py-32 relative overflow-hidden">
-                {/* Image 5 Background */}
+                {/* Image 5 Background - Brightened */}
                 <div className="absolute inset-0 z-0">
                     <Image
                         src="/images/chrome-semi.png"
                         alt="Final Call"
                         fill
-                        className="object-cover opacity-50 mix-blend-normal"
+                        className="object-cover opacity-100 mix-blend-normal"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-brand-dark via-brand-dark/80 to-brand-dark" />
+                    {/* Lighter Gradient for Confidence */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/80" />
+                    <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay" />
                 </div>
 
                 <div className="container mx-auto px-6 relative z-10">
-                    <div className="bg-gradient-to-br from-slate-900/90 to-slate-950/90 backdrop-blur-sm border border-slate-800 rounded-3xl p-8 md:p-20 text-center shadow-2xl max-w-5xl mx-auto">
+                    <div className="tactical-glass rounded-3xl p-8 md:p-20 text-center shadow-2xl max-w-5xl mx-auto">
                         <h2 className="text-3xl md:text-6xl font-bold text-white mb-6 uppercase tracking-tight">
-                            Know Your DOT Risk <br /> <span className="text-slate-500">Before It Becomes a Problem</span>
+                            Know Your DOT Risk <br /> <span className="text-slate-400">Before It Becomes a Problem</span>
                         </h2>
 
                         {/* Testimonial Snippet */}
@@ -522,10 +525,12 @@ function HeroInput({ dotNumber, setDotNumber, isTyping }: { dotNumber: string, s
     )
 }
 
+
+
 function FeatureCard({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) {
     return (
-        <div className="p-6 bg-slate-900 border border-slate-800 rounded hover:border-risk-elevated/40 hover:bg-slate-800/80 transition-all group backdrop-blur-sm">
-            <div className="w-12 h-12 bg-slate-950 rounded flex items-center justify-center mb-4 group-hover:scale-110 transition-transform border border-slate-800 group-hover:border-risk-elevated/30">
+        <div className="p-6 tactical-glass rounded hover:border-risk-elevated/40 transition-all group">
+            <div className="w-12 h-12 bg-slate-950/50 rounded flex items-center justify-center mb-4 group-hover:scale-110 transition-transform border border-slate-800 group-hover:border-risk-elevated/30">
                 <Icon className="w-6 h-6 text-risk-elevated" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2 group-hover:text-risk-elevated transition-colors">{title}</h3>
