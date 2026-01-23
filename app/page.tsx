@@ -127,11 +127,11 @@ export default function LandingPage() {
                         src="/images/hero-inspector-clipboard.jpg"
                         alt="Roadside Inspection"
                         fill
-                        className="object-cover opacity-90 mix-blend-normal"
+                        className="object-cover opacity-100 mix-blend-normal"
                         priority
                     />
-                    {/* Directional Gradient: Dark on left (text), transparent on right (visual) - Subtle for Text Readability */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/70 to-transparent" />
+                    {/* Directional Gradient: Dark on left (text), transparent on right (visual) - LIGHTER OVERLAY */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/95 via-brand-dark/40 to-transparent" />
                     {/* Bottom Vignette */}
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-grid-slate opacity-10" />
