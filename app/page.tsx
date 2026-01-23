@@ -120,21 +120,21 @@ export default function LandingPage() {
             </nav>
 
             {/* --- PHASE 2 & 9: HERO SECTION --- */}
-            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-[90vh] flex items-center">
+            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-[90vh] lg:min-h-[800px] flex items-center">
                 {/* Image 1: Background Layer with Refined Overlay (Darker Cinematic) */}
                 <div className="absolute inset-0 z-0 select-none">
                     <Image
-                        src="/images/hero-inspection.jpg"
+                        src="/images/hero-inspection-v2.png"
                         alt="Roadside Inspection"
                         fill
-                        className="object-cover opacity-70 mix-blend-normal"
+                        className="object-cover opacity-80 mix-blend-normal"
                         priority
                     />
                     {/* Directional Gradient: Dark on left (text), transparent on right (visual) - Navy Gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/90 to-brand-dark/30" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/95 to-brand-dark/40" />
                     {/* Bottom Vignette */}
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent" />
-                    <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay" />
+                    <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay" />
                     <div className="absolute inset-0 bg-grid-slate opacity-10" />
                 </div>
 
@@ -225,7 +225,7 @@ export default function LandingPage() {
             </section>
 
             {/* --- PHASE 5: VISUAL PROOF (Refined with Image 2 + Glassmorphism) --- */}
-            <section className="py-20 bg-slate-950 border-y border-slate-800 relative">
+            <section className="py-20 bg-slate-950 border-y border-slate-800 relative min-h-[800px] flex items-center">
                 <div className="absolute inset-0 bg-noise opacity-50 mix-blend-soft-light pointer-events-none" />
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="text-center mb-16">
@@ -235,7 +235,7 @@ export default function LandingPage() {
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-0 rounded-lg overflow-hidden shadow-2xl relative">
+                    <div className="grid md:grid-cols-2 gap-0 rounded-lg overflow-hidden shadow-2xl relative min-h-[500px]">
                         {/* LEFT: CHAOS (Red Truck + Dark Glass Overlay) */}
                         <div className="relative p-8 md:p-12 group md:hover:w-[45%] transition-all duration-500 ease-in-out min-h-[400px] flex flex-col overflow-hidden border-r border-slate-800">
                             {/* NEW BACKGROUND: Red Truck Inspection */}
@@ -251,8 +251,8 @@ export default function LandingPage() {
                             <div className="absolute inset-0 bg-gradient-to-t from-red-950/80 via-transparent to-slate-950/80 mix-blend-overlay" />
 
                             {/* Scrolling Terminal Effect - BRIGHTER & GLOWING */}
-                            <div className="absolute inset-0 opacity-40 font-mono text-xs leading-none text-code-red pointer-events-none select-none z-0 group-hover:opacity-60 transition-opacity">
-                                <div className="absolute inset-0 animate-[terminal-scroll_20s_linear_infinite] group-hover:animate-[terminal-scroll_2s_linear_infinite]">
+                            <div className="absolute inset-0 opacity-80 font-mono text-xs leading-none text-code-red pointer-events-none select-none z-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute inset-0 animate-[terminal-scroll_15s_linear_infinite] group-hover:animate-[terminal-scroll_2s_linear_infinite]">
                                     {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
                                     {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
                                 </div>
@@ -382,7 +382,7 @@ export default function LandingPage() {
             </section>
 
             {/* --- PHASE 6: TESTIMONIALS (Image 4 BG) --- */}
-            <section className="py-24 border-t border-slate-800 relative overflow-hidden bg-slate-950">
+            <section className="py-24 border-t border-slate-800 relative overflow-hidden bg-slate-950 min-h-[600px] flex items-center">
                 <div className="absolute inset-0 z-0">
                     <Image
                         src="/images/driver-rest.jpg"
@@ -434,7 +434,7 @@ export default function LandingPage() {
             </section>
 
             {/* --- PHASE 7: HIGH CONVERSION BLOCK (Image 5 BG) --- */}
-            <section className="py-32 relative overflow-hidden">
+            <section className="py-32 relative overflow-hidden min-h-[600px] flex items-center">
                 {/* Image 5 Background - Brightened */}
                 <div className="absolute inset-0 z-0">
                     <Image
