@@ -103,7 +103,7 @@
 }
 
 .radar-sweep {
-  background: conic-gradient(from 0deg, transparent 60%, rgba(245, 158, 11, 0.1) 80%, rgba(245, 158, 11, 0.4) 100%);
+  background: conic-gradient(from 0deg, transparent 50%, rgba(245, 158, 11, 0.2) 75%, rgba(245, 158, 11, 0.9) 100%);
   animation: radar-spin 4s linear infinite;
   border-radius: 50%;
 }
