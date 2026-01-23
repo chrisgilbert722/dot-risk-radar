@@ -121,17 +121,20 @@ export default function LandingPage() {
 
             {/* --- PHASE 2 & 9: HERO SECTION --- */}
             <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-[90vh] flex items-center">
-                {/* Image 1: Background Layer with Heavy Overlay */}
+                {/* Image 1: Background Layer with Refined Overlay */}
                 <div className="absolute inset-0 z-0 select-none">
                     <Image
                         src="/images/hero-officer.jpg"
                         alt="Roadside Inspection"
                         fill
-                        className="object-cover opacity-40 mix-blend-overlay"
+                        className="object-cover opacity-70 mix-blend-normal"
                         priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/95 to-brand-dark/80" />
-                    <div className="absolute inset-0 bg-grid-slate opacity-20" />
+                    {/* Directional Gradient: Dark on left (text), transparent on right (visual) */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/80 to-brand-dark/20" />
+                    {/* Bottom Vignette */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-grid-slate opacity-10" />
                 </div>
 
                 <div className="container mx-auto px-6 relative z-10">
@@ -232,38 +235,47 @@ export default function LandingPage() {
 
                     <div className="grid md:grid-cols-2 gap-0 border border-slate-800 rounded-lg overflow-hidden shadow-2xl">
                         {/* LEFT: CHAOS (Image 2 BG) */}
-                        <div className="relative p-8 md:p-12 border-b md:border-b-0 md:border-r border-slate-800 group md:hover:w-[45%] transition-all duration-500 ease-in-out min-h-[400px] flex flex-col">
+                        <div className="relative p-8 md:p-12 border-b md:border-b-0 md:border-r border-slate-800 group md:hover:w-[45%] transition-all duration-500 ease-in-out min-h-[400px] flex flex-col overflow-hidden">
                             {/* Image 2 Background */}
                             <Image
                                 src="/images/inspection-red.jpg"
                                 alt="Inspection Chaos"
                                 fill
-                                className="object-cover opacity-20 mix-blend-luminosity"
+                                className="object-cover opacity-30 mix-blend-luminosity grayscale group-hover:grayscale-0 transition-all duration-700"
                             />
-                            <div className="absolute inset-0 bg-red-900/20 mix-blend-multiply" />
-                            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-transparent to-transparent" />
+                            <div className="absolute inset-0 bg-red-950/30 mix-blend-multiply group-hover:bg-red-900/40 transition-colors" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
 
-                            <div className="absolute inset-0 opacity-10 font-mono text-xs overflow-hidden leading-none text-red-500 pointer-events-none select-none z-0">
-                                {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL ").join(" ")}
+                            {/* Scrolling Terminal Effect */}
+                            <div className="absolute inset-0 opacity-10 font-mono text-xs leading-none text-red-500 pointer-events-none select-none z-0 group-hover:opacity-20 transition-opacity">
+                                <div className="absolute inset-0 animate-[terminal-scroll_20s_linear_infinite] group-hover:animate-[terminal-scroll_5s_linear_infinite]">
+                                    {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL ").join(" ")}
+                                    {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL ").join(" ")}
+                                </div>
                             </div>
 
                             <div className="relative z-10 mt-auto">
-                                <div className="inline-flex items-center gap-2 mb-6 text-red-500 font-mono text-sm tracking-wider uppercase bg-black/50 px-3 py-1 rounded backdrop-blur-sm border border-red-500/30">
+                                <div className="inline-flex items-center gap-2 mb-6 text-red-500 font-mono text-sm tracking-wider uppercase bg-black/60 px-3 py-1 rounded backdrop-blur-sm border border-red-500/30 group-hover:bg-red-950/80 group-hover:border-red-500 transition-colors">
                                     <XCircle className="w-4 h-4" /> Unprocessed Data
                                 </div>
-                                <h3 className="text-2xl font-bold text-white mb-4">Overwhelming Noise</h3>
+                                <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-red-100 transition-colors">Overwhelming Noise</h3>
                                 <ul className="space-y-4 text-slate-300 font-mono text-sm">
-                                    <li className="flex items-center gap-3">
-                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+                                    <li className="flex items-center gap-3 group-hover:translate-x-1 transition-transform duration-300">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500 group-hover:text-red-400 group-hover:drop-shadow-[0_0_8px_rgba(239,68,68,0.5)] transition-all" />
                                         <span>Hidden violation clusters</span>
                                     </li>
-                                    <li className="flex items-center gap-3">
-                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+                                    <li className="flex items-center gap-3 group-hover:translate-x-1 transition-transform duration-300 delay-75">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500 group-hover:text-red-400 group-hover:drop-shadow-[0_0_8px_rgba(239,68,68,0.5)] transition-all" />
                                         <span>Rising OOS percentage</span>
                                     </li>
-                                    <li className="flex items-center gap-3">
-                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+                                    <li className="flex items-center gap-3 group-hover:translate-x-1 transition-transform duration-300 delay-150">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500 group-hover:text-red-400 group-hover:drop-shadow-[0_0_8px_rgba(239,68,68,0.5)] transition-all" />
                                         <span>Audit triggers unnoticed</span>
+                                    </li>
+                                    {/* Reveal on hover */}
+                                    <li className="flex items-center gap-3 opacity-0 h-0 group-hover:h-auto group-hover:opacity-100 transition-all duration-500 delay-300 text-red-300">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+                                        <span>CRITICAL: 395.8(e) Pattern</span>
                                     </li>
                                 </ul>
                             </div>
@@ -376,9 +388,9 @@ export default function LandingPage() {
                         src="/images/driver-leaning.jpg"
                         alt="Testimonial Background"
                         fill
-                        className="object-cover opacity-10"
+                        className="object-cover opacity-30 mix-blend-normal"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/90 to-brand-dark/80" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/95 to-brand-dark/40" />
                 </div>
 
                 <div className="container mx-auto px-6 relative z-10">
@@ -428,9 +440,9 @@ export default function LandingPage() {
                         src="/images/chrome-semi.png"
                         alt="Final Call"
                         fill
-                        className="object-cover opacity-20"
+                        className="object-cover opacity-50 mix-blend-normal"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-brand-dark via-brand-dark/95 to-brand-dark" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-brand-dark via-brand-dark/80 to-brand-dark" />
                 </div>
 
                 <div className="container mx-auto px-6 relative z-10">
