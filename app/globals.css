@@ -4,7 +4,8 @@
 
 @layer base {
   :root {
-    --background: 222.2 47.4% 11.2%; /* Deep Slate #0F172A */
+    --background: 222.2 47.4% 11.2%;
+    /* Deep Slate #0F172A */
     --foreground: 210 40% 98%;
     --card: 217.2 32.6% 17.5%;
     --card-foreground: 210 40% 98%;
@@ -22,8 +23,10 @@
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 45 93% 47%; /* Amber */
-    --radius: 0.25rem; /* More angular/technical */
+    --ring: 45 93% 47%;
+    /* Amber */
+    --radius: 0.25rem;
+    /* More angular/technical */
   }
 }
 
@@ -31,6 +34,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -47,28 +51,69 @@
   animation: scan 4s linear infinite;
 }
 
+.animate-scan-horizontal {
+  animation: scan-horizontal 3s linear infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
 @keyframes scan {
   0% {
     transform: translateY(-100%);
     opacity: 0;
   }
+
   50% {
     opacity: 1;
   }
+
   100% {
     transform: translateY(100%);
     opacity: 0;
   }
 }
 
+@keyframes scan-horizontal {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+/* Cinematic/Tactical Effects */
 .text-glow-emerald {
   text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
 }
 
 .text-glow-amber {
-  text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+  text-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
 }
 
 .text-glow-red {
-  text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+  text-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+}
+
+.vignette-heavy {
+  background: radial-gradient(circle, transparent 40%, rgba(15, 23, 42, 0.9) 100%);
+}
+
+.radar-sweep {
+  background: conic-gradient(from 0deg, transparent 60%, rgba(245, 158, 11, 0.1) 80%, rgba(245, 158, 11, 0.4) 100%);
+  animation: radar-spin 4s linear infinite;
+  border-radius: 50%;
+}
+
+@keyframes radar-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
