@@ -329,16 +329,25 @@ export default function ClientPage({ copy }: { copy: any }) {
             </section>
 
             {/* --- NEW SECTION 2: YOU CANT FIX WHAT YOU CANT SEE --- */}
-            <section className="py-24 bg-slate-950 border-y border-slate-800 relative">
+            <section className="py-24 bg-slate-950 border-y border-slate-800 relative shadow-2xl z-20">
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950 opacity-80" />
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-white mb-6">You Can’t Fix What You Can’t See</h2>
-                        <div className="max-w-3xl mx-auto mb-12">
-                            <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} />
+                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-8 tracking-tight">You Can’t Fix What You Can’t See</h2>
+                        <div className="max-w-4xl mx-auto mb-16 relative">
+                            {/* Glow Effect behind Input */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-32 bg-risk-elevated/10 blur-[60px] rounded-full pointer-events-none" />
+                            <HeroInput
+                                dotNumber={dotNumber}
+                                setDotNumber={setDotNumber}
+                                isTyping={isTyping}
+                                copy={copy}
+                                variant="expanded"
+                            />
                         </div>
                     </div>
 
-                    <div className="max-w-4xl mx-auto">
+                    <div className="max-w-5xl mx-auto">
                         <ComparisonCards />
                     </div>
                 </div>
@@ -547,7 +556,7 @@ export default function ClientPage({ copy }: { copy: any }) {
 }
 
 // Input Component (Reused)
-function HeroInput({ dotNumber, setDotNumber, isTyping, copy }: { dotNumber: string, setDotNumber: (v: string) => void, isTyping: boolean, copy: any }) {
+function HeroInput({ dotNumber, setDotNumber, isTyping, copy, variant = 'standard' }: { dotNumber: string, setDotNumber: (v: string) => void, isTyping: boolean, copy: any, variant?: 'standard' | 'expanded' }) {
     const [isFocused, setIsFocused] = useState(false);
     const [scanState, setScanState] = useState<'idle' | 'scanning' | 'analyzing' | 'complete'>('idle');
     const [scanProgress, setScanProgress] = useState(0);
@@ -631,15 +640,15 @@ function HeroInput({ dotNumber, setDotNumber, isTyping, copy }: { dotNumber: str
 
             <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-risk-elevated to-amber-600 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-500" />
-                <div className="relative flex flex-col sm:flex-row gap-4">
-                    <div className="flex-1 relative">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <div className="relative flex flex-col sm:flex-row gap-0 rounded-lg overflow-hidden border border-slate-700 bg-slate-950/50">
+                    <div className="flex-[1.5] relative border-b sm:border-b-0 sm:border-r border-slate-700">
+                        <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
                             <Search className="h-5 w-5 text-slate-500" />
                         </div>
                         <Input
                             type="text"
                             placeholder={isFocused ? "FMCSA records will be queried immediately" : "ENTER DOT NUMBER"}
-                            className="pl-11 bg-slate-900/95 border-slate-700 text-white h-14 text-lg focus:border-risk-elevated focus:ring-1 focus:ring-risk-elevated/50 rounded-lg font-mono tracking-wider uppercase placeholder:text-slate-600 transition-all font-bold"
+                            className="pl-14 bg-transparent border-none text-white h-16 text-lg rounded-none font-mono tracking-wider uppercase placeholder:text-slate-600 focus:ring-0 focus-visible:ring-0"
                             value={dotNumber}
                             onChange={(e) => setDotNumber(e.target.value)}
                             onFocus={() => setIsFocused(true)}
@@ -651,10 +660,10 @@ function HeroInput({ dotNumber, setDotNumber, isTyping, copy }: { dotNumber: str
                             Includes inspections, OOS rates, and risk trend signals
                         </div>
                     </div>
-                    <div className="flex flex-col items-center">
+                    <div className="flex-1">
                         <Button
                             onClick={startScan}
-                            className="h-14 px-8 bg-risk-elevated hover:bg-amber-400 text-brand-dark font-bold rounded-lg text-lg uppercase tracking-wide min-w-[200px] transition-all relative overflow-hidden hover:scale-105 active:scale-95 shadow-lg shadow-amber-500/20 w-full mb-3"
+                            className="w-full h-16 bg-risk-elevated hover:bg-amber-400 text-brand-dark font-bold text-lg uppercase tracking-wide rounded-none relative overflow-hidden transition-all hover:brightness-110"
                         >
                             {isTyping ? (
                                 <span className="flex items-center gap-2 animate-pulse">
@@ -667,22 +676,31 @@ function HeroInput({ dotNumber, setDotNumber, isTyping, copy }: { dotNumber: str
                                 </span>
                             )}
                         </Button>
-                        <span className="text-xs text-slate-500 font-medium">
-                            {copy.risk}
-                        </span>
-                        <div className="mt-2 text-[10px] text-slate-600 uppercase tracking-widest font-mono">
-                            Built on public FMCSA data
-                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Dynamic Help Text (Hide during scan) */}
             {scanState === 'idle' && (
-                <div className={`mt-8 flex items-center justify-between px-1 h-6 transition-all duration-300 ${isFocused ? 'opacity-0' : 'opacity-100'}`}>
-                    <span className={`text-xs font-mono transition-colors duration-300 font-medium tracking-wide ${isTyping ? 'text-emerald-400' : 'text-slate-500'}`}>
+                <div className={`mt-4 flex flex-col md:flex-row items-center justify-between px-1 transition-all duration-300 ${isFocused ? 'opacity-0' : 'opacity-100'}`}>
+                    <span className={`text-[10px] md:text-xs font-mono uppercase tracking-widest transition-colors duration-300 font-bold ${isTyping ? 'text-emerald-400' : 'text-slate-500'}`}>
                         {isTyping ? "ANALYZING INSPECTIONS, OOS TRENDS, VIOLATION VELOCITY..." : "NO CREDIT CARD. NO SALES CALLS."}
                     </span>
+
+                    {variant === 'expanded' && !isTyping && (
+                        <div className="text-[10px] md:text-xs font-mono text-slate-600 uppercase tracking-wide text-right hidden md:block">
+                            FMCSA data updates often — risk can shift after a single inspection. <br />
+                            <span className="opacity-50">BUILT ON PUBLIC FMCSA DATA</span>
+                        </div>
+                    )}
+
+                    {/* Standard Mobile / Hero Hint */}
+                    {variant === 'standard' && !isTyping && (
+                        <div className="mt-2 md:mt-0 text-[10px] text-slate-600 uppercase tracking-widest font-mono">
+                            Built on public FMCSA data
+                        </div>
+                    )}
+
                     {isTyping && (
                         <div className="flex gap-1">
                             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce delay-0" />
