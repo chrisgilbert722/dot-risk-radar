@@ -32,20 +32,76 @@ const HERO_VARIANTS = {
         headline: "Your DOT Risk Is Already Scored — You Just Can't See It",
         subheadline: "Every inspection adds to a pattern. We show you exactly what triggers the next audit."
     },
-    C: { // Control
-        headline: "Know Your DOT Risk Before It Becomes a Problem",
-        subheadline: "Take control of your FMCSA data. Monitor trends, predict issues, and stay compliant."
+    import { Button } from "@/components/ui/button";
+    import { Input } from "@/components/ui/input";
+    import { headers } from 'next/headers';
+
+    // --- GEO-LOCATION CONFIG ---
+    const STATE_COPY: Record<string, { hero: string, authority: string, risk: string }> = {
+        TX: {
+            hero: "FMCSA inspection patterns impacting Texas carriers — translated into real-time risk intelligence.",
+            authority: "Used by owner-operators & small fleets across Texas.",
+            risk: "In Texas, a single inspection can change your risk profile overnight."
     },
-    D: { // Urgency
-        headline: "FMCSA Signals Are Triggering Audits — Are You on the List?",
-        subheadline: "Don't wait for a warning letter. See the hidden risk patterns in your DOT number now."
+        CA: {
+            hero: "FMCSA inspection patterns impacting California carriers — translated into real-time risk intelligence.",
+            authority: "Used by owner-operators & small fleets across California.",
+            risk: "In California, a single inspection can change your risk profile overnight."
+    },
+        FL: {
+            hero: "FMCSA inspection patterns impacting Florida carriers — translated into real-time risk intelligence.",
+            authority: "Used by owner-operators & small fleets across Florida.",
+            risk: "In Florida, a single inspection can change your risk profile overnight."
+    },
+        IL: {
+            hero: "FMCSA inspection patterns impacting Illinois carriers — translated into real-time risk intelligence.",
+            authority: "Used by owner-operators & small fleets across Illinois.",
+            risk: "In Illinois, a single inspection can change your risk profile overnight."
+    },
+        GA: {
+            hero: "FMCSA inspection patterns impacting Georgia carriers — translated into real-time risk intelligence.",
+            authority: "Used by owner-operators & small fleets across Georgia.",
+            risk: "In Georgia, a single inspection can change your risk profile overnight."
+    },
+        PA: {
+            hero: "FMCSA inspection patterns impacting Pennsylvania carriers — translated into real-time risk intelligence.",
+            authority: "Used by owner-operators & small fleets across Pennsylvania.",
+            risk: "In Pennsylvania, a single inspection can change your risk profile overnight."
+    },
+        OH: {
+            hero: "FMCSA inspection patterns impacting Ohio carriers — translated into real-time risk intelligence.",
+            authority: "Used by owner-operators & small fleets across Ohio.",
+            risk: "In Ohio, a single inspection can change your risk profile overnight."
+    },
+        NJ: {
+            hero: "FMCSA inspection patterns impacting New Jersey carriers — translated into real-time risk intelligence.",
+            authority: "Used by owner-operators & small fleets across New Jersey.",
+            risk: "In New Jersey, a single inspection can change your risk profile overnight."
+    },
+        NY: {
+            hero: "FMCSA inspection patterns impacting New York carriers — translated into real-time risk intelligence.",
+            authority: "Used by owner-operators & small fleets across New York.",
+            risk: "In New York, a single inspection can change your risk profile overnight."
+    },
+        NC: {
+            hero: "FMCSA inspection patterns impacting North Carolina carriers — translated into real-time risk intelligence.",
+            authority: "Used by owner-operators & small fleets across North Carolina.",
+            risk: "In North Carolina, a single inspection can change your risk profile overnight."
     }
+    };
+
+const DEFAULT_COPY = {
+    hero: "Public FMCSA inspection signals translated into a real-time risk radar for your operation.",
+    authority: "Used by owner-operators & small fleets across the U.S.",
+    risk: "FMCSA data updates often — risk can shift after a single inspection."
 };
 
-// Simple variant selector (can be replaced with A/B testing lib logic later)
-const ACTIVE_VARIANT = 'A'; // Defaulting to Authority as primary lock
 
 export default function LandingPage() {
+    const headersList = headers();
+    const region = headersList.get('x-vercel-ip-region') || 'DEFAULT';
+    const copy = STATE_COPY[region] || DEFAULT_COPY;
+
     const [dotNumber, setDotNumber] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -54,7 +110,7 @@ export default function LandingPage() {
     useEffect(() => {
         if (dotNumber.length > 0) {
             setIsTyping(true);
-            const timer = setTimeout(() => setIsTyping(false), 2000);
+            const timer = setTimeout(() => setIsTyping(false), 800);
             return () => clearTimeout(timer);
         } else {
             setIsTyping(false);
@@ -159,7 +215,7 @@ export default function LandingPage() {
                                 {HERO_VARIANTS[ACTIVE_VARIANT].subheadline}
                             </p>
                             <p className="text-md text-slate-500 max-w-lg mx-auto lg:mx-0 leading-relaxed mb-8">
-                                Most carriers don’t realize they’re high-risk until the inspection is already scheduled.
+                                {copy.hero}
                             </p>
 
                             <div className="hidden lg:block relative z-20">
@@ -383,6 +439,9 @@ export default function LandingPage() {
                 </div>
             </section>
 
+            {/* --- PHASE 9: BEFORE / AFTER TRANSFORMATION --- */}
+            <RiskTransformationSection />
+
             {/* --- PHASE 6: TESTIMONIALS (Image 4 BG) --- */}
             <section className="py-24 border-t border-slate-800 relative overflow-hidden bg-slate-950 min-h-[600px] flex items-center">
                 <div className="absolute inset-0 z-0">
@@ -462,8 +521,8 @@ export default function LandingPage() {
                         </h2>
 
                         {/* Testimonial Snippet */}
-                        <div className="mb-10 text-risk-elevated font-mono text-sm tracking-wide">
-                            "USED BY OWNER-OPERATORS & SMALL FLEETS ACROSS THE U.S."
+                        <div className="mb-10 text-risk-elevated font-mono text-sm tracking-wide uppercase">
+                            "{copy.authority}"
                         </div>
 
                         <div className="max-w-3xl mx-auto">
@@ -484,9 +543,86 @@ export default function LandingPage() {
 // Input Component (Reused)
 function HeroInput({ dotNumber, setDotNumber, isTyping }: { dotNumber: string, setDotNumber: (v: string) => void, isTyping: boolean }) {
     const [isFocused, setIsFocused] = useState(false);
+    const [scanState, setScanState] = useState<'idle' | 'scanning' | 'analyzing' | 'complete'>('idle');
+    const [scanProgress, setScanProgress] = useState(0);
+
+    const startScan = () => {
+        if (!dotNumber) return;
+        setScanState('scanning');
+
+        // Sequence
+        setTimeout(() => {
+            setScanState('analyzing');
+            setScanProgress(30);
+        }, 1500);
+
+        setTimeout(() => {
+            setScanProgress(70);
+        }, 2500);
+
+        setTimeout(() => {
+            setScanState('complete');
+            setScanProgress(100);
+        }, 3500);
+    };
+
+    if (scanState === 'complete') {
+        return (
+            <div className="w-full text-left animate-in fade-in zoom-in duration-500">
+                <div className="bg-slate-900/90 border border-slate-700 rounded-xl overflow-hidden shadow-2xl relative">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-risk-elevated to-red-500" />
+                    <div className="p-6">
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <div className="text-slate-500 text-xs font-mono mb-1">DOT NUMBER ANALYZED</div>
+                                <div className="text-white font-mono text-xl tracking-widest">{dotNumber}</div>
+                            </div>
+                            <div className="bg-risk-elevated text-brand-dark px-3 py-1 rounded font-bold text-sm">
+                                RISK DETECTED
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 mb-6">
+                            <div className="bg-slate-950 p-3 rounded border border-slate-800">
+                                <div className="text-slate-500 text-xs mb-1">ISS TREND</div>
+                                <div className="text-red-400 font-bold font-mono text-lg flex items-center gap-1">
+                                    <TrendingUp className="w-4 h-4" /> +15%
+                                </div>
+                            </div>
+                            <div className="bg-slate-950 p-3 rounded border border-slate-800">
+                                <div className="text-slate-500 text-xs mb-1">AUDIT RISK</div>
+                                <div className="text-risk-elevated font-bold font-mono text-lg">ELEVATED</div>
+                            </div>
+                        </div>
+
+                        <div className="bg-red-500/10 border border-red-500/20 p-3 rounded mb-6 text-sm text-red-200 flex items-center gap-2">
+                            <AlertTriangle className="w-4 h-4 shrink-0" />
+                            <span>Clustered OOS violations detected.</span>
+                        </div>
+
+                        <Button className="w-full h-12 bg-risk-elevated hover:bg-amber-400 text-brand-dark font-bold rounded text-lg uppercase tracking-wide">
+                            View Full Risk Breakdown <ArrowRight className="w-5 h-5 ml-2" />
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     return (
-        <div className="w-full text-left">
+        <div className="w-full text-left relative">
+            {scanState !== 'idle' && (
+                <div className="absolute inset-0 z-20 bg-slate-900/90 rounded-xl flex flex-col items-center justify-center p-8 backdrop-blur-sm border border-risk-elevated/20">
+                    <Activity className="w-10 h-10 text-risk-elevated animate-spin mb-4" />
+                    <div className="text-white font-mono font-bold text-lg mb-2">
+                        {scanState === 'scanning' ? 'CONNECTING TO FMCSA...' : 'ANALYZING PATTERNS...'}
+                    </div>
+                    <div className="w-full max-w-[200px] h-1 bg-slate-800 rounded-full overflow-hidden">
+                        <div className="h-full bg-risk-elevated transition-all duration-500" style={{ width: `${scanProgress}%` }} />
+                    </div>
+                </div>
+            )}
+
             <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-risk-elevated to-amber-600 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-500" />
                 <div className="relative flex flex-col sm:flex-row gap-4">
@@ -502,6 +638,7 @@ function HeroInput({ dotNumber, setDotNumber, isTyping }: { dotNumber: string, s
                             onChange={(e) => setDotNumber(e.target.value)}
                             onFocus={() => setIsFocused(true)}
                             onBlur={() => setIsFocused(false)}
+                            onKeyDown={(e) => e.key === 'Enter' && startScan()}
                         />
                         {/* Helper Line on Focus */}
                         <div className={`absolute top-full left-0 mt-2 text-xs text-slate-400 font-medium transition-opacity duration-300 ${isFocused ? 'opacity-100' : 'opacity-0'}`}>
@@ -509,7 +646,10 @@ function HeroInput({ dotNumber, setDotNumber, isTyping }: { dotNumber: string, s
                         </div>
                     </div>
                     <div className="flex flex-col items-center">
-                        <Button className="h-14 px-8 bg-risk-elevated hover:bg-amber-400 text-brand-dark font-bold rounded-lg text-lg uppercase tracking-wide min-w-[200px] transition-all relative overflow-hidden hover:scale-105 active:scale-95 shadow-lg shadow-amber-500/20 w-full mb-3">
+                        <Button
+                            onClick={startScan}
+                            className="h-14 px-8 bg-risk-elevated hover:bg-amber-400 text-brand-dark font-bold rounded-lg text-lg uppercase tracking-wide min-w-[200px] transition-all relative overflow-hidden hover:scale-105 active:scale-95 shadow-lg shadow-amber-500/20 w-full mb-3"
+                        >
                             {isTyping ? (
                                 <span className="flex items-center gap-2 animate-pulse">
                                     <Activity className="w-5 h-5 animate-spin" />
@@ -531,24 +671,24 @@ function HeroInput({ dotNumber, setDotNumber, isTyping }: { dotNumber: string, s
                 </div>
             </div>
 
-            {/* Dynamic Help Text */}
-            <div className={`mt-8 flex items-center justify-between px-1 h-6 transition-all duration-300 ${isFocused ? 'opacity-0' : 'opacity-100'}`}>
-                <span className={`text-xs font-mono transition-colors duration-300 font-medium tracking-wide ${isTyping ? 'text-emerald-400' : 'text-slate-500'}`}>
-                    {isTyping ? "ANALYZING INSPECTIONS, OOS TRENDS, VIOLATION VELOCITY..." : "NO CREDIT CARD. NO SALES CALLS."}
-                </span>
-                {isTyping && (
-                    <div className="flex gap-1">
-                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce delay-0" />
-                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce delay-150" />
-                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce delay-300" />
-                    </div>
-                )}
-            </div>
+            {/* Dynamic Help Text (Hide during scan) */}
+            {scanState === 'idle' && (
+                <div className={`mt-8 flex items-center justify-between px-1 h-6 transition-all duration-300 ${isFocused ? 'opacity-0' : 'opacity-100'}`}>
+                    <span className={`text-xs font-mono transition-colors duration-300 font-medium tracking-wide ${isTyping ? 'text-emerald-400' : 'text-slate-500'}`}>
+                        {isTyping ? "ANALYZING INSPECTIONS, OOS TRENDS, VIOLATION VELOCITY..." : "NO CREDIT CARD. NO SALES CALLS."}
+                    </span>
+                    {isTyping && (
+                        <div className="flex gap-1">
+                            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce delay-0" />
+                            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce delay-150" />
+                            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce delay-300" />
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     )
 }
-
-
 
 function FeatureCard({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) {
     return (
