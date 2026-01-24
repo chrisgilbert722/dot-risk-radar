@@ -156,9 +156,6 @@ export default function ClientPage({ copy }: { copy: any }) {
 
                             <div className="hidden lg:block relative z-20">
                                 <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} />
-                                <div className="mt-8">
-                                    <ComparisonCards />
-                                </div>
                             </div>
                         </div>
 
@@ -215,9 +212,6 @@ export default function ClientPage({ copy }: { copy: any }) {
                         {/* MOBILE INPUT (Visible only on mobile, Order 3) */}
                         <div className="w-full order-3 lg:hidden mt-4">
                             <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} />
-                            <div className="mt-8">
-                                <ComparisonCards />
-                            </div>
                         </div>
 
                     </div>
@@ -710,6 +704,46 @@ function FeatureCard({ icon: Icon, title, desc }: { icon: any, title: string, de
             </div>
             <h3 className="text-white font-bold mb-3">{title}</h3>
             <p className="text-slate-400 text-sm leading-relaxed">{desc}</p>
+        </div>
+    )
+}
+
+function ComparisonCards() {
+    return (
+        <div className="grid md:grid-cols-2 gap-4">
+            {/* LEFT CARD - BEFORE */}
+            <div className="bg-slate-900/80 border border-slate-800 p-6 rounded-xl relative overflow-hidden h-full backdrop-blur-md">
+                <div className="absolute top-0 left-0 w-full h-1 bg-red-500/50" />
+                <div className="flex justify-between items-start mb-4">
+                    <div className="text-slate-500 font-mono text-[10px] uppercase tracking-wider">High Exposure</div>
+                    <div className="text-red-500 font-bold font-mono text-xs">Rising</div>
+                </div>
+
+                <div className="mb-2">
+                    <div className="text-4xl font-bold text-slate-300 font-mono">78</div>
+                </div>
+
+                <div className="text-slate-400 text-xs border-t border-slate-800 pt-2 mt-2 leading-tight">
+                    Unmonitored inspection patterns and blind spots.
+                </div>
+            </div>
+
+            {/* RIGHT CARD - AFTER */}
+            <div className="bg-slate-900/90 border border-emerald-500/30 p-6 rounded-xl relative overflow-hidden h-full shadow-[0_0_30px_-10px_rgba(16,185,129,0.2)] backdrop-blur-md">
+                <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500" />
+                <div className="flex justify-between items-start mb-4">
+                    <div className="text-emerald-400 font-mono text-[10px] uppercase tracking-wider font-bold">Optimized</div>
+                    <div className="text-emerald-400 font-bold font-mono text-xs">Stabilized</div>
+                </div>
+
+                <div className="mb-2">
+                    <div className="text-4xl font-bold text-white font-mono">61</div>
+                </div>
+
+                <div className="text-slate-400 text-xs border-t border-slate-800 pt-2 mt-2 leading-tight">
+                    Early alerts and intervention signals.
+                </div>
+            </div>
         </div>
     )
 }
