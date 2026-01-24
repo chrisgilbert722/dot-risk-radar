@@ -638,17 +638,21 @@ function HeroInput({ dotNumber, setDotNumber, isTyping, copy, variant = 'standar
                 </div>
             )}
 
-            <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-risk-elevated to-amber-600 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-500" />
-                <div className="relative flex flex-col sm:flex-row gap-0 rounded-lg overflow-hidden border border-slate-700 bg-slate-950/50">
-                    <div className="flex-[1.5] relative border-b sm:border-b-0 sm:border-r border-slate-700">
+            <div className={`relative group max-w-4xl mx-auto ${variant === 'expanded' ? '' : 'sm:mx-0'}`}>
+                {/* Glow behind input */}
+                {variant === 'expanded' && (
+                    <div className="absolute -inset-1 bg-amber-500/10 rounded-lg blur-xl opacity-50 pointer-events-none" />
+                )}
+
+                <div className={`relative flex flex-col sm:flex-row gap-0 ${variant === 'expanded' ? 'shadow-2xl' : ''}`}>
+                    <div className="flex-[1.5] relative">
                         <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
                             <Search className="h-5 w-5 text-slate-500" />
                         </div>
                         <Input
                             type="text"
                             placeholder={isFocused ? "FMCSA records will be queried immediately" : "ENTER DOT NUMBER"}
-                            className="pl-14 bg-transparent border-none text-white h-16 text-lg rounded-none font-mono tracking-wider uppercase placeholder:text-slate-600 focus:ring-0 focus-visible:ring-0"
+                            className={`pl-14 bg-[#1A1D24] border border-slate-700/50 text-white h-16 text-lg rounded-l-lg rounded-r-none font-mono tracking-wider uppercase placeholder:text-slate-600 focus:ring-1 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all ${variant === 'expanded' ? 'bg-[#15171B]' : ''}`}
                             value={dotNumber}
                             onChange={(e) => setDotNumber(e.target.value)}
                             onFocus={() => setIsFocused(true)}
@@ -663,7 +667,7 @@ function HeroInput({ dotNumber, setDotNumber, isTyping, copy, variant = 'standar
                     <div className="flex-1">
                         <Button
                             onClick={startScan}
-                            className="w-full h-16 bg-risk-elevated hover:bg-amber-400 text-brand-dark font-bold text-lg uppercase tracking-wide rounded-none relative overflow-hidden transition-all hover:brightness-110"
+                            className="w-full h-16 bg-amber-500 hover:bg-amber-400 text-brand-dark font-bold text-lg uppercase tracking-wide rounded-l-none rounded-r-lg relative overflow-hidden transition-all hover:brightness-110 shadow-[0_0_20px_rgba(245,158,11,0.2)]"
                         >
                             {isTyping ? (
                                 <span className="flex items-center gap-2 animate-pulse">
