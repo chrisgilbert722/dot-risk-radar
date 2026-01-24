@@ -275,32 +275,50 @@ export default function ClientPage({ copy }: { copy: any }) {
                         </div>
 
                         {/* RIGHT: CONTROL (Actionable Intelligence) */}
-                        <div className="relative p-8 md:p-12 group min-h-[400px] flex flex-col justify-end overflow-hidden bg-slate-900">
-                            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-900/20 to-transparent opacity-50" />
+                        <div className="relative p-8 md:p-12 group min-h-[400px] flex flex-col justify-end overflow-hidden border-l border-slate-800">
+                            <Image
+                                src="/images/clean-highway.jpg"
+                                alt="Clear Road"
+                                fill
+                                className="object-cover opacity-100 grayscale hover:grayscale-0 transition-opacity duration-700"
+                            />
+
+                            {/* Dark Glass Overlay */}
+                            <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm mix-blend-multiply transition-all duration-700 group-hover:bg-slate-900/60" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-transparent to-slate-950/80 mix-blend-overlay" />
+
+                            {/* Scrolling Terminal Effect - GREEN & GLOWING */}
+                            <div className="absolute inset-0 opacity-80 font-mono text-xs leading-none text-emerald-400 pointer-events-none select-none z-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute inset-0 animate-[terminal-scroll_15s_linear_infinite] group-hover:animate-[terminal-scroll_2s_linear_infinite] direction-reverse">
+                                    {Array(50).fill("PASSED_INSPECTION CLEAN_LEVEL_1 396.17(c) PASS // !!! SAFE !!! ").join(" ")}
+                                    {Array(50).fill("PASSED_INSPECTION CLEAN_LEVEL_1 396.17(c) PASS // !!! SAFE !!! ").join(" ")}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-90" />
+                                </div>
+                            </div>
 
                             {/* Radar Background Interaction */}
-                            <div className="absolute top-8 right-8 p-0 pointer-events-none opacity-20 group-hover:opacity-60 transition-opacity duration-700">
+                            <div className="absolute top-8 right-8 p-0 pointer-events-none opacity-20 group-hover:opacity-60 transition-opacity duration-700 z-10">
                                 <Radar className="w-32 h-32 text-emerald-500 group-hover:animate-radar-expand" />
                             </div>
 
-                            <div className="relative z-10">
-                                <div className="inline-flex items-center gap-2 mb-6 text-emerald-400 font-mono text-sm tracking-wider uppercase bg-emerald-950/30 px-3 py-1 rounded border border-emerald-500/20 w-fit">
+                            <div className="relative z-20 mt-auto tactical-glass rounded-lg p-6">
+                                <div className="inline-flex items-center gap-2 mb-6 text-emerald-400 font-mono text-sm tracking-wider uppercase bg-emerald-950/40 px-3 py-1 rounded border border-emerald-500/30 w-fit">
                                     <CheckCircle2 className="w-4 h-4" /> Risk Radar Analysis
                                 </div>
 
                                 <h3 className="text-3xl font-bold text-white mb-6">Actionable Intelligence</h3>
 
                                 <ul className="space-y-4">
-                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm">
-                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">01</div>
+                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm group-hover:text-white transition-colors">
+                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/20 border-emerald-500/30">01</div>
                                         <span>Predictive score stabilization</span>
                                     </li>
-                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm">
-                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">02</div>
+                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm group-hover:text-white transition-colors">
+                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/20 border-emerald-500/30">02</div>
                                         <span>Plain-English pattern alerts</span>
                                     </li>
-                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm">
-                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">03</div>
+                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm group-hover:text-white transition-colors">
+                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/20 border-emerald-500/30">03</div>
                                         <span>Pre-audit intervention signals</span>
                                     </li>
                                 </ul>
