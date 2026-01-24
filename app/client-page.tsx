@@ -156,6 +156,9 @@ export default function ClientPage({ copy }: { copy: any }) {
 
                             <div className="hidden lg:block relative z-20">
                                 <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} />
+                                <div className="mt-8">
+                                    <ComparisonCards />
+                                </div>
                             </div>
                         </div>
 
@@ -212,6 +215,9 @@ export default function ClientPage({ copy }: { copy: any }) {
                         {/* MOBILE INPUT (Visible only on mobile, Order 3) */}
                         <div className="w-full order-3 lg:hidden mt-4">
                             <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} />
+                            <div className="mt-8">
+                                <ComparisonCards />
+                            </div>
                         </div>
 
                     </div>
@@ -322,51 +328,6 @@ export default function ClientPage({ copy }: { copy: any }) {
                                         <span>Pre-audit intervention signals</span>
                                     </li>
                                 </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* --- NEW SECTION 2: YOU CANT FIX WHAT YOU CANT SEE --- */}
-            <section className="py-24 bg-slate-950 border-y border-slate-800 relative">
-                <div className="container mx-auto px-6 relative z-10">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold text-white mb-4">You Can’t Fix What You Can’t See</h2>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                        {/* LEFT CARD - BEFORE */}
-                        <div className="bg-slate-900/50 border border-slate-800 p-8 rounded-xl relative overflow-hidden h-full">
-                            <div className="absolute top-0 left-0 w-full h-1 bg-red-500/50" />
-                            <div className="flex justify-between items-start mb-6">
-                                <div className="text-slate-500 font-mono text-sm uppercase tracking-wider">High Exposure</div>
-                                <div className="text-red-500 font-bold font-mono text-lg">Rising</div>
-                            </div>
-
-                            <div className="mb-4">
-                                <div className="text-6xl font-bold text-slate-300 font-mono">78</div>
-                            </div>
-
-                            <div className="text-slate-400 text-sm border-t border-slate-800 pt-4 mt-4">
-                                Unmonitored inspection patterns and blind spots.
-                            </div>
-                        </div>
-
-                        {/* RIGHT CARD - AFTER */}
-                        <div className="bg-slate-900/80 border border-emerald-500/30 p-8 rounded-xl relative overflow-hidden h-full shadow-[0_0_50px_-10px_rgba(16,185,129,0.2)]">
-                            <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500" />
-                            <div className="flex justify-between items-start mb-6">
-                                <div className="text-emerald-400 font-mono text-sm uppercase tracking-wider font-bold">Optimized</div>
-                                <div className="text-emerald-400 font-bold font-mono text-lg">Stabilized</div>
-                            </div>
-
-                            <div className="mb-4">
-                                <div className="text-6xl font-bold text-white font-mono">61</div>
-                            </div>
-
-                            <div className="text-slate-400 text-sm border-t border-slate-800 pt-4 mt-4">
-                                Early alerts and intervention signals.
                             </div>
                         </div>
                     </div>
@@ -562,6 +523,9 @@ export default function ClientPage({ copy }: { copy: any }) {
 
                         <div className="max-w-3xl mx-auto">
                             <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} />
+                            <div className="mt-12 text-left">
+                                <ComparisonCards />
+                            </div>
                         </div>
                     </div>
                 </div>
