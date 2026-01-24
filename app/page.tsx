@@ -162,7 +162,7 @@ export default function LandingPage() {
                                 Most carriers don’t realize they’re high-risk until the inspection is already scheduled.
                             </p>
 
-                            <div className="hidden lg:block">
+                            <div className="hidden lg:block relative z-20">
                                 <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} />
                             </div>
                         </div>
@@ -256,6 +256,7 @@ export default function LandingPage() {
                                 <div className="absolute inset-0 animate-[terminal-scroll_15s_linear_infinite] group-hover:animate-[terminal-scroll_2s_linear_infinite]">
                                     {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
                                     {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-90" />
                                 </div>
                             </div>
 
@@ -351,12 +352,12 @@ export default function LandingPage() {
                         <FeatureCard
                             icon={Siren}
                             title="Intervene before audits"
-                            desc="Prevents silent issues from becoming audits."
+                            desc="Stops silent violations from triggering an audit."
                         />
                         <FeatureCard
                             icon={Lock}
                             title="Never lose proof at renewal"
-                            desc="Prevents lost history during insurance renewals."
+                            desc="Secures your history for instant insurance validation."
                         />
                     </div>
                 </div>
@@ -523,6 +524,9 @@ function HeroInput({ dotNumber, setDotNumber, isTyping }: { dotNumber: string, s
                         <span className="text-xs text-slate-500 font-medium">
                             FMCSA data updates often — risk can shift after a single inspection.
                         </span>
+                        <div className="mt-2 text-[10px] text-slate-600 uppercase tracking-widest font-mono">
+                            Built on public FMCSA data
+                        </div>
                     </div>
                 </div>
             </div>
@@ -548,12 +552,12 @@ function HeroInput({ dotNumber, setDotNumber, isTyping }: { dotNumber: string, s
 
 function FeatureCard({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) {
     return (
-        <div className="p-6 tactical-glass rounded hover:border-risk-elevated/40 transition-all group">
-            <div className="w-12 h-12 bg-slate-950/50 rounded flex items-center justify-center mb-4 group-hover:scale-110 transition-transform border border-slate-800 group-hover:border-risk-elevated/30">
+        <div className="p-6 tactical-glass rounded hover:border-risk-elevated/40 transition-all group h-full flex flex-col items-start bg-slate-900/40 hover:bg-slate-900/60 transition-colors">
+            <div className="w-12 h-12 bg-slate-950/50 rounded flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 border border-slate-800 group-hover:border-risk-elevated/30 group-hover:shadow-[0_0_15px_-5px_rgba(245,158,11,0.3)]">
                 <Icon className="w-6 h-6 text-risk-elevated" />
             </div>
             <h3 className="text-lg font-bold text-white mb-2 group-hover:text-risk-elevated transition-colors">{title}</h3>
-            <p className="text-sm text-slate-400 leading-relaxed max-w-[90%]">
+            <p className="text-sm text-slate-400 leading-relaxed group-hover:text-slate-300 transition-colors">
                 {desc}
             </p>
         </div>
