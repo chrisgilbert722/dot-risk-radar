@@ -231,9 +231,20 @@ export default function ClientPage({ copy }: { copy: any }) {
 
                     <div className="grid md:grid-cols-2 gap-0 rounded-lg overflow-hidden shadow-2xl relative min-h-[500px]">
                         {/* LEFT: CHAOS (Red Truck + Dark Glass Overlay) */}
-                        <div className="relative p-8 md:p-12 group min-h-[400px] flex flex-col overflow-hidden border-r border-slate-800 bg-slate-950">
-                            {/* Scrolling Terminal Effect */}
-                            <div className="absolute inset-0 opacity-40 font-mono text-xs leading-none text-red-500 pointer-events-none select-none z-0">
+                        <div className="relative p-8 md:p-12 group min-h-[400px] flex flex-col overflow-hidden border-r border-slate-800">
+                            <Image
+                                src="/images/chaos-inspection.png"
+                                alt="Inspection Chaos"
+                                fill
+                                className="object-cover opacity-100 grayscale hover:grayscale-0 transition-opacity duration-700"
+                            />
+
+                            {/* Dark Glass Overlay (Not Flat Black) */}
+                            <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm mix-blend-multiply transition-all duration-700 group-hover:bg-slate-900/60" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-red-950/80 via-transparent to-slate-950/80 mix-blend-overlay" />
+
+                            {/* Scrolling Terminal Effect - BRIGHTER & GLOWING */}
+                            <div className="absolute inset-0 opacity-80 font-mono text-xs leading-none text-code-red pointer-events-none select-none z-0 group-hover:opacity-100 transition-opacity">
                                 <div className="absolute inset-0 animate-[terminal-scroll_15s_linear_infinite] group-hover:animate-[terminal-scroll_2s_linear_infinite]">
                                     {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
                                     {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
@@ -241,7 +252,7 @@ export default function ClientPage({ copy }: { copy: any }) {
                                 </div>
                             </div>
 
-                            <div className="relative z-10 mt-auto tactical-glass rounded-lg p-6 bg-slate-900/80 backdrop-blur-md border border-slate-700/50">
+                            <div className="relative z-10 mt-auto tactical-glass rounded-lg p-6">
                                 <div className="inline-flex items-center gap-2 mb-4 text-red-500 font-mono text-sm tracking-wider uppercase bg-black/40 px-3 py-1 rounded border border-red-500/30">
                                     <AlertTriangle className="w-3 h-3" /> Audit Triggers Detected
                                 </div>
@@ -268,8 +279,8 @@ export default function ClientPage({ copy }: { copy: any }) {
                             <div className="absolute inset-0 bg-gradient-to-tr from-emerald-900/20 to-transparent opacity-50" />
 
                             {/* Radar Background Interaction */}
-                            <div className="absolute top-8 right-8 p-0 pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity duration-700">
-                                <Radar className="w-32 h-32 text-emerald-500" />
+                            <div className="absolute top-8 right-8 p-0 pointer-events-none opacity-20 group-hover:opacity-60 transition-opacity duration-700">
+                                <Radar className="w-32 h-32 text-emerald-500 group-hover:animate-radar-expand" />
                             </div>
 
                             <div className="relative z-10">
