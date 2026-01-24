@@ -389,15 +389,15 @@ export default function LandingPage() {
                         src="/images/testimonial-trucks.jpg"
                         alt="Testimonial Background"
                         fill
-                        className="object-cover opacity-60 mix-blend-normal blur-[1px]"
+                        className="object-cover opacity-100 mix-blend-normal"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/95 to-brand-dark/60" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/80 to-brand-dark/40" />
                     <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay" />
                 </div>
 
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="max-w-3xl mx-auto">
-                        <div className="tactical-glass p-8 md:p-12 rounded-2xl relative shadow-[0_0_50px_-10px_rgba(245,158,11,0.2)] border border-risk-elevated/30">
+                        <div className="tactical-glass p-8 md:p-12 rounded-2xl relative shadow-[0_0_60px_-10px_rgba(245,158,11,0.5)] border border-risk-elevated/50">
                             {/* Quote Icon */}
                             <div className="absolute top-6 left-6 text-risk-elevated/20">
                                 <FileText className="w-12 h-12" />
