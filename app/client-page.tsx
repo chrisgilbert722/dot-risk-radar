@@ -373,24 +373,57 @@ export default function ClientPage({ copy }: { copy: any }) {
                 </div>
             </section>
 
-            {/* HOW IT WORKS */}
-            <section className="py-24 border-b border-slate-800 bg-brand-dark">
-                <div className="container mx-auto px-6">
-                    <div className="grid md:grid-cols-3 gap-12 text-center">
-                        <div className="group">
-                            <div className="w-16 h-16 mx-auto bg-slate-900 rounded-lg flex items-center justify-center border border-slate-700 mb-6 font-mono text-2xl font-bold text-risk-elevated group-hover:bg-risk-elevated group-hover:text-brand-dark transition-colors">01</div>
-                            <h4 className="text-xl font-bold text-white mb-2">Enter DOT Number</h4>
-                            <p className="text-slate-400">Instant connection to public FMCSA records.</p>
+            {/* HOW IT WORKS (Enhanced) */}
+            <section className="py-24 border-b border-slate-800 bg-brand-dark relative overflow-hidden">
+                {/* Subtle Gradient Sweep */}
+                <div className="absolute inset-0 bg-gradient-to-b from-slate-900/0 via-slate-900/40 to-slate-900/0 pointer-events-none" />
+
+                <div className="container mx-auto px-6 relative z-10">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">What Happens the Moment <br className="hidden md:block" /> Your DOT Number Is Seen</h2>
+                        <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+                            FMCSA systems don’t wait for violations to pile up. Risk begins forming instantly.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-12 text-center relative">
+                        {/* Connector Line (Desktop) */}
+                        <div className="hidden md:block absolute top-[2rem] left-0 w-full h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent -z-10" />
+
+                        {/* STEP 01 */}
+                        <div className="group relative">
+                            <div className="w-16 h-16 mx-auto bg-slate-900 rounded-lg flex items-center justify-center border border-slate-700 mb-8 font-mono text-2xl font-bold text-risk-elevated group-hover:bg-risk-elevated group-hover:text-brand-dark transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.1)] group-hover:shadow-[0_0_30px_rgba(245,158,11,0.4)]">01</div>
+
+                            <div className="inline-block px-2 py-0.5 bg-slate-900/80 border border-slate-700 rounded text-[10px] font-mono uppercase tracking-widest text-slate-500 mb-5 group-hover:text-risk-elevated group-hover:border-risk-elevated/30 transition-colors">
+                                System Aware
+                            </div>
+
+                            <h4 className="text-xl font-bold text-white mb-3">DOT Signal Detected</h4>
+                            <p className="text-slate-400 leading-relaxed text-sm">The moment your DOT number appears, public FMCSA systems begin tracking inspection signals.</p>
                         </div>
-                        <div className="group">
-                            <div className="w-16 h-16 mx-auto bg-slate-900 rounded-lg flex items-center justify-center border border-slate-700 mb-6 font-mono text-2xl font-bold text-risk-elevated group-hover:bg-risk-elevated group-hover:text-brand-dark transition-colors">02</div>
-                            <h4 className="text-xl font-bold text-white mb-2">We Analyze Signals</h4>
-                            <p className="text-slate-400">Algorithms scan for patterns, not just single violations.</p>
+
+                        {/* STEP 02 */}
+                        <div className="group relative">
+                            <div className="w-16 h-16 mx-auto bg-slate-900 rounded-lg flex items-center justify-center border border-slate-700 mb-8 font-mono text-2xl font-bold text-risk-elevated group-hover:bg-risk-elevated group-hover:text-brand-dark transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.1)] group-hover:shadow-[0_0_30px_rgba(245,158,11,0.4)]">02</div>
+
+                            <div className="inline-block px-2 py-0.5 bg-slate-900/80 border border-slate-700 rounded text-[10px] font-mono uppercase tracking-widest text-slate-500 mb-5 group-hover:text-risk-elevated group-hover:border-risk-elevated/30 transition-colors">
+                                Risk Correlation Active
+                            </div>
+
+                            <h4 className="text-xl font-bold text-white mb-3">Patterns Begin Forming</h4>
+                            <p className="text-slate-400 leading-relaxed text-sm">Algorithms correlate inspections, warnings, OOS events, and history across states — not in isolation.</p>
                         </div>
-                        <div className="group">
-                            <div className="w-16 h-16 mx-auto bg-slate-900 rounded-lg flex items-center justify-center border border-slate-700 mb-6 font-mono text-2xl font-bold text-risk-elevated group-hover:bg-risk-elevated group-hover:text-brand-dark transition-colors">03</div>
-                            <h4 className="text-xl font-bold text-white mb-2">See Risk Trends</h4>
-                            <p className="text-slate-400">Get alerted before your safety rating takes a hit.</p>
+
+                        {/* STEP 03 */}
+                        <div className="group relative">
+                            <div className="w-16 h-16 mx-auto bg-slate-900 rounded-lg flex items-center justify-center border border-slate-700 mb-8 font-mono text-2xl font-bold text-risk-elevated group-hover:bg-risk-elevated group-hover:text-brand-dark transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.1)] group-hover:shadow-[0_0_30px_rgba(245,158,11,0.4)]">03</div>
+
+                            <div className="inline-block px-2 py-0.5 bg-slate-900/80 border border-slate-700 rounded text-[10px] font-mono uppercase tracking-widest text-slate-500 mb-5 group-hover:text-risk-elevated group-hover:border-risk-elevated/30 transition-colors">
+                                Trend Threshold Approaching
+                            </div>
+
+                            <h4 className="text-xl font-bold text-white mb-3">Risk Trends Emerge</h4>
+                            <p className="text-slate-400 leading-relaxed text-sm">Before scores change, enforcement systems see momentum — and act on it.</p>
                         </div>
                     </div>
                 </div>
