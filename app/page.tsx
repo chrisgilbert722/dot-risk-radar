@@ -386,25 +386,25 @@ export default function LandingPage() {
             <section className="py-24 border-t border-slate-800 relative overflow-hidden bg-slate-950 min-h-[600px] flex items-center">
                 <div className="absolute inset-0 z-0">
                     <Image
-                        src="/images/driver-rest.jpg"
+                        src="/images/testimonial-trucks.jpg"
                         alt="Testimonial Background"
                         fill
-                        className="object-cover opacity-50 mix-blend-normal blur-[6px]"
+                        className="object-cover opacity-60 mix-blend-normal blur-[1px]"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/95 to-brand-dark/60" />
                     <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay" />
                 </div>
 
                 <div className="container mx-auto px-6 relative z-10">
-                    <div className="max-w-4xl mx-auto">
-                        <div className="tactical-glass p-8 md:p-16 rounded-2xl relative shadow-2xl">
+                    <div className="max-w-3xl mx-auto">
+                        <div className="tactical-glass p-8 md:p-12 rounded-2xl relative shadow-[0_0_50px_-10px_rgba(245,158,11,0.2)] border border-risk-elevated/30">
                             {/* Quote Icon */}
-                            <div className="absolute top-8 left-8 text-risk-elevated/20">
-                                <FileText className="w-16 h-16" />
+                            <div className="absolute top-6 left-6 text-risk-elevated/20">
+                                <FileText className="w-12 h-12" />
                             </div>
 
-                            <div className="relative pt-8 text-center min-h-[220px] flex flex-col justify-center">
-                                <p className="text-2xl md:text-3xl font-medium text-slate-200 leading-relaxed mb-8 italic">
+                            <div className="relative pt-6 text-center min-h-[200px] flex flex-col justify-center">
+                                <p className="text-xl md:text-2xl font-medium text-slate-200 leading-relaxed mb-6 italic">
                                     "{testimonials[activeTestimonial].quote}"
                                 </p>
 
