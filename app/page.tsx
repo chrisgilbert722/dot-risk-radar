@@ -466,7 +466,7 @@ export default function LandingPage() {
                             "USED BY OWNER-OPERATORS & SMALL FLEETS ACROSS THE U.S."
                         </div>
 
-                        <div className="max-w-xl mx-auto">
+                        <div className="max-w-3xl mx-auto">
                             <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} />
                         </div>
                     </div>
