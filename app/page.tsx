@@ -71,9 +71,9 @@ export default function LandingPage() {
 
     // --- PHASE 6: EXPANDED TESTIMONIALS (15 items) ---
     const testimonials = [
-        { quote: "We didn’t realize our DOT risk had quietly escalated until this flagged it.", role: "Fleet Owner", size: "12 Trucks" },
-        { quote: "This showed us patterns we weren’t watching — inspections were increasing before we felt it.", role: "Safety Director", size: "45 Trucks" },
-        { quote: "Now we know where we stand every week. No surprises.", role: "Operations Manager", size: "28 Trucks" },
+        { quote: "We didn’t realize our DOT risk had quietly escalated until this flagged it.", role: "Fleet Owner", size: "12 Trucks", outcome: "Passed the next inspection with no surprises." },
+        { quote: "This showed us patterns we weren’t watching — inspections were increasing before we felt it.", role: "Safety Director", size: "45 Trucks", outcome: "Caught a trend before it escalated." },
+        { quote: "Now we know where we stand every week. No surprises.", role: "Operations Manager", size: "28 Trucks", outcome: "Insurance renewal with zero pushback." },
         { quote: "The OOS alerts alone saved us from a conditional rating.", role: "Compliance Lead", size: "18 Trucks" },
         { quote: "It doesn't tell you what to fear, it shows you what to watch.", role: "Owner-Operator", size: "3 Trucks" },
         { quote: "Finally, FMCSA data that makes sense without a law degree.", role: "Fleet Administrator", size: "15 Trucks" },
@@ -155,8 +155,11 @@ export default function LandingPage() {
                                 ))}
                             </h1>
 
-                            <p className="text-lg md:text-xl text-slate-400 max-w-lg mx-auto lg:mx-0 leading-relaxed mb-8">
+                            <p className="text-lg md:text-xl text-slate-400 max-w-lg mx-auto lg:mx-0 leading-relaxed mb-4">
                                 {HERO_VARIANTS[ACTIVE_VARIANT].subheadline}
+                            </p>
+                            <p className="text-md text-slate-500 max-w-lg mx-auto lg:mx-0 leading-relaxed mb-8">
+                                Most carriers don’t realize they’re high-risk until the inspection is already scheduled.
                             </p>
 
                             <div className="hidden lg:block">
@@ -258,21 +261,21 @@ export default function LandingPage() {
 
                             <div className="relative z-10 mt-auto tactical-glass rounded-lg p-6">
                                 <div className="inline-flex items-center gap-2 mb-4 text-red-500 font-mono text-sm tracking-wider uppercase bg-black/40 px-3 py-1 rounded border border-red-500/30">
-                                    <XCircle className="w-4 h-4" /> Unprocessed Data
+                                    ⚠ Audit Triggers Detected
                                 </div>
                                 <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-red-100 transition-colors">Overwhelming Noise</h3>
                                 <ul className="space-y-4 text-slate-300 font-mono text-sm">
                                     <li className="flex items-center gap-3 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-white">
                                         <AlertTriangle className="w-4 h-4 shrink-0 text-red-500 group-hover:animate-pulse" />
-                                        <span>Hidden violation clusters</span>
+                                        <span>Clustered violations</span>
                                     </li>
                                     <li className="flex items-center gap-3 transition-transform duration-300 delay-75 group-hover:translate-x-1 group-hover:text-white">
                                         <AlertTriangle className="w-4 h-4 shrink-0 text-red-500 group-hover:animate-pulse" />
-                                        <span>Rising OOS percentage</span>
+                                        <span>Rising OOS trend</span>
                                     </li>
                                     <li className="flex items-center gap-3 transition-transform duration-300 delay-150 group-hover:translate-x-1 group-hover:text-white">
                                         <AlertTriangle className="w-4 h-4 shrink-0 text-red-500 group-hover:animate-pulse" />
-                                        <span>Audit triggers unnoticed</span>
+                                        <span>Pattern matches past audits</span>
                                     </li>
                                 </ul>
                             </div>
@@ -337,22 +340,22 @@ export default function LandingPage() {
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <FeatureCard
                             icon={Eye}
-                            title="Continuous Monitoring"
+                            title="Know before scores jump"
                             desc="Prevents surprise score jumps by watching 24/7."
                         />
                         <FeatureCard
                             icon={TrendingUp}
-                            title="Risk Trend Detection"
+                            title="Stop violations from compounding"
                             desc="Prevents creeping violation patterns from escalating."
                         />
                         <FeatureCard
                             icon={Siren}
-                            title="Early Warning Alerts"
+                            title="Intervene before audits"
                             desc="Prevents silent issues from becoming audits."
                         />
                         <FeatureCard
                             icon={Lock}
-                            title="Compliance Vault"
+                            title="Never lose proof at renewal"
                             desc="Prevents lost history during insurance renewals."
                         />
                     </div>
@@ -409,9 +412,14 @@ export default function LandingPage() {
                                     <div className="text-risk-elevated font-bold uppercase tracking-wider text-sm mb-1">
                                         {testimonials[activeTestimonial].role}
                                     </div>
-                                    <div className="text-slate-500 font-mono text-sm">
+                                    <div className="text-slate-500 font-mono text-sm mb-2">
                                         Operation Size: {testimonials[activeTestimonial].size}
                                     </div>
+                                    {testimonials[activeTestimonial].outcome && (
+                                        <div className="text-slate-400 text-sm italic border-t border-slate-800 pt-2 mt-2">
+                                            "{testimonials[activeTestimonial].outcome}"
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
@@ -491,18 +499,23 @@ function HeroInput({ dotNumber, setDotNumber, isTyping }: { dotNumber: string, s
                             onChange={(e) => setDotNumber(e.target.value)}
                         />
                     </div>
-                    <Button className="h-14 px-8 bg-risk-elevated hover:bg-amber-400 text-brand-dark font-bold rounded-lg text-lg uppercase tracking-wide min-w-[200px] transition-all relative overflow-hidden hover:scale-105 active:scale-95 shadow-lg shadow-amber-500/20">
-                        {isTyping ? (
-                            <span className="flex items-center gap-2 animate-pulse">
-                                <Activity className="w-5 h-5 animate-spin" />
-                                Scanning...
-                            </span>
-                        ) : (
-                            <span className="flex items-center gap-2">
-                                Check Risk (Free) <ArrowRight className="w-5 h-5" />
-                            </span>
-                        )}
-                    </Button>
+                    <div className="flex flex-col items-center">
+                        <Button className="h-14 px-8 bg-risk-elevated hover:bg-amber-400 text-brand-dark font-bold rounded-lg text-lg uppercase tracking-wide min-w-[200px] transition-all relative overflow-hidden hover:scale-105 active:scale-95 shadow-lg shadow-amber-500/20 w-full mb-3">
+                            {isTyping ? (
+                                <span className="flex items-center gap-2 animate-pulse">
+                                    <Activity className="w-5 h-5 animate-spin" />
+                                    Scanning...
+                                </span>
+                            ) : (
+                                <span className="flex items-center gap-2">
+                                    Check Risk (Free) <ArrowRight className="w-5 h-5" />
+                                </span>
+                            )}
+                        </Button>
+                        <span className="text-xs text-slate-500 font-medium">
+                            FMCSA data updates often — risk can shift after a single inspection.
+                        </span>
+                    </div>
                 </div>
             </div>
 
