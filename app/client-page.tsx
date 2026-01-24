@@ -128,7 +128,7 @@ export default function ClientPage({ copy }: { copy: any }) {
                         </p>
 
                         <div className="max-w-3xl mx-auto">
-                            <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} />
+                            <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} />
                         </div>
 
                         {/* Social Proof / Trust */}
@@ -353,7 +353,7 @@ export default function ClientPage({ copy }: { copy: any }) {
 }
 
 // Input Component (Reused)
-function HeroInput({ dotNumber, setDotNumber, isTyping }: { dotNumber: string, setDotNumber: (v: string) => void, isTyping: boolean }) {
+function HeroInput({ dotNumber, setDotNumber, isTyping, copy }: { dotNumber: string, setDotNumber: (v: string) => void, isTyping: boolean, copy: any }) {
     const [isFocused, setIsFocused] = useState(false);
     const [scanState, setScanState] = useState<'idle' | 'scanning' | 'analyzing' | 'complete'>('idle');
     const [scanProgress, setScanProgress] = useState(0);
