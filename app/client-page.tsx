@@ -334,6 +334,22 @@ export default function ClientPage({ copy }: { copy: any }) {
                 </div>
             </section>
 
+            {/* --- NEW SECTION 2: YOU CANT FIX WHAT YOU CANT SEE --- */}
+            <section className="py-24 bg-slate-950 border-y border-slate-800 relative">
+                <div className="container mx-auto px-6 relative z-10">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-bold text-white mb-6">You Can’t Fix What You Can’t See</h2>
+                        <div className="max-w-3xl mx-auto mb-12">
+                            <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} />
+                        </div>
+                    </div>
+
+                    <div className="max-w-4xl mx-auto">
+                        <ComparisonCards />
+                    </div>
+                </div>
+            </section>
+
             {/* HOW IT WORKS (Enhanced) */}
             <section className="py-24 border-b border-slate-800 bg-brand-dark relative overflow-hidden">
                 {/* Subtle Gradient Sweep */}
@@ -523,9 +539,6 @@ export default function ClientPage({ copy }: { copy: any }) {
 
                         <div className="max-w-3xl mx-auto">
                             <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} />
-                            <div className="mt-12 text-left">
-                                <ComparisonCards />
-                            </div>
                         </div>
                     </div>
                 </div>
