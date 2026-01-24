@@ -482,6 +482,8 @@ export default function LandingPage() {
 
 // Input Component (Reused)
 function HeroInput({ dotNumber, setDotNumber, isTyping }: { dotNumber: string, setDotNumber: (v: string) => void, isTyping: boolean }) {
+    const [isFocused, setIsFocused] = useState(false);
+
     return (
         <div className="w-full text-left">
             <div className="relative group">
@@ -493,11 +495,17 @@ function HeroInput({ dotNumber, setDotNumber, isTyping }: { dotNumber: string, s
                         </div>
                         <Input
                             type="text"
-                            placeholder="ENTER DOT NUMBER"
+                            placeholder={isFocused ? "FMCSA records will be queried immediately" : "ENTER DOT NUMBER"}
                             className="pl-11 bg-slate-900/95 border-slate-700 text-white h-14 text-lg focus:border-risk-elevated focus:ring-1 focus:ring-risk-elevated/50 rounded-lg font-mono tracking-wider uppercase placeholder:text-slate-600 transition-all font-bold"
                             value={dotNumber}
                             onChange={(e) => setDotNumber(e.target.value)}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
                         />
+                        {/* Helper Line on Focus */}
+                        <div className={`absolute top-full left-0 mt-2 text-xs text-slate-400 font-medium transition-opacity duration-300 ${isFocused ? 'opacity-100' : 'opacity-0'}`}>
+                            Includes inspections, OOS rates, and risk trend signals
+                        </div>
                     </div>
                     <div className="flex flex-col items-center">
                         <Button className="h-14 px-8 bg-risk-elevated hover:bg-amber-400 text-brand-dark font-bold rounded-lg text-lg uppercase tracking-wide min-w-[200px] transition-all relative overflow-hidden hover:scale-105 active:scale-95 shadow-lg shadow-amber-500/20 w-full mb-3">
@@ -520,7 +528,7 @@ function HeroInput({ dotNumber, setDotNumber, isTyping }: { dotNumber: string, s
             </div>
 
             {/* Dynamic Help Text */}
-            <div className="mt-3 flex items-center justify-between px-1 h-6 transition-all duration-300">
+            <div className={`mt-8 flex items-center justify-between px-1 h-6 transition-all duration-300 ${isFocused ? 'opacity-0' : 'opacity-100'}`}>
                 <span className={`text-xs font-mono transition-colors duration-300 font-medium tracking-wide ${isTyping ? 'text-emerald-400' : 'text-slate-500'}`}>
                     {isTyping ? "ANALYZING INSPECTIONS, OOS TRENDS, VIOLATION VELOCITY..." : "NO CREDIT CARD. NO SALES CALLS."}
                 </span>
