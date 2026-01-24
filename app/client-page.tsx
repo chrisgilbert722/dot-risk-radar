@@ -222,107 +222,104 @@ export default function ClientPage({ copy }: { copy: any }) {
             <section className="py-24 bg-slate-900/50 border-y border-slate-800 relative">
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
                 <div className="container mx-auto px-6 relative z-10">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">What Inspectors See <span className="text-slate-500">(That You Don’t)</span></h2>
-                        <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-                            The FMCSA database is full of raw data signals that trigger audits. We translate the noise into clarity.
-                        </p>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-0 rounded-lg overflow-hidden shadow-2xl relative min-h-[500px]">
-                        {/* LEFT: CHAOS (Red Truck + Dark Glass Overlay) */}
-                        <div className="relative p-8 md:p-12 group min-h-[400px] flex flex-col overflow-hidden border-r border-slate-800">
-                            <Image
-                                src="/images/chaos-inspection.png"
-                                alt="Inspection Chaos"
-                                fill
-                                className="object-cover opacity-100 grayscale hover:grayscale-0 transition-opacity duration-700"
-                            />
-
-                            {/* Dark Glass Overlay (Not Flat Black) */}
-                            <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm mix-blend-multiply transition-all duration-700 group-hover:bg-slate-900/60" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-red-950/80 via-transparent to-slate-950/80 mix-blend-overlay" />
-
-                            {/* Scrolling Terminal Effect - BRIGHTER & GLOWING */}
-                            <div className="absolute inset-0 opacity-80 font-mono text-xs leading-none text-code-red pointer-events-none select-none z-0 group-hover:opacity-100 transition-opacity">
-                                <div className="absolute inset-0 animate-[terminal-scroll_15s_linear_infinite] group-hover:animate-[terminal-scroll_2s_linear_infinite]">
-                                    {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
-                                    {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-90" />
-                                </div>
+                    <div className="grid lg:grid-cols-2 gap-16 items-center">
+                        {/* LEFT: CONTENT & CARDS */}
+                        <div className="text-left">
+                            <div className="text-amber-500 font-mono text-xs font-bold tracking-widest uppercase mb-4">
+                                The Invisible Threat
                             </div>
+                            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+                                What Inspectors See <br />
+                                <span className="text-slate-500">(That You Don’t)</span>
+                            </h2>
+                            <p className="text-slate-400 text-lg mb-10 leading-relaxed">
+                                Every roadside inspection, every warning letter, and every OOS violation feeds into a predictive score. Enforcement software flags you <span className="text-white italic">before</span> they pull you over.
+                            </p>
 
-                            <div className="relative z-10 mt-auto tactical-glass rounded-lg p-6">
-                                <div className="inline-flex items-center gap-2 mb-4 text-red-500 font-mono text-sm tracking-wider uppercase bg-black/40 px-3 py-1 rounded border border-red-500/30">
-                                    <AlertTriangle className="w-3 h-3" /> Audit Triggers Detected
+                            <div className="space-y-4">
+                                {/* Card 1 */}
+                                <div className="bg-slate-900/50 border border-slate-800 p-5 rounded-lg flex gap-4 hover:bg-slate-900/80 transition-colors">
+                                    <div className="w-10 h-10 bg-slate-950 border border-slate-800 rounded flex items-center justify-center shrink-0">
+                                        <AlertTriangle className="w-5 h-5 text-amber-500" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-white font-bold mb-1">Hidden Violation Patterns</h4>
+                                        <p className="text-slate-400 text-sm leading-relaxed">
+                                            One bad tire inspection in Ohio triggers brake checks in Texas. We verify these cross-state triggers.
+                                        </p>
+                                    </div>
                                 </div>
-                                <h3 className="text-2xl font-bold text-white mb-4">Overwhelming Noise</h3>
-                                <ul className="space-y-4 text-slate-300 font-mono text-sm">
-                                    <li className="flex items-center gap-3">
-                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
-                                        <span>Clustered violations</span>
-                                    </li>
-                                    <li className="flex items-center gap-3">
-                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
-                                        <span>Rising OOS trend</span>
-                                    </li>
-                                    <li className="flex items-center gap-3">
-                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
-                                        <span>Pattern matches past audits</span>
-                                    </li>
-                                </ul>
+
+                                {/* Card 2 */}
+                                <div className="bg-slate-900/50 border border-slate-800 p-5 rounded-lg flex gap-4 hover:bg-slate-900/80 transition-colors">
+                                    <div className="w-10 h-10 bg-slate-950 border border-slate-800 rounded flex items-center justify-center shrink-0">
+                                        <TrendingUp className="w-5 h-5 text-amber-500" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-white font-bold mb-1">ISS Score Velocity</h4>
+                                        <p className="text-slate-400 text-sm leading-relaxed">
+                                            Your score might be "passing" today, but the 30-day trend predicts a conditional rating next month.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        {/* RIGHT: CONTROL (Actionable Intelligence) */}
-                        <div className="relative p-8 md:p-12 group min-h-[400px] flex flex-col justify-end overflow-hidden border-l border-slate-800">
-                            <Image
-                                src="/images/clean-highway.jpg"
-                                alt="Clear Road"
-                                fill
-                                className="object-cover opacity-100 grayscale hover:grayscale-0 transition-opacity duration-700"
-                            />
+                        {/* RIGHT: ENFORCEMENT SIMULATION WINDOW */}
+                        <div className="relative">
+                            <div className="bg-[#0B0F17] rounded-xl overflow-hidden border border-slate-800 shadow-2xl">
+                                {/* Window Header */}
+                                <div className="bg-[#151923] px-4 py-3 flex items-center justify-between border-b border-slate-800">
+                                    <div className="flex gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-red-500/50" />
+                                        <div className="w-3 h-3 rounded-full bg-amber-500/50" />
+                                        <div className="w-3 h-3 rounded-full bg-emerald-500/50" />
+                                    </div>
+                                    <div className="text-slate-500 font-mono text-[10px] uppercase tracking-widest">
+                                        Enforcement View Simulation
+                                    </div>
+                                    <div className="w-12" /> {/* Spacer */}
+                                </div>
 
-                            {/* Dark Glass Overlay */}
-                            <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm mix-blend-multiply transition-all duration-700 group-hover:bg-slate-900/60" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-transparent to-slate-950/80 mix-blend-overlay" />
+                                {/* Window Content */}
+                                <div className="p-8">
+                                    <div className="flex justify-between items-start mb-8">
+                                        <div>
+                                            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-2">Target Vehicle</div>
+                                            <div className="text-2xl text-white font-mono tracking-wider">
+                                                DOT <span className="text-slate-400">#382910</span>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="text-slate-500 text-[10px] font-mono uppercase tracking-wider mb-1">ISS Score</div>
+                                            <div className="text-4xl font-bold text-red-500 font-mono">92</div>
+                                        </div>
+                                    </div>
 
-                            {/* Scrolling Terminal Effect - GREEN & GLOWING */}
-                            <div className="absolute inset-0 opacity-80 font-mono text-xs leading-none text-emerald-400 pointer-events-none select-none z-0 group-hover:opacity-100 transition-opacity">
-                                <div className="absolute inset-0 animate-[terminal-scroll_15s_linear_infinite] group-hover:animate-[terminal-scroll_2s_linear_infinite] direction-reverse">
-                                    {Array(50).fill("PASSED_INSPECTION CLEAN_LEVEL_1 396.17(c) PASS // !!! SAFE !!! ").join(" ")}
-                                    {Array(50).fill("PASSED_INSPECTION CLEAN_LEVEL_1 396.17(c) PASS // !!! SAFE !!! ").join(" ")}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-90" />
+                                    <div className="space-y-3">
+                                        {/* Status 1: Inspection Required */}
+                                        <div className="bg-red-500/10 border border-red-500/20 rounded p-4 flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <XCircle className="w-4 h-4 text-red-500" />
+                                                <span className="text-red-400 font-bold text-sm tracking-wide uppercase">Inspection Required</span>
+                                            </div>
+                                            <span className="text-red-500/50 font-mono text-xs uppercase">Priority 1</span>
+                                        </div>
+
+                                        {/* Status 2: Bypass Denied */}
+                                        <div className="bg-slate-900/50 border border-slate-800 rounded p-4 flex items-center justify-between opacity-50">
+                                            <div className="flex items-center gap-3">
+                                                <CheckCircle2 className="w-4 h-4 text-slate-500" />
+                                                <span className="text-slate-400 font-bold text-sm tracking-wide uppercase">Weigh Station Bypass</span>
+                                            </div>
+                                            <span className="text-slate-600 font-mono text-xs uppercase">Denied</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Radar Background Interaction */}
-                            <div className="absolute top-8 right-8 p-0 pointer-events-none opacity-20 group-hover:opacity-60 transition-opacity duration-700 z-10">
-                                <Radar className="w-32 h-32 text-emerald-500 group-hover:animate-radar-expand" />
-                            </div>
-
-                            <div className="relative z-20 mt-auto tactical-glass rounded-lg p-6">
-                                <div className="inline-flex items-center gap-2 mb-6 text-emerald-400 font-mono text-sm tracking-wider uppercase bg-emerald-950/40 px-3 py-1 rounded border border-emerald-500/30 w-fit">
-                                    <CheckCircle2 className="w-4 h-4" /> Risk Radar Analysis
-                                </div>
-
-                                <h3 className="text-3xl font-bold text-white mb-6">Actionable Intelligence</h3>
-
-                                <ul className="space-y-4">
-                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm group-hover:text-white transition-colors">
-                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/20 border-emerald-500/30">01</div>
-                                        <span>Predictive score stabilization</span>
-                                    </li>
-                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm group-hover:text-white transition-colors">
-                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/20 border-emerald-500/30">02</div>
-                                        <span>Plain-English pattern alerts</span>
-                                    </li>
-                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm group-hover:text-white transition-colors">
-                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/20 border-emerald-500/30">03</div>
-                                        <span>Pre-audit intervention signals</span>
-                                    </li>
-                                </ul>
-                            </div>
+                            {/* Decorative Glow */}
+                            <div className="absolute -inset-4 bg-red-500/5 blur-2xl -z-10 rounded-full" />
                         </div>
                     </div>
                 </div>
