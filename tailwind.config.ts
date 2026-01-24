@@ -74,6 +74,43 @@ export default {
         'radar-gradient': "radial-gradient(circle at center, rgba(16, 185, 129, 0.1) 0%, transparent 70%)",
       }
     },
+    animation: {
+      "accordion-down": "accordion-down 0.2s ease-out",
+      "accordion-up": "accordion-up 0.2s ease-out",
+      "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      "scan-horizontal": "scan-horizontal 2s linear infinite",
+      "terminal-scroll": "terminal-scroll 15s linear infinite",
+      "fade-in-up": "fade-in-up 0.8s ease-out forwards",
+      "radar-expand": "radar-expand 3s ease-out infinite"
+    },
+    keyframes: {
+      "accordion-down": {
+        from: { height: "0" },
+        to: { height: "var(--radix-accordion-content-height)" },
+      },
+      "accordion-up": {
+        from: { height: "var(--radix-accordion-content-height)" },
+        to: { height: "0" },
+      },
+      "scan-horizontal": {
+        "0%": { transform: "translateX(-100%)", opacity: "0" },
+        "50%": { opacity: "1" },
+        "100%": { transform: "translateX(100%)", opacity: "0" },
+      },
+      "terminal-scroll": {
+        "0%": { transform: "translateY(0)" },
+        "100%": { transform: "translateY(-50%)" },
+      },
+      "fade-in-up": {
+        "0%": { opacity: "0", transform: "translateY(10px)" },
+        "100%": { opacity: "1", transform: "translateY(0)" },
+      },
+      "radar-expand": {
+        "0%": { transform: "scale(0.8)", opacity: "0.5" },
+        "100%": { transform: "scale(1.5)", opacity: "0" }
+      }
+    },
   },
-  plugins: [require("tailwindcss-animate")],
+},
+plugins: [require("tailwindcss-animate")],
 } satisfies Config;

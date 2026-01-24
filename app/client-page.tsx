@@ -218,59 +218,82 @@ export default function ClientPage({ copy }: { copy: any }) {
                 </div>
             </section>
 
-            {/* --- NEW SECTION 1: WHAT INSPECTORS SEE --- */}
+            {/* --- NEW SECTION 1: WHAT INSPECTORS SEE (Restored with Scrolling Violations) --- */}
             <section className="py-24 bg-slate-900/50 border-y border-slate-800 relative">
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">What Inspectors See <span className="text-slate-500">(That You Don’t)</span></h2>
                         <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-                            Every roadside inspection, every warning letter, and every OOS violation feeds into a predictive score. Enforcement software flags you <i>before</i> they pull you over.
+                            The FMCSA database is full of raw data signals that trigger audits. We translate the noise into clarity.
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
-                        {/* LEFT PANEL */}
-                        <div className="space-y-6">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-red-950/30 border border-red-500/20 text-xs font-bold font-mono text-red-500 uppercase tracking-widest">
-                                <AlertTriangle className="w-3 h-3" /> Audit Triggers Detected
+                    <div className="grid md:grid-cols-2 gap-0 rounded-lg overflow-hidden shadow-2xl relative min-h-[500px]">
+                        {/* LEFT: CHAOS (Red Truck + Dark Glass Overlay) */}
+                        <div className="relative p-8 md:p-12 group min-h-[400px] flex flex-col overflow-hidden border-r border-slate-800 bg-slate-950">
+                            {/* Scrolling Terminal Effect */}
+                            <div className="absolute inset-0 opacity-40 font-mono text-xs leading-none text-red-500 pointer-events-none select-none z-0">
+                                <div className="absolute inset-0 animate-[terminal-scroll_15s_linear_infinite] group-hover:animate-[terminal-scroll_2s_linear_infinite]">
+                                    {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
+                                    {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-90" />
+                                </div>
                             </div>
-                            <h3 className="text-3xl font-bold text-white">Overwhelming Noise</h3>
-                            <ul className="space-y-4">
-                                <li className="flex items-start gap-3 text-slate-400">
-                                    <XCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                                    <span>Clustered violations</span>
-                                </li>
-                                <li className="flex items-start gap-3 text-slate-400">
-                                    <XCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                                    <span>Rising OOS trends</span>
-                                </li>
-                                <li className="flex items-start gap-3 text-slate-400">
-                                    <XCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                                    <span>Patterns tied to past audits</span>
-                                </li>
-                            </ul>
+
+                            <div className="relative z-10 mt-auto tactical-glass rounded-lg p-6 bg-slate-900/80 backdrop-blur-md border border-slate-700/50">
+                                <div className="inline-flex items-center gap-2 mb-4 text-red-500 font-mono text-sm tracking-wider uppercase bg-black/40 px-3 py-1 rounded border border-red-500/30">
+                                    <AlertTriangle className="w-3 h-3" /> Audit Triggers Detected
+                                </div>
+                                <h3 className="text-2xl font-bold text-white mb-4">Overwhelming Noise</h3>
+                                <ul className="space-y-4 text-slate-300 font-mono text-sm">
+                                    <li className="flex items-center gap-3">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+                                        <span>Clustered violations</span>
+                                    </li>
+                                    <li className="flex items-center gap-3">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+                                        <span>Rising OOS trend</span>
+                                    </li>
+                                    <li className="flex items-center gap-3">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+                                        <span>Pattern matches past audits</span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
 
-                        {/* RIGHT PANEL */}
-                        <div className="space-y-6">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-emerald-950/30 border border-emerald-500/20 text-xs font-bold font-mono text-emerald-500 uppercase tracking-widest">
-                                <Radar className="w-3 h-3" /> Risk Radar Analysis
+                        {/* RIGHT: CONTROL (Actionable Intelligence) */}
+                        <div className="relative p-8 md:p-12 group min-h-[400px] flex flex-col justify-end overflow-hidden bg-slate-900">
+                            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-900/20 to-transparent opacity-50" />
+
+                            {/* Radar Background Interaction */}
+                            <div className="absolute top-8 right-8 p-0 pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity duration-700">
+                                <Radar className="w-32 h-32 text-emerald-500" />
                             </div>
-                            <h3 className="text-3xl font-bold text-white">Actionable Intelligence</h3>
-                            <ul className="space-y-4">
-                                <li className="flex items-start gap-3 text-slate-400">
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-                                    <span>Predictive score stabilization</span>
-                                </li>
-                                <li className="flex items-start gap-3 text-slate-400">
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-                                    <span>Plain-English alerts</span>
-                                </li>
-                                <li className="flex items-start gap-3 text-slate-400">
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-                                    <span>Early intervention signals</span>
-                                </li>
-                            </ul>
+
+                            <div className="relative z-10">
+                                <div className="inline-flex items-center gap-2 mb-6 text-emerald-400 font-mono text-sm tracking-wider uppercase bg-emerald-950/30 px-3 py-1 rounded border border-emerald-500/20 w-fit">
+                                    <CheckCircle2 className="w-4 h-4" /> Risk Radar Analysis
+                                </div>
+
+                                <h3 className="text-3xl font-bold text-white mb-6">Actionable Intelligence</h3>
+
+                                <ul className="space-y-4">
+                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm">
+                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">01</div>
+                                        <span>Predictive score stabilization</span>
+                                    </li>
+                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm">
+                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">02</div>
+                                        <span>Plain-English pattern alerts</span>
+                                    </li>
+                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm">
+                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">03</div>
+                                        <span>Pre-audit intervention signals</span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
