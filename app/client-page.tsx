@@ -19,11 +19,10 @@ import {
     XCircle,
     TrendingUp,
     BarChart3,
-    Eye,
-    MapPin
+    Eye
 } from 'lucide-react';
 
-// --- HERO VARIANTS ---
+// --- PHASE 9: HERO VARIANTS ---
 const HERO_VARIANTS = {
     A: { // Authority
         headline: "See Your DOT Risk Before Inspectors Do",
@@ -62,6 +61,7 @@ export default function ClientPage({ copy }: { copy: any }) {
         return () => clearInterval(interval);
     }, []);
 
+    // --- PHASE 6: EXPANDED TESTIMONIALS (15 items) ---
     const testimonials = [
         { quote: "We didn’t realize our DOT risk had quietly escalated until this flagged it.", role: "Fleet Owner", size: "12 Trucks", outcome: "Passed the next inspection with no surprises." },
         { quote: "This showed us patterns we weren’t watching — inspections were increasing before we felt it.", role: "Safety Director", size: "45 Trucks", outcome: "Caught a trend before it escalated." },
@@ -93,254 +93,392 @@ export default function ClientPage({ copy }: { copy: any }) {
                             </div>
                             <div className="absolute -top-1 -right-1 w-2 h-2 bg-risk-elevated rounded-full animate-ping" />
                         </div>
-                        <span className="font-bold text-xl tracking-tight text-white">
-                            DOT RISK <span className="text-risk-elevated">RADAR</span>
+                        <span className="text-xl font-bold tracking-tight text-white uppercase font-mono">
+                            DOT <span className="text-risk-elevated">RISK RADAR</span>
                         </span>
                     </div>
-                    <div className="hidden md:flex items-center gap-8">
-                        <Link href="#" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">Risk Monitoring</Link>
-                        <Link href="#" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">Alerts</Link>
-                        <Button variant="outline" className="text-risk-elevated border-risk-elevated/50 hover:bg-risk-elevated/10 hover:text-risk-elevated transition-all rounded-lg uppercase tracking-wider font-bold text-xs h-9">
-                            Log In
+
+                    <div className="flex items-center gap-6">
+                        <Link href="/login" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors font-mono uppercase tracking-wider">
+                            // Login
+                        </Link>
+                        <Button asChild className="bg-risk-elevated text-brand-dark hover:bg-amber-400 font-bold px-6 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] transition-all">
+                            <Link href="/signup">
+                                GET ACCESS
+                            </Link>
                         </Button>
                     </div>
                 </div>
             </nav>
 
-            {/* HERO SECTION */}
-            <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+            {/* --- PHASE 2 & 9: HERO SECTION --- */}
+            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-[90vh] lg:min-h-[800px] flex items-center">
+                {/* Image 1: Background Layer - MAXIMUM CLARITY (No Blur) */}
+                <div className="absolute inset-0 z-0 select-none">
+                    <Image
+                        src="/images/hero-inspector-clipboard.jpg"
+                        alt="Roadside Inspection"
+                        fill
+                        className="object-cover opacity-100 mix-blend-normal"
+                        priority
+                    />
+                    {/* Directional Gradient: Dark on left (text), transparent on right (visual) - LIGHTER OVERLAY */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/95 via-brand-dark/40 to-transparent" />
+                    {/* Bottom Vignette */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-grid-slate opacity-10" />
+                </div>
+
                 <div className="container mx-auto px-6 relative z-10">
-                    <div className="max-w-4xl mx-auto text-center">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/50 border border-slate-700/50 text-xs text-risk-elevated font-mono mb-8 animate-fade-in-up">
-                            <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-risk-elevated opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-risk-elevated"></span>
-                            </span>
-                            LIVE FMCSA DATA FEED ACTIVE
+                    <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+
+                        {/* LEFT COLUMN */}
+                        <div className="flex-1 w-full text-center lg:text-left order-1">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-risk-elevated/10 border border-risk-elevated/20 text-xs font-bold font-mono text-risk-elevated mb-6 uppercase tracking-widest animate-pulse-slow">
+                                <span className="w-2 h-2 rounded-full bg-risk-elevated" />
+                                Public Beta Now Live
+                            </div>
+
+                            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tighter text-white mb-6 uppercase drop-shadow-2xl">
+                                {HERO_VARIANTS[ACTIVE_VARIANT].headline.split(' ').map((word, i) => (
+                                    word === "Risk" || word === "Audits" ?
+                                        <span key={i} className="text-transparent bg-clip-text bg-gradient-to-r from-risk-elevated to-amber-200 text-glow-amber pr-2">{word} </span> :
+                                        <span key={i}>{word} </span>
+                                ))}
+                            </h1>
+
+                            <p className="text-lg md:text-xl text-slate-400 max-w-lg mx-auto lg:mx-0 leading-relaxed mb-4">
+                                {HERO_VARIANTS[ACTIVE_VARIANT].subheadline}
+                            </p>
+                            <p className="text-md text-slate-500 max-w-lg mx-auto lg:mx-0 leading-relaxed mb-8">
+                                {copy.hero}
+                            </p>
+
+                            <div className="hidden lg:block relative z-20">
+                                <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} />
+                            </div>
                         </div>
 
-                        <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 tracking-tight leading-none">
-                            {HERO_VARIANTS['A'].headline}
-                        </h1>
+                        {/* RIGHT COLUMN (VISUAL) - ORDER 2 Mobile Stickiness Enforced */}
+                        <div className="flex-1 w-full order-2 lg:order-2">
+                            <div className="relative w-full aspect-video md:aspect-[4/3] tactical-glass rounded-lg overflow-hidden shadow-2xl group ring-1 ring-white/10">
+                                {/* Tactical Header */}
+                                <div className="h-8 bg-slate-950 border-b border-slate-800 flex items-center px-4 justify-between">
+                                    <div className="flex gap-1.5">
+                                        <div className="w-2.5 h-2.5 rounded-full bg-slate-700" />
+                                        <div className="w-2.5 h-2.5 rounded-full bg-slate-700" />
+                                        <div className="w-2.5 h-2.5 rounded-full bg-slate-700" />
+                                    </div>
+                                    <div className="font-mono text-[10px] text-risk-safe uppercase tracking-widest flex items-center gap-2">
+                                        <Activity className="w-3 h-3" /> System Active
+                                    </div>
+                                </div>
 
-                        <p className="text-xl md:text-2xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-                            {copy.hero}
-                        </p>
+                                {/* Dashboard Content */}
+                                <div className="p-6 relative h-full flex flex-col">
+                                    {/* Radar Animation */}
+                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] opacity-40 pointer-events-none">
+                                        <div className="w-full h-full radar-sweep" />
+                                    </div>
 
-                        <div className="max-w-3xl mx-auto">
+                                    <div className="grid grid-cols-2 gap-4 mb-4 z-10">
+                                        <div className="p-4 bg-slate-800/40 rounded border border-white/5 backdrop-blur-sm">
+                                            <div className="text-xs text-slate-400 font-mono mb-1">RISK LEVEL</div>
+                                            <div className="text-2xl font-bold font-mono text-risk-elevated flex items-center gap-2 text-glow-amber">
+                                                ELEVATED
+                                                <AlertTriangle className="w-5 h-5 text-risk-elevated" />
+                                            </div>
+                                        </div>
+                                        <div className="p-4 bg-slate-800/40 rounded border border-white/5 backdrop-blur-sm">
+                                            <div className="text-xs text-slate-400 font-mono mb-1">ISS TREND</div>
+                                            <div className="text-2xl font-bold font-mono text-risk-high flex items-center gap-2 text-glow-red">
+                                                +12.4%
+                                                <TrendingUp className="w-5 h-5 text-risk-high" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Graph */}
+                                    <div className="flex-1 bg-slate-900/30 rounded border border-white/5 relative overflow-hidden flex items-end px-2 pt-8 gap-1 z-10">
+                                        {[40, 35, 55, 45, 60, 75, 65, 80, 70, 85, 90, 85, 95].map((h, i) => (
+                                            <div key={i} className={`flex-1 rounded-t-sm transition-all duration-1000 ${h > 70 ? 'bg-risk-high shadow-[0_0_10px_rgba(239,68,68,0.3)]' : 'bg-emerald-500/50'}`} style={{ height: `${h}%` }} />
+                                        ))}
+                                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-risk-elevated/5 to-transparent w-[2px] h-full animate-scan-horizontal" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* MOBILE INPUT (Visible only on mobile, Order 3) */}
+                        <div className="w-full order-3 lg:hidden mt-4">
                             <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} />
                         </div>
 
-                        {/* Social Proof / Trust */}
-                        <div className="mt-12 flex items-center justify-center gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-                            <div className="text-slate-500 font-mono text-xs uppercase tracking-widest">{copy.authority}</div>
-                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* --- PHASE 3: WHAT INSPECTORS SEE --- */}
+            {/* --- NEW SECTION 1: WHAT INSPECTORS SEE --- */}
             <section className="py-24 bg-slate-900/50 border-y border-slate-800 relative">
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
                 <div className="container mx-auto px-6 relative z-10">
-                    <div className="grid md:grid-cols-2 gap-16 items-center">
-                        <div>
-                            <h2 className="text-sm font-mono text-risk-elevated mb-4 tracking-widest uppercase">The Invisible Threat</h2>
-                            <h3 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
-                                What Inspectors See <br /><span className="text-slate-500">(That You Don't)</span>
-                            </h3>
-                            <p className="text-lg text-slate-400 mb-8 leading-relaxed">
-                                Every roadside inspection, every warning letter, and every OOS violation feeds into a predictive score. Enforcement software flags you <i>before</i> they pull you over.
-                            </p>
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">What Inspectors See <span className="text-slate-500">(That You Don’t)</span></h2>
+                        <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+                            Every roadside inspection, every warning letter, and every OOS violation feeds into a predictive score. Enforcement software flags you <i>before</i> they pull you over.
+                        </p>
+                    </div>
 
-                            <div className="space-y-6">
-                                <div className="flex gap-4 p-4 rounded-lg bg-slate-950/50 border border-slate-800 hover:border-risk-elevated/30 transition-colors group">
-                                    <div className="mt-1 bg-slate-900 p-2 rounded text-risk-elevated group-hover:scale-110 transition-transform duration-300">
-                                        <AlertTriangle className="w-6 h-6" />
-                                    </div>
-                                    <div>
-                                        <h4 className="text-white font-bold mb-1">Hidden Violation Patterns</h4>
-                                        <p className="text-sm text-slate-500">One bad tire inspection in Ohio triggers brake checks in Texas. We verify these cross-state triggers.</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-4 p-4 rounded-lg bg-slate-950/50 border border-slate-800 hover:border-risk-elevated/30 transition-colors group">
-                                    <div className="mt-1 bg-slate-900 p-2 rounded text-risk-elevated group-hover:scale-110 transition-transform duration-300">
-                                        <TrendingUp className="w-6 h-6" />
-                                    </div>
-                                    <div>
-                                        <h4 className="text-white font-bold mb-1">ISS Score Velocity</h4>
-                                        <p className="text-sm text-slate-500">Your score might be "passing" today, but the 30-day trend predicts a conditional rating next month.</p>
-                                    </div>
-                                </div>
+                    <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
+                        {/* LEFT PANEL */}
+                        <div className="space-y-6">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-red-950/30 border border-red-500/20 text-xs font-bold font-mono text-red-500 uppercase tracking-widest">
+                                <AlertTriangle className="w-3 h-3" /> Audit Triggers Detected
+                            </div>
+                            <h3 className="text-3xl font-bold text-white">Overwhelming Noise</h3>
+                            <ul className="space-y-4">
+                                <li className="flex items-start gap-3 text-slate-400">
+                                    <XCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                                    <span>Clustered violations</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-400">
+                                    <XCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                                    <span>Rising OOS trends</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-400">
+                                    <XCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                                    <span>Patterns tied to past audits</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* RIGHT PANEL */}
+                        <div className="space-y-6">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-emerald-950/30 border border-emerald-500/20 text-xs font-bold font-mono text-emerald-500 uppercase tracking-widest">
+                                <Radar className="w-3 h-3" /> Risk Radar Analysis
+                            </div>
+                            <h3 className="text-3xl font-bold text-white">Actionable Intelligence</h3>
+                            <ul className="space-y-4">
+                                <li className="flex items-start gap-3 text-slate-400">
+                                    <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                                    <span>Predictive score stabilization</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-400">
+                                    <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                                    <span>Plain-English alerts</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-400">
+                                    <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                                    <span>Early intervention signals</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* --- NEW SECTION 2: YOU CANT FIX WHAT YOU CANT SEE --- */}
+            <section className="py-24 bg-slate-950 border-y border-slate-800 relative">
+                <div className="container mx-auto px-6 relative z-10">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl font-bold text-white mb-4">You Can’t Fix What You Can’t See</h2>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                        {/* LEFT CARD - BEFORE */}
+                        <div className="bg-slate-900/50 border border-slate-800 p-8 rounded-xl relative overflow-hidden h-full">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-red-500/50" />
+                            <div className="flex justify-between items-start mb-6">
+                                <div className="text-slate-500 font-mono text-sm uppercase tracking-wider">High Exposure</div>
+                                <div className="text-red-500 font-bold font-mono text-lg">Rising</div>
+                            </div>
+
+                            <div className="mb-4">
+                                <div className="text-6xl font-bold text-slate-300 font-mono">78</div>
+                            </div>
+
+                            <div className="text-slate-400 text-sm border-t border-slate-800 pt-4 mt-4">
+                                Unmonitored inspection patterns and blind spots.
                             </div>
                         </div>
 
-                        <div className="relative">
-                            <div className="absolute -inset-4 bg-gradient-to-tr from-risk-elevated/20 to-transparent rounded-2xl blur-2xl opacity-50" />
-                            <div className="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow-2xl relative">
-                                <div className="p-4 border-b border-slate-800 bg-slate-900/50 flex justify-between items-center">
-                                    <div className="flex gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-red-500/50" />
-                                        <div className="w-3 h-3 rounded-full bg-amber-500/50" />
-                                        <div className="w-3 h-3 rounded-full bg-green-500/50" />
-                                    </div>
-                                    <div className="text-xs font-mono text-slate-500">ENFORCEMENT VIEW SIMULATION</div>
-                                </div>
-                                <div className="p-8 space-y-6">
-                                    <div className="flex justify-between items-end border-b border-slate-800 pb-6">
-                                        <div>
-                                            <div className="text-xs text-slate-500 uppercase tracking-wider mb-2">Target Vehicle</div>
-                                            <div className="text-2xl font-mono text-white">DOT #382910</div>
-                                        </div>
-                                        <div className="text-right">
-                                            <div className="text-xs text-slate-500 uppercase tracking-wider mb-2">ISS Score</div>
-                                            <div className="text-4xl font-mono font-bold text-red-500">92</div>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-4">
-                                        <div className="bg-red-500/10 border border-red-500/20 p-3 rounded flex justify-between items-center">
-                                            <span className="text-red-400 text-sm font-bold flex items-center gap-2">
-                                                <XCircle className="w-4 h-4" /> INSPECTION REQUIRED
-                                            </span>
-                                            <span className="text-xs text-red-400/70 font-mono">PRIORITY 1</span>
-                                        </div>
-                                        <div className="bg-slate-900 border border-slate-800 p-3 rounded flex justify-between items-center opacity-50">
-                                            <span className="text-slate-400 text-sm font-medium flex items-center gap-2">
-                                                <CheckCircle2 className="w-4 h-4" /> WEIGH STATION BYPASS
-                                            </span>
-                                            <span className="text-xs text-slate-600 font-mono">DENIED</span>
-                                        </div>
-                                    </div>
-                                </div>
+                        {/* RIGHT CARD - AFTER */}
+                        <div className="bg-slate-900/80 border border-emerald-500/30 p-8 rounded-xl relative overflow-hidden h-full shadow-[0_0_50px_-10px_rgba(16,185,129,0.2)]">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500" />
+                            <div className="flex justify-between items-start mb-6">
+                                <div className="text-emerald-400 font-mono text-sm uppercase tracking-wider font-bold">Optimized</div>
+                                <div className="text-emerald-400 font-bold font-mono text-lg">Stabilized</div>
+                            </div>
+
+                            <div className="mb-4">
+                                <div className="text-6xl font-bold text-white font-mono">61</div>
+                            </div>
+
+                            <div className="text-slate-400 text-sm border-t border-slate-800 pt-4 mt-4">
+                                Early alerts and intervention signals.
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* --- PHASE 9: BEFORE / AFTER TRANSFORMATION --- */}
-            <RiskTransformationSection />
-
-            {/* --- PHASE 3: FEATURES GRID --- */}
-            <section className="py-24 bg-slate-950 border-t border-slate-800">
+            {/* HOW IT WORKS */}
+            <section className="py-24 border-b border-slate-800 bg-brand-dark">
                 <div className="container mx-auto px-6">
-                    <div className="text-center max-w-2xl mx-auto mb-16">
-                        <h2 className="text-3xl font-bold text-white mb-4">Complete Compliance Intelligence</h2>
-                        <p className="text-slate-400">Everything you need to stay off the radar and keep your trucks moving.</p>
+                    <div className="grid md:grid-cols-3 gap-12 text-center">
+                        <div className="group">
+                            <div className="w-16 h-16 mx-auto bg-slate-900 rounded-lg flex items-center justify-center border border-slate-700 mb-6 font-mono text-2xl font-bold text-risk-elevated group-hover:bg-risk-elevated group-hover:text-brand-dark transition-colors">01</div>
+                            <h4 className="text-xl font-bold text-white mb-2">Enter DOT Number</h4>
+                            <p className="text-slate-400">Instant connection to public FMCSA records.</p>
+                        </div>
+                        <div className="group">
+                            <div className="w-16 h-16 mx-auto bg-slate-900 rounded-lg flex items-center justify-center border border-slate-700 mb-6 font-mono text-2xl font-bold text-risk-elevated group-hover:bg-risk-elevated group-hover:text-brand-dark transition-colors">02</div>
+                            <h4 className="text-xl font-bold text-white mb-2">We Analyze Signals</h4>
+                            <p className="text-slate-400">Algorithms scan for patterns, not just single violations.</p>
+                        </div>
+                        <div className="group">
+                            <div className="w-16 h-16 mx-auto bg-slate-900 rounded-lg flex items-center justify-center border border-slate-700 mb-6 font-mono text-2xl font-bold text-risk-elevated group-hover:bg-risk-elevated group-hover:text-brand-dark transition-colors">03</div>
+                            <h4 className="text-xl font-bold text-white mb-2">See Risk Trends</h4>
+                            <p className="text-slate-400">Get alerted before your safety rating takes a hit.</p>
+                        </div>
                     </div>
+                </div>
+            </section>
 
+            {/* FEATURE GRID */}
+            <section className="py-24 bg-slate-900/50">
+                <div className="container mx-auto px-6">
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <FeatureCard
-                            icon={Activity}
-                            title="Real-Time ISS Tracking"
-                            desc="Monitor your Inspection Selection System score daily. Know exactly when you cross the alert threshold."
+                            icon={Eye}
+                            title="Know before scores jump"
+                            desc="Prevents surprise score jumps by watching 24/7."
+                        />
+                        <FeatureCard
+                            icon={TrendingUp}
+                            title="Stop violations from compounding"
+                            desc="Prevents creeping violation patterns from escalating."
                         />
                         <FeatureCard
                             icon={Siren}
-                            title="Violation Alerts"
-                            desc="Instant notifications when a new inspection hits your record. Contest bad data before it sticks."
-                        />
-                        <FeatureCard
-                            icon={Eye}
-                            title="Competitor Spy"
-                            desc="See how your safety score stacks up against other carriers in your region and size class."
+                            title="Intervene before audits"
+                            desc="Stops silent violations from triggering an audit."
                         />
                         <FeatureCard
                             icon={Lock}
-                            title="Audit Prevention"
-                            desc="Actionable steps to fix safety management controls coming directly from potential audit triggers."
+                            title="Never lose proof at renewal"
+                            desc="Secures your history for instant insurance validation."
                         />
                     </div>
+                </div>
+            </section>
+
+            {/* --- PHASE 4: MID-PAGE AUTHORITY (Image 3) --- */}
+            <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
+                <Image
+                    src="/images/clean-highway.jpg"
+                    alt="Safe Operations"
+                    fill
+                    className="object-cover opacity-60 grayscale"
+                />
+                <div className="absolute inset-0 bg-brand-dark/80 mix-blend-multiply" />
+                <div className="absolute inset-0 bg-grid-slate opacity-30" />
+                <div className="relative z-10 text-center px-6">
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight uppercase">
+                        Enterprise Risk Intelligence <br /> <span className="text-risk-safe">For Every Fleet Size</span>
+                    </h2>
+                    <p className="text-slate-300 text-lg max-w-2xl mx-auto">
+                        Whether you run 1 truck or 100, the FMCSA watches you the same way. So do we.
+                    </p>
                 </div>
             </section>
 
             {/* --- PHASE 6: TESTIMONIALS (Image 4 BG) --- */}
             <section className="py-24 border-t border-slate-800 relative overflow-hidden bg-slate-950 min-h-[600px] flex items-center">
                 <div className="absolute inset-0 z-0">
-                    <div className="absolute inset-0 bg-slate-950/80 z-10" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent z-10" />
-                    {/* Placeholder for uploaded_media_1 (Background) if needed, sticking to CSS for now to be safe */}
+                    <Image
+                        src="/images/testimonial-trucks.jpg"
+                        alt="Testimonial Background"
+                        fill
+                        className="object-cover opacity-100 mix-blend-normal"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/80 to-brand-dark/40" />
+                    <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay" />
                 </div>
 
-                <div className="container mx-auto px-6 relative z-20">
-                    <div className="max-w-4xl mx-auto">
-                        <div className="relative">
-                            {/* Giant Quote Icon */}
-                            <div className="absolute -top-12 -left-12 text-risk-elevated/10 opacity-50">
-                                <svg width="120" height="120" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11C14.017 11.5523 13.5693 12 13.017 12H12.017V5H22.017V15C22.017 18.3137 19.3307 21 16.017 21H14.017ZM5.0166 21L5.0166 18C5.0166 16.8954 5.91203 16 7.0166 16H10.0166C10.5689 16 11.0166 15.5523 11.0166 15V9C11.0166 8.44772 10.5689 8 10.0166 8H6.0166C5.46432 8 5.0166 8.44772 5.0166 9V11C5.0166 11.5523 4.56889 12 4.0166 12H3.0166V5H13.0166V15C13.0166 18.3137 10.3303 21 7.0166 21H5.0166Z" />
-                                </svg>
+                <div className="container mx-auto px-6 relative z-10">
+                    <div className="max-w-3xl mx-auto">
+                        <div className="tactical-glass p-8 md:p-12 rounded-2xl relative shadow-[0_0_60px_-10px_rgba(245,158,11,0.5)] border border-risk-elevated/50">
+                            {/* Quote Icon */}
+                            <div className="absolute top-6 left-6 text-risk-elevated/20">
+                                <FileText className="w-12 h-12" />
                             </div>
 
-                            <div className="relative bg-slate-900/40 backdrop-blur-md border border-slate-700/50 p-12 rounded-2xl shadow-2xl min-h-[300px] flex flex-col justify-center transform transition-all duration-700 hover:border-risk-elevated/30 group">
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-risk-elevated to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
+                            <div className="relative pt-6 text-center min-h-[200px] flex flex-col justify-center">
+                                <p className="text-xl md:text-2xl font-medium text-slate-200 leading-relaxed mb-6 italic">
+                                    "{testimonials[activeTestimonial].quote}"
+                                </p>
 
-                                <div key={activeTestimonial} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                    <p className="text-2xl md:text-4xl font-bold text-white mb-8 leading-snug tracking-tight">
-                                        "{testimonials[activeTestimonial].quote}"
-                                    </p>
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-full bg-risk-elevated text-brand-dark flex items-center justify-center font-bold text-xl">
-                                            {testimonials[activeTestimonial].role.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <div className="text-white font-bold">{testimonials[activeTestimonial].role}</div>
-                                            <div className="text-risk-elevated text-sm font-mono">{testimonials[activeTestimonial].size || "Fleet"}</div>
-                                        </div>
+                                <div className="flex flex-col items-center animate-fade-in-up">
+                                    <div className="text-risk-elevated font-bold uppercase tracking-wider text-sm mb-1">
+                                        {testimonials[activeTestimonial].role}
+                                    </div>
+                                    <div className="text-slate-500 font-mono text-sm mb-2">
+                                        Operation Size: {testimonials[activeTestimonial].size}
                                     </div>
                                     {testimonials[activeTestimonial].outcome && (
-                                        <div className="mt-8 pt-6 border-t border-slate-800 flex items-center gap-3">
-                                            <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                                            <span className="text-slate-300 font-medium italic">
-                                                Outcome: {testimonials[activeTestimonial].outcome}
-                                            </span>
+                                        <div className="text-slate-400 text-sm italic border-t border-slate-800 pt-2 mt-2">
+                                            "{testimonials[activeTestimonial].outcome}"
                                         </div>
                                     )}
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="flex justify-center gap-2 mt-8">
-                            {testimonials.map((_, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => setActiveTestimonial(i)}
-                                    className={`w-2 h-2 rounded-full transition-all duration-300 ${i === activeTestimonial ? 'bg-risk-elevated w-8' : 'bg-slate-700 hover:bg-slate-500'}`}
-                                />
-                            ))}
+                            {/* Indicators */}
+                            <div className="flex justify-center gap-3 mt-10">
+                                {testimonials.map((_, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => setActiveTestimonial(i)}
+                                        className={`h-1.5 rounded-full transition-all duration-300 ${i === activeTestimonial ? 'bg-risk-elevated w-8' : 'bg-slate-700 w-2 hover:bg-slate-600'
+                                            }`}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* FINAL CTA (Image 1 BG) */}
-            <section className="py-32 relative overflow-hidden bg-risk-elevated">
-                <div className="absolute inset-0 mix-blend-multiply opacity-20">
+            {/* --- PHASE 7: HIGH CONVERSION BLOCK (Image 5 BG) --- */}
+            <section className="py-32 relative overflow-hidden min-h-[600px] flex items-center">
+                {/* Image 5 Background - Brightened */}
+                <div className="absolute inset-0 z-0">
                     <Image
-                        src="https://images.unsplash.com/photo-1519003722824-19eee9832863" // Example semi-truck texture
-                        alt="Texture"
+                        src="/images/cta-sunset.jpg"
+                        alt="Final Call"
                         fill
-                        className="object-cover grayscale"
+                        className="object-cover opacity-100 mix-blend-normal"
                     />
+                    {/* Lighter Gradient for Confidence */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-brand-dark/80 via-brand-dark/60 to-brand-dark/80" />
+                    <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay" />
                 </div>
-                <div className="container mx-auto px-6 relative z-10 text-center">
-                    <h2 className="text-4xl md:text-6xl font-bold text-brand-dark mb-6 tracking-tight">
-                        Don't Let Compliance Slow You Down.
-                    </h2>
-                    <p className="text-brand-dark/80 text-xl font-medium mb-10 max-w-2xl mx-auto">
-                        Get the same intelligence FMCSA uses to audit you. Free for 7 days.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button size="lg" className="bg-brand-dark text-white hover:bg-slate-800 text-lg px-12 h-16 rounded-xl font-bold uppercase tracking-wide shadow-2xl">
-                            Start Free Risk Scan
-                        </Button>
-                        <Button size="lg" variant="outline" className="border-brand-dark text-brand-dark hover:bg-brand-dark/10 text-lg px-12 h-16 rounded-xl font-bold uppercase tracking-wide">
-                            View Sample Report
-                        </Button>
+
+                <div className="container mx-auto px-6 relative z-10">
+                    <div className="tactical-glass rounded-3xl p-8 md:p-20 text-center shadow-2xl max-w-5xl mx-auto">
+                        <h2 className="text-3xl md:text-6xl font-bold text-white mb-6 uppercase tracking-tight">
+                            Know Your DOT Risk <br /> <span className="text-slate-400">Before It Becomes a Problem</span>
+                        </h2>
+
+                        {/* Testimonial Snippet */}
+                        <div className="mb-10 text-risk-elevated font-mono text-sm tracking-wide uppercase">
+                            "{copy.authority}"
+                        </div>
+
+                        <div className="max-w-3xl mx-auto">
+                            <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} />
+                        </div>
                     </div>
-                    <p className="mt-6 text-brand-dark/60 font-mono text-xs uppercase tracking-widest">
-                        {copy.trust || "No credit card required for initial scan."}
-                    </p>
                 </div>
             </section>
 
@@ -511,82 +649,5 @@ function FeatureCard({ icon: Icon, title, desc }: { icon: any, title: string, de
             <h3 className="text-white font-bold mb-3">{title}</h3>
             <p className="text-slate-400 text-sm leading-relaxed">{desc}</p>
         </div>
-    )
-}
-
-function RiskTransformationSection() {
-    const [isVisible, setIsVisible] = useState(false);
-    const ref = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setIsVisible(true);
-                }
-            },
-            { threshold: 0.4 }
-        );
-        if (ref.current) observer.observe(ref.current);
-        return () => observer.disconnect();
-    }, []);
-
-    return (
-        <section className="py-24 bg-slate-950 relative border-t border-slate-800" ref={ref}>
-            <div className="container mx-auto px-6">
-                <div className="text-center mb-12">
-                    <h2 className="text-3xl font-bold text-white mb-4">You Can’t Fix What You Can’t See</h2>
-                    <p className="text-slate-400 max-w-2xl mx-auto">
-                        Most carriers don’t realize risk is rising until enforcement already has eyes on them.
-                    </p>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                    {/* BEFORE CARD */}
-                    <div className="bg-slate-900/50 border border-slate-800 p-8 rounded-xl relative overflow-hidden group h-full">
-                        <div className="absolute top-0 left-0 w-full h-1 bg-red-500/50" />
-                        <div className="flex justify-between items-start mb-6">
-                            <div className="text-slate-500 font-mono text-sm uppercase tracking-wider">Before Risk Radar</div>
-                            <div className="bg-red-500/10 text-red-500 px-3 py-1 rounded text-xs font-bold border border-red-500/20">HIGH EXPOSURE</div>
-                        </div>
-
-                        <div className="flex items-end gap-4 mb-4">
-                            <div className="text-6xl font-bold text-slate-300 font-mono">78</div>
-                            <div className="mb-2 flex items-center gap-1 text-red-400 font-bold">
-                                <TrendingUp className="w-5 h-5" /> Rising
-                            </div>
-                        </div>
-
-                        <div className="text-slate-400 text-sm border-t border-slate-800 pt-4 mt-4">
-                            Unmonitored inspection patterns & blindspots.
-                        </div>
-                    </div>
-
-                    {/* AFTER CARD */}
-                    <div className={`bg-slate-900/80 border border-emerald-500/30 p-8 rounded-xl relative overflow-hidden transition-all duration-1000 h-full ${isVisible ? 'shadow-[0_0_50px_-10px_rgba(16,185,129,0.2)]' : ''}`}>
-                        <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500" />
-                        <div className="flex justify-between items-start mb-6">
-                            <div className="text-emerald-400 font-mono text-sm uppercase tracking-wider font-bold">After Risk Radar</div>
-                            <div className={`bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded text-xs font-bold border border-emerald-500/20 transition-all duration-700 delay-500 ${isVisible ? 'opacity-100 scale-100' : 'opacity-50 scale-95'}`}>OPTIMIZED</div>
-                        </div>
-
-                        <div className="flex items-end gap-4 mb-4">
-                            <div className="relative">
-                                <div className={`text-6xl font-bold text-white font-mono transition-all duration-[2000ms] ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-                                    {isVisible ? "61" : "78"}
-                                </div>
-                            </div>
-                            <div className={`mb-2 flex items-center gap-1 text-emerald-400 font-bold transition-all duration-700 delay-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}>
-                                <Activity className="w-5 h-5" /> Stabilized
-                            </div>
-                        </div>
-
-                        <div className="text-slate-400 text-sm border-t border-slate-800 pt-4 mt-4">
-                            Early alerts + intervention signals.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
     )
 }
