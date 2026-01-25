@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useSubscription, isPremium } from '@/lib/subscriptions';
 import { PricingModal } from '@/components/pricing-modal';
+import { TrustScreen } from '@/components/trust-screen';
 import { useRouter } from 'next/navigation';
 
 // --- PHASE 9: HERO VARIANTS ---
@@ -794,52 +795,7 @@ function HeroInput({ dotNumber, setDotNumber, isTyping, copy, variant = 'standar
     };
 
     if (scanState === 'complete') {
-        return (
-            <div className="w-full text-left animate-in fade-in zoom-in duration-500">
-                <div className="bg-slate-900/90 border border-slate-700 rounded-xl overflow-hidden shadow-2xl relative">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-risk-elevated to-red-500" />
-                    <div className="p-6">
-                        <div className="flex justify-between items-start mb-6">
-                            <div>
-                                <div className="text-slate-500 text-xs font-mono mb-1">DOT NUMBER ANALYZED</div>
-                                <div className="text-white font-mono text-xl tracking-widest">{dotNumber}</div>
-                            </div>
-                            <div className="bg-risk-elevated text-brand-dark px-3 py-1 rounded font-bold text-sm">
-                                RISK DETECTED
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4 mb-6">
-                            <div className="bg-slate-950 p-3 rounded border border-slate-800">
-                                <div className="text-slate-500 text-xs mb-1">ISS TREND</div>
-                                <div className="text-red-400 font-bold font-mono text-lg flex items-center gap-1">
-                                    <TrendingUp className="w-4 h-4" /> +15%
-                                </div>
-                            </div>
-                            <div className="bg-slate-950 p-3 rounded border border-slate-800">
-                                <div className="text-slate-500 text-xs mb-1">AUDIT RISK</div>
-                                <div className="text-risk-elevated font-bold font-mono text-lg">ELEVATED</div>
-                            </div>
-                        </div>
-
-                        <div className="bg-red-500/10 border border-red-500/20 p-3 rounded mb-6 text-sm text-red-200 flex items-center gap-2">
-                            <AlertTriangle className="w-4 h-4 shrink-0" />
-                            <span>Clustered OOS violations detected.</span>
-                        </div>
-
-
-                        <Button
-                            onClick={handleViewFullBreakdown}
-                            className="w-full h-12 bg-risk-elevated hover:bg-amber-400 text-brand-dark font-bold rounded text-lg uppercase tracking-wide">
-                            View Full Risk Breakdown <ArrowRight className="w-5 h-5 ml-2" />
-                        </Button>
-
-                        {/* Local Modal for Hero Scope */}
-                        <PricingModal open={showPricing} onOpenChange={setShowPricing} />
-                    </div>
-                </div>
-            </div>
-        )
+        return <TrustScreen dotNumber={dotNumber} />;
     }
 
     return (
