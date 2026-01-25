@@ -554,6 +554,30 @@ export default function ClientPage({ copy }: { copy: any }) {
                 </div>
             </section>
 
+            {/* FINAL CTA REINFORCEMENT (Inserted per Final Optimization Command) */}
+            <section className="py-24 bg-slate-950 border-b border-slate-800 relative z-20">
+                <div className="container mx-auto px-6 text-center">
+                    <div className="max-w-3xl mx-auto">
+                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 uppercase tracking-tight">
+                            See What Inspectors See About Your DOT Number
+                        </h2>
+                        <p className="text-slate-400 text-lg md:text-xl mb-10 leading-relaxed">
+                            Before inspections increase. Before insurance reacts. Before it gets expensive.
+                        </p>
+
+                        <div className="flex flex-col items-center gap-3">
+                            <Button
+                                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                                className="h-16 px-12 bg-amber-500 hover:bg-amber-400 text-brand-dark font-bold text-xl uppercase tracking-wide shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all"
+                            >
+                                Check My DOT Risk <ArrowRight className="w-6 h-6 ml-2" />
+                            </Button>
+                            <span className="text-xs text-slate-500 font-mono">Takes under 60 seconds • No credit card required</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* --- RESTORED SECTION 1: VISUAL CHAOS/CONTROL (Added back per request) --- */}
             <section className="py-24 bg-slate-900/50 border-y border-slate-800 relative">
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
