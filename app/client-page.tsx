@@ -554,6 +554,98 @@ export default function ClientPage({ copy }: { copy: any }) {
                 </div>
             </section>
 
+            {/* NEW SECTION: TESTIMONIAL / PROOF (Inserted per 10/10 Authority Command) */}
+            <section className="py-24 bg-slate-900 border-b border-slate-800 relative z-20">
+                <div className="container mx-auto px-6">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 uppercase tracking-tight">
+                            What Operators Are Seeing
+                        </h2>
+                        <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+                            Early users using DOT Risk Radar to understand inspection and compliance risk before it escalates
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-8 mb-8">
+                        {/* Card 1 */}
+                        <div className="bg-slate-950 p-8 rounded-xl border border-slate-800 relative">
+                            <div className="text-amber-500 mb-6">
+                                <FileText className="w-8 h-8" />
+                            </div>
+                            <p className="text-slate-300 italic mb-8 leading-relaxed">
+                                “I always assumed inspections were random. Seeing inspection patterns and risk signals laid out like this completely changed how I look at compliance.”
+                            </p>
+                            <div className="mt-auto border-t border-slate-800 pt-4">
+                                <div className="text-white font-bold text-sm uppercase tracking-wide">Owner-Operator</div>
+                                <div className="text-slate-500 text-xs font-mono">Midwest</div>
+                            </div>
+                        </div>
+
+                        {/* Card 2 */}
+                        <div className="bg-slate-950 p-8 rounded-xl border border-risk-elevated/20 relative shadow-[0_0_20px_rgba(245,158,11,0.05)]">
+                            <div className="text-risk-elevated mb-6">
+                                <Activity className="w-8 h-8" />
+                            </div>
+                            <p className="text-white italic mb-8 leading-relaxed font-medium">
+                                “DOT Risk Radar showed issues trending up before they felt serious. That visibility alone is worth it.”
+                            </p>
+                            <div className="mt-auto border-t border-risk-elevated/20 pt-4">
+                                <div className="text-white font-bold text-sm uppercase tracking-wide">Small Fleet Operator</div>
+                                <div className="text-slate-500 text-xs font-mono">3 trucks</div>
+                            </div>
+                        </div>
+
+                        {/* Card 3 */}
+                        <div className="bg-slate-950 p-8 rounded-xl border border-slate-800 relative">
+                            <div className="text-amber-500 mb-6">
+                                <TrendingUp className="w-8 h-8" />
+                            </div>
+                            <p className="text-slate-300 italic mb-8 leading-relaxed">
+                                “Most tools just show scores. This shows movement. That’s the difference.”
+                            </p>
+                            <div className="mt-auto border-t border-slate-800 pt-4">
+                                <div className="text-white font-bold text-sm uppercase tracking-wide">Carrier Safety Manager</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="text-center text-xs text-slate-600 uppercase font-mono tracking-widest">
+                        Testimonials represent early users and illustrative feedback. Results may vary.
+                    </div>
+                </div>
+            </section>
+
+            {/* NEW SECTION: CREDIBILITY / AUTHORITY STRIP (Inserted per 10/10 Authority Command) */}
+            <section className="py-16 bg-slate-950 border-b border-slate-800 relative z-20">
+                <div className="container mx-auto px-6 max-w-5xl">
+                    <div className="flex flex-col md:flex-row items-center gap-12">
+                        <div className="flex-1">
+                            <p className="text-slate-300 text-lg leading-relaxed mb-6">
+                                DOT Risk Radar analyzes public FMCSA inspection, violation, and enforcement data — the same data inspectors and insurers rely on — and applies pattern-based weighting to surface early risk indicators.
+                            </p>
+                            <p className="text-white font-medium text-lg leading-relaxed">
+                                Built for owner-operators and small fleets who don’t have compliance departments — but still carry the same enforcement risk.
+                            </p>
+                        </div>
+
+                        <div className="w-full md:w-auto flex flex-col gap-4">
+                            <div className="flex items-center gap-3 text-slate-400 font-mono text-xs uppercase tracking-wider bg-slate-900 border border-slate-800 px-4 py-3 rounded">
+                                <Database className="w-4 h-4 text-emerald-500" /> FMCSA public data sources
+                            </div>
+                            <div className="flex items-center gap-3 text-slate-400 font-mono text-xs uppercase tracking-wider bg-slate-900 border border-slate-800 px-4 py-3 rounded">
+                                <Activity className="w-4 h-4 text-emerald-500" /> Pattern-based risk modeling
+                            </div>
+                            <div className="flex items-center gap-3 text-slate-400 font-mono text-xs uppercase tracking-wider bg-slate-900 border border-slate-800 px-4 py-3 rounded">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Built for small fleets & owner-operators
+                            </div>
+                            <div className="flex items-center gap-3 text-slate-400 font-mono text-xs uppercase tracking-wider bg-slate-900 border border-slate-800 px-4 py-3 rounded">
+                                <Lock className="w-4 h-4 text-emerald-500" /> No contracts • No hardware • No fleet minimums
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* FINAL CTA REINFORCEMENT (Inserted per Final Optimization Command) */}
             <section className="py-24 bg-slate-950 border-b border-slate-800 relative z-20">
                 <div className="container mx-auto px-6 text-center">
