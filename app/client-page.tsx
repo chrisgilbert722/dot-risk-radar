@@ -20,7 +20,9 @@ import {
     TrendingUp,
     BarChart3,
     Eye,
-    ChevronDown
+    ChevronDown,
+    Database,
+    ShieldAlert
 } from 'lucide-react';
 import { useSubscription, isPremium } from '@/lib/subscriptions';
 import { PricingModal } from '@/components/pricing-modal';
@@ -423,6 +425,132 @@ export default function ClientPage({ copy }: { copy: any }) {
                             <span className="text-xs text-slate-500 font-mono">Takes under 60 seconds • No credit card required</span>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            {/* NEW SECTION: TRUSTWORTHINESS (Inserted per 10/10 command) */}
+            <section className="py-24 bg-slate-900 border-b border-slate-800 relative z-20">
+                <div className="container mx-auto px-6">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 uppercase tracking-tight">
+                            Why DOT Risk Radar Is Different
+                        </h2>
+                        <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+                            Built around how inspections actually happen — not how drivers are told they happen
+                        </p>
+                    </div>
+
+                    <div className="max-w-4xl mx-auto space-y-8">
+                        {/* Block 1: Data Authority */}
+                        <div className="bg-slate-950 p-8 rounded-xl border border-slate-800">
+                            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                <Database className="w-5 h-5 text-amber-500" /> Data Authority
+                            </h3>
+                            <p className="text-slate-300 leading-relaxed mb-4">
+                                DOT Risk Radar analyzes public FMCSA inspection, violation, and enforcement data — the same sources inspectors rely on — and applies weighting based on how enforcement patterns actually behave over time.
+                            </p>
+                            <div className="text-xs text-slate-500 font-mono uppercase tracking-wide">
+                                We don’t invent data. We interpret it the way enforcement does.
+                            </div>
+                        </div>
+
+                        {/* Block 2: Pattern vs Snapshot */}
+                        <div className="bg-slate-950 p-8 rounded-xl border border-slate-800">
+                            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                <Activity className="w-5 h-5 text-amber-500" /> Pattern vs Snapshot
+                            </h3>
+                            <p className="text-slate-300 leading-relaxed mb-6">
+                                Most tools show a snapshot. Inspectors look for movement.
+                            </p>
+                            <div className="grid md:grid-cols-2 gap-4 mb-6">
+                                <div className="flex items-center gap-3 text-slate-400 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                                    <span>Rising inspection frequency</span>
+                                </div>
+                                <div className="flex items-center gap-3 text-slate-400 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                                    <span>Violation velocity (are issues increasing?)</span>
+                                </div>
+                                <div className="flex items-center gap-3 text-slate-400 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                                    <span>Repeated violation categories</span>
+                                </div>
+                                <div className="flex items-center gap-3 text-slate-400 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                                    <span>OOS-adjacent indicators</span>
+                                </div>
+                            </div>
+                            <div className="text-sm text-white font-bold border-t border-slate-800 pt-4">
+                                DOT Risk Radar is built to surface these patterns early.
+                            </div>
+                        </div>
+
+                        {/* Block 3: Proof by Scenario (CRITICAL) */}
+                        <div className="bg-slate-950/50 p-8 rounded-xl border border-risk-elevated/20 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-1 h-full bg-risk-elevated" />
+                            <h3 className="text-xl font-bold text-white mb-6 uppercase tracking-wider flex items-center gap-2">
+                                <ShieldAlert className="w-5 h-5 text-risk-elevated" /> Real-World Risk Example
+                            </h3>
+
+                            <div className="grid md:grid-cols-2 gap-8 mb-6">
+                                <div>
+                                    <div className="text-xs text-slate-500 font-mono uppercase tracking-wide mb-2">Carrier Profile</div>
+                                    <p className="text-slate-300 italic mb-6">
+                                        “Small carrier with no major violations, but increasing inspection frequency and repeat minor issues.”
+                                    </p>
+                                </div>
+                                <div>
+                                    <div className="text-xs text-risk-elevated font-mono uppercase tracking-wide mb-2">What DOT Risk Radar Flagged</div>
+                                    <ul className="space-y-2">
+                                        <li className="flex items-start gap-2 text-sm text-white">
+                                            <CheckCircle2 className="w-4 h-4 text-risk-elevated shrink-0 mt-0.5" />
+                                            <span>Inspection frequency trending upward</span>
+                                        </li>
+                                        <li className="flex items-start gap-2 text-sm text-white">
+                                            <CheckCircle2 className="w-4 h-4 text-risk-elevated shrink-0 mt-0.5" />
+                                            <span>Repeated violation category appearing across inspections</span>
+                                        </li>
+                                        <li className="flex items-start gap-2 text-sm text-white">
+                                            <CheckCircle2 className="w-4 h-4 text-risk-elevated shrink-0 mt-0.5" />
+                                            <span>Elevated enforcement attention compared to peer carriers</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="bg-risk-elevated/10 p-4 rounded border border-risk-elevated/20 mb-4">
+                                <div className="text-risk-elevated font-bold text-sm mb-1 uppercase tracking-wide">Why This Matters</div>
+                                <p className="text-slate-300 text-sm">
+                                    This is how carriers get flagged — quietly — before problems feel serious.
+                                </p>
+                            </div>
+
+                            <div className="text-[10px] text-slate-600 uppercase font-mono tracking-wide">
+                                Example is illustrative. DOT Risk Radar does not predict individual inspections.
+                            </div>
+                        </div>
+
+                        {/* Block 4: Who This Is For */}
+                        <div className="bg-slate-950 p-8 rounded-xl border border-slate-800 text-center">
+                            <h3 className="text-xl font-bold text-white mb-6">Who This Is For</h3>
+                            <div className="flex flex-wrap justify-center gap-3 mb-8">
+                                <span className="px-3 py-1 bg-slate-900 border border-slate-700 rounded-full text-sm text-slate-300">Owner-operators</span>
+                                <span className="px-3 py-1 bg-slate-900 border border-slate-700 rounded-full text-sm text-slate-300">Small fleets</span>
+                                <span className="px-3 py-1 bg-slate-900 border border-slate-700 rounded-full text-sm text-slate-300">Carriers without compliance departments</span>
+                            </div>
+                            <p className="text-slate-500 text-sm mb-0">
+                                It is not built for enterprise dashboards or long-term contracts.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="text-center mt-12">
+                        <div className="text-risk-elevated text-sm font-mono uppercase tracking-widest">
+                            No contracts. No hardware. No fleet minimums.<br />
+                            Just visibility into your real DOT risk — before it becomes expensive.
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
