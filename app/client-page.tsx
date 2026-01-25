@@ -282,6 +282,150 @@ export default function ClientPage({ copy }: { copy: any }) {
                 </div>
             </section>
 
+            {/* NEW SECTION: TRUST COMPARISON (Inserted per final command) */}
+            <section className="py-24 bg-slate-950 border-b border-slate-800 relative z-20">
+                <div className="container mx-auto px-6">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 uppercase tracking-tight">
+                            You Can’t Fix What You Can’t See
+                        </h2>
+                        <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+                            What DOT inspectors see about your company — before they ever pull you over
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-8 mb-16">
+                        {/* Column 1 */}
+                        <div className="bg-slate-900/50 p-8 rounded-xl border border-slate-800 flex flex-col">
+                            <h3 className="text-xl font-bold text-slate-300 mb-6 uppercase tracking-wider text-center">What You Think</h3>
+                            <ul className="space-y-4 mb-8 flex-1">
+                                <li className="flex items-start gap-3 text-slate-500">
+                                    <XCircle className="w-5 h-5 shrink-0 text-slate-600" />
+                                    <span>“My CSA score looks fine”</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-500">
+                                    <XCircle className="w-5 h-5 shrink-0 text-slate-600" />
+                                    <span>“We passed the last inspection”</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-500">
+                                    <XCircle className="w-5 h-5 shrink-0 text-slate-600" />
+                                    <span>“No major violations recently”</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-500">
+                                    <XCircle className="w-5 h-5 shrink-0 text-slate-600" />
+                                    <span>“We’ll deal with it if something happens”</span>
+                                </li>
+                            </ul>
+                            <div className="text-center text-xs text-slate-600 uppercase font-mono tracking-widest border-t border-slate-800 pt-4">
+                                What most owner-operators believe
+                            </div>
+                        </div>
+
+                        {/* Column 2 */}
+                        <div className="bg-slate-900 p-8 rounded-xl border border-risk-elevated/30 relative flex flex-col shadow-2xl">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-risk-elevated" />
+                            <h3 className="text-xl font-bold text-white mb-6 uppercase tracking-wider text-center">What Inspectors Actually See</h3>
+                            <ul className="space-y-4 mb-8 flex-1">
+                                <li className="flex items-start gap-3 text-slate-300">
+                                    <AlertTriangle className="w-5 h-5 shrink-0 text-risk-elevated" />
+                                    <span>Inspection trends over time</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-300">
+                                    <AlertTriangle className="w-5 h-5 shrink-0 text-risk-elevated" />
+                                    <span>Violation velocity (are issues increasing?)</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-300">
+                                    <AlertTriangle className="w-5 h-5 shrink-0 text-risk-elevated" />
+                                    <span>Out-of-Service probability signals</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-300">
+                                    <AlertTriangle className="w-5 h-5 shrink-0 text-risk-elevated" />
+                                    <span>Carrier risk flags from FMCSA data</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-300">
+                                    <AlertTriangle className="w-5 h-5 shrink-0 text-risk-elevated" />
+                                    <span>Insurance-relevant enforcement indicators</span>
+                                </li>
+                            </ul>
+                            <div className="text-center text-xs text-risk-elevated font-bold uppercase font-mono tracking-widest border-t border-slate-800 pt-4">
+                                Inspectors don’t look at one score.<br /> They look at patterns.
+                            </div>
+                        </div>
+
+                        {/* Column 3 */}
+                        <div className="bg-slate-900/50 p-8 rounded-xl border border-red-900/30 flex flex-col">
+                            <h3 className="text-xl font-bold text-red-400 mb-6 uppercase tracking-wider text-center">What Happens When You’re Flagged</h3>
+                            <ul className="space-y-4 mb-8 flex-1">
+                                <li className="flex items-start gap-3 text-slate-400">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 shrink-0" />
+                                    <span>More roadside inspections</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-400">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 shrink-0" />
+                                    <span>Higher chance of Out-of-Service orders</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-400">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 shrink-0" />
+                                    <span>Insurance premium increases</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-400">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 shrink-0" />
+                                    <span>Lost loads and downtime</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-slate-400">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 shrink-0" />
+                                    <span>Permanent compliance history</span>
+                                </li>
+                            </ul>
+                            <div className="text-center text-xs text-red-500 uppercase font-mono tracking-widest border-t border-slate-800 pt-4">
+                                By the time you feel it — it’s already too late.
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Proof Block */}
+                    <div className="max-w-4xl mx-auto text-center">
+                        <p className="text-xl text-white mb-8 font-medium">
+                            DOT Risk Radar monitors the same public signals inspectors use — and alerts you before they become expensive problems.
+                        </p>
+
+                        <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-10">
+                            <div className="flex items-center gap-2 text-slate-400 text-sm">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                <span>Continuous risk scoring (not snapshots)</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-slate-400 text-sm">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                <span>Inspection and violation trend tracking</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-slate-400 text-sm">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                <span>Early-warning enforcement indicators</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-slate-400 text-sm">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                <span>Built specifically for owner-operators and small fleets</span>
+                            </div>
+                        </div>
+
+                        <div className="text-risk-elevated text-sm font-mono uppercase tracking-widest mb-8">
+                            No contracts. No hardware. No fleet minimums.<br />
+                            Just visibility into your real DOT risk.
+                        </div>
+
+                        <div className="flex flex-col items-center gap-3">
+                            <Button
+                                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                                className="h-16 px-10 bg-amber-500 hover:bg-amber-400 text-brand-dark font-bold text-xl uppercase tracking-wide shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all"
+                            >
+                                See My Risk Profile <ArrowRight className="w-6 h-6 ml-2" />
+                            </Button>
+                            <span className="text-xs text-slate-500 font-mono">Takes under 60 seconds • No credit card required</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* --- RESTORED SECTION 1: VISUAL CHAOS/CONTROL (Added back per request) --- */}
             <section className="py-24 bg-slate-900/50 border-y border-slate-800 relative">
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
