@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, AlertTriangle, ShieldAlert, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { isPremium, SubscriptionStatus } from '@/lib/subscriptions'; // Import helper logic (Note: server-side fetching differs, effectively re-implemented below for server context)
 
 // --- Types & Helpers ---
 
@@ -64,6 +65,30 @@ export default async function DashboardPage() {
         redirect('/login');
     }
 
+    // --- SUBSCRIPTION CHECK (Server-Side) ---
+    const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('status')
+        .eq('user_id', user.id)
+        .single();
+
+    // Status check logic (mimicking isPremium helper but safely on server)
+    const status = subscription?.status as SubscriptionStatus;
+    const isActive = status === 'active' || status === 'trialing';
+
+    if (!isActive) {
+        // Redirect to pricing or a "locked" state. 
+        // Ideally this would open the modal, but on server render we redirect to a dedicated pricing page
+        // OR we can rely on middleware. For now, redirecting to root with a query param to trigger modal could work,
+        // or a dedicated /locked page. 
+        // Directive says: "Redirect user to pricing / paywall modal."
+        // Since modal is client-side, let's redirect to home with ?pricing=true or similar, 
+        // BUT for a clean server-side gate, a dedicated "Upgrade Required" page is safer.
+        // Let's assume for this task that redirecting to '/' is the safest fallback to trigger the client experience,
+        // unless we built a /pricing page. I'll mock a simple redirect to home for now.
+        redirect('/?pricing=true');
+    }
+
     const data = await getRiskData();
 
     return (
@@ -103,19 +128,19 @@ export default async function DashboardPage() {
                     </div>
                 </div>
 
-            <RiskSection
-                title={DASHBOARD_STRINGS.HEADERS.HIGH}
-                items={data.high}
-                level={RISK_LEVELS.HIGH}
-                icon={<ShieldAlert className="w-5 h-5" />}
-            />
+                <RiskSection
+                    title={DASHBOARD_STRINGS.HEADERS.HIGH}
+                    items={data.high}
+                    level={RISK_LEVELS.HIGH}
+                    icon={<ShieldAlert className="w-5 h-5" />}
+                />
 
-            <RiskSection
-                title={DASHBOARD_STRINGS.HEADERS.ELEVATED}
-                items={data.elevated}
-                level={RISK_LEVELS.ELEVATED}
-                icon={<AlertTriangle className="w-5 h-5" />}
-            />
+                <RiskSection
+                    title={DASHBOARD_STRINGS.HEADERS.ELEVATED}
+                    items={data.elevated}
+                    level={RISK_LEVELS.ELEVATED}
+                    icon={<AlertTriangle className="w-5 h-5" />}
+                />
 
                 {/* Low Risk / Monitoring Section */}
                 <section aria-label="Monitored Fleets" className="space-y-4">

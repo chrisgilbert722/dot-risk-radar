@@ -19,14 +19,18 @@ import {
     XCircle,
     TrendingUp,
     BarChart3,
-    Eye
+    Eye,
+    ChevronDown
 } from 'lucide-react';
+import { useSubscription, isPremium } from '@/lib/subscriptions';
+import { PricingModal } from '@/components/pricing-modal';
+import { useRouter } from 'next/navigation';
 
 // --- PHASE 9: HERO VARIANTS ---
 const HERO_VARIANTS = {
     A: { // Authority
-        headline: "See Your DOT Risk Before Inspectors Do",
-        subheadline: "Public FMCSA inspection signals translated into a real-time risk radar for your operation."
+        headline: "See Your DOT Risk Before Inspectors, Audits, or Insurance Reviews Do",
+        subheadline: "Real-time FMCSA inspection data, ISS score trends, and enforcement signals translated into actionable DOT risk intelligence for carriers, owner-operators, and fleet managers."
     },
     B: { // Fear
         headline: "Your DOT Risk Is Already Scored — You Just Can't See It",
@@ -36,11 +40,70 @@ const HERO_VARIANTS = {
 
 const ACTIVE_VARIANT = 'A';
 
+const FAQS = [
+    {
+        question: "What actually triggers a DOT audit?",
+        answer: "Audits are rarely random. They are triggered by data patterns: rising ISS scores, a spike in OOS violations, or correlated inspection failures across multiple states. Algorithms flag you for intervention long before a human investigator is assigned."
+    },
+    {
+        question: "Does one clean inspection result reset my risk?",
+        answer: "No. FMCSA risk models use 24 months of weighted history. A single clean inspection helps dilute the bad data, but it does not 'reset' your score. Consistent clean inspections are required to statistically reverse a negative trend."
+    },
+    {
+        question: "Why did my risk increase before I received a notice?",
+        answer: "Enforcement is a lagging indicator; risk is a leading indicator. The data supporting an audit accumulates for months before the administrative threshold is crossed. If you wait for the letter, you have already lost the opportunity to correct the trend."
+    },
+    {
+        question: "How do inspectors actually use ISS scores?",
+        answer: "The ISS score (1-100) dictates the roadside inspector's action plan. Scores above 75 signal 'Inspection Required.' Inspectors are incentivized to stop these vehicles to gather more data or confirm suspected non-compliance."
+    },
+    {
+        question: "Does DOT risk affect insurance rates?",
+        answer: "Yes. Underwriters use the same FMCSA data as inspectors. A pattern of 'Alert' status in the BASICs or a climbing ISS score signals operational instability, often leading to premium hikes or non-renewal notices."
+    },
+    {
+        question: "Can I predict my next inspection?",
+        answer: "Yes. By monitoring the velocity of your inspection data and ISS trends, you can identify when you have crossed the threshold into 'High Priority' status. This allows you to fix the issues before the inspector finds them."
+    }
+];
+
 export default function ClientPage({ copy }: { copy: any }) {
 
     const [dotNumber, setDotNumber] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const [activeTestimonial, setActiveTestimonial] = useState(0);
+    const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+    const router = useRouter();
+
+    // Subscription & Gate State
+    const { subscription, loading: subLoading, user } = useSubscription();
+    const [showPricing, setShowPricing] = useState(false);
+
+    // Effect: Check for pricing URL param
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('pricing') === 'true' || params.get('canceled') === 'true') {
+            setShowPricing(true);
+        }
+        if (params.get('success') === 'true') {
+            // Optional: Show success toast
+        }
+    }, []);
+
+    const handleGatedAction = (action: () => void) => {
+        if (subLoading) return; // Wait for check
+
+        if (!user) {
+            router.push('/login?next=' + encodeURIComponent(window.location.pathname));
+            return;
+        }
+
+        if (subscription && isPremium(subscription.status)) {
+            action(); // User is subscribed, proceed
+        } else {
+            setShowPricing(true); // Gated
+        }
+    };
 
     // Typing effect logic
     useEffect(() => {
@@ -139,7 +202,7 @@ export default function ClientPage({ copy }: { copy: any }) {
                                 Public Beta Now Live
                             </div>
 
-                            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tighter text-white mb-6 uppercase drop-shadow-2xl">
+                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-[0.9] tracking-tighter text-white mb-6 uppercase drop-shadow-2xl">
                                 {HERO_VARIANTS[ACTIVE_VARIANT].headline.split(' ').map((word, i) => (
                                     word === "Risk" || word === "Audits" ?
                                         <span key={i} className="text-transparent bg-clip-text bg-gradient-to-r from-risk-elevated to-amber-200 text-glow-amber pr-2">{word} </span> :
@@ -218,22 +281,152 @@ export default function ClientPage({ copy }: { copy: any }) {
                 </div>
             </section>
 
-            {/* --- NEW SECTION 1: WHAT INSPECTORS SEE (Restored with Scrolling Violations) --- */}
+            {/* --- RESTORED SECTION 1: VISUAL CHAOS/CONTROL (Added back per request) --- */}
             <section className="py-24 bg-slate-900/50 border-y border-slate-800 relative">
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
+                <div className="container mx-auto px-6 relative z-10">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">What Inspectors See <span className="text-transparent bg-clip-text bg-gradient-to-r from-risk-elevated to-amber-200 text-glow-amber">(That You Don’t)</span></h2>
+                        <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+                            The FMCSA database aggregates inspection records, violations, OOS events, and enforcement history into risk indicators inspectors and auditors rely on. DOT Risk Radar transforms these raw compliance signals into clear, actionable intelligence.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-0 rounded-lg overflow-hidden shadow-2xl relative min-h-[500px]">
+                        {/* LEFT: CHAOS (Red Truck + Dark Glass Overlay) */}
+                        <div className="relative p-8 md:p-12 group min-h-[400px] flex flex-col overflow-hidden border-r border-slate-800">
+                            <Image
+                                src="/images/chaos-inspection.png"
+                                alt="Inspection Chaos"
+                                fill
+                                className="object-cover opacity-100 grayscale hover:grayscale-0 transition-opacity duration-700"
+                            />
+
+                            {/* Dark Glass Overlay (Not Flat Black) */}
+                            <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm mix-blend-multiply transition-all duration-700 group-hover:bg-slate-900/60" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-red-950/80 via-transparent to-slate-950/80 mix-blend-overlay" />
+
+                            {/* Scrolling Terminal Effect - BRIGHTER & GLOWING */}
+                            <div className="absolute inset-0 opacity-80 font-mono text-xs leading-none text-code-red pointer-events-none select-none z-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute inset-0 animate-[terminal-scroll_15s_linear_infinite] group-hover:animate-[terminal-scroll_2s_linear_infinite]">
+                                    {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
+                                    {Array(50).fill("VIOLATION_DETECTED OOS_TRUE 396.17(c) FAIL // !!! ALERT !!! ").join(" ")}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-90" />
+                                </div>
+                            </div>
+
+                            <div className="relative z-10 mt-auto tactical-glass rounded-lg p-6">
+                                <div className="inline-flex items-center gap-2 mb-4 text-red-500 font-mono text-sm tracking-wider uppercase bg-black/40 px-3 py-1 rounded border border-red-500/30">
+                                    <AlertTriangle className="w-3 h-3" /> Audit Triggers Detected
+                                </div>
+                                <h3 className="text-2xl font-bold text-white mb-4">Overwhelming Noise</h3>
+                                <ul className="space-y-4 text-slate-300 font-mono text-sm">
+                                    <li className="flex items-center gap-3">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+                                        <span>Clustered violations</span>
+                                    </li>
+                                    <li className="flex items-center gap-3">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+                                        <span>Rising OOS trend</span>
+                                    </li>
+                                    <li className="flex items-center gap-3">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+                                        <span>Pattern matches past audits</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        {/* RIGHT: CONTROL (Actionable Intelligence) */}
+                        <div className="relative p-8 md:p-12 group min-h-[400px] flex flex-col justify-end overflow-hidden border-l border-slate-800">
+                            <Image
+                                src="/images/clean-highway.jpg"
+                                alt="Clear Road"
+                                fill
+                                className="object-cover opacity-100 grayscale hover:grayscale-0 transition-opacity duration-700"
+                            />
+
+                            {/* Dark Glass Overlay */}
+                            <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm mix-blend-multiply transition-all duration-700 group-hover:bg-slate-900/60" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-transparent to-slate-950/80 mix-blend-overlay" />
+
+                            {/* Scrolling Terminal Effect - GREEN & GLOWING */}
+                            <div className="absolute inset-0 opacity-80 font-mono text-xs leading-none text-emerald-400 pointer-events-none select-none z-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute inset-0 animate-[terminal-scroll_15s_linear_infinite] group-hover:animate-[terminal-scroll_2s_linear_infinite] direction-reverse">
+                                    {Array(50).fill("PASSED_INSPECTION CLEAN_LEVEL_1 396.17(c) PASS // !!! SAFE !!! ").join(" ")}
+                                    {Array(50).fill("PASSED_INSPECTION CLEAN_LEVEL_1 396.17(c) PASS // !!! SAFE !!! ").join(" ")}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-90" />
+                                </div>
+                            </div>
+
+                            {/* Radar Background Interaction */}
+                            <div className="absolute top-8 right-8 p-0 pointer-events-none opacity-20 group-hover:opacity-60 transition-opacity duration-700 z-10">
+                                <Radar className="w-32 h-32 text-emerald-500 group-hover:animate-radar-expand" />
+                            </div>
+
+                            <div className="relative z-20 mt-auto tactical-glass rounded-lg p-6">
+                                <div className="inline-flex items-center gap-2 mb-6 text-emerald-400 font-mono text-sm tracking-wider uppercase bg-emerald-950/40 px-3 py-1 rounded border border-emerald-500/30 w-fit">
+                                    <CheckCircle2 className="w-4 h-4" /> Risk Radar Analysis
+                                </div>
+
+                                <h3 className="text-3xl font-bold text-white mb-6">Actionable Intelligence</h3>
+
+                                <ul className="space-y-4">
+                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm group-hover:text-white transition-colors">
+                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/20 border-emerald-500/30">01</div>
+                                        <span>Predictive score stabilization</span>
+                                    </li>
+                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm group-hover:text-white transition-colors">
+                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/20 border-emerald-500/30">02</div>
+                                        <span>Plain-English pattern alerts</span>
+                                    </li>
+                                    <li className="flex items-center gap-3 text-slate-300 font-mono text-sm group-hover:text-white transition-colors">
+                                        <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/20 border-emerald-500/30">03</div>
+                                        <span>Pre-audit intervention signals</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* --- PHASE 4: MID-PAGE AUTHORITY (Image 3) --- */}
+            <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
+                <Image
+                    src="/images/clean-highway.jpg"
+                    alt="Safe Operations"
+                    fill
+                    className="object-cover opacity-60 grayscale"
+                />
+                <div className="absolute inset-0 bg-brand-dark/80 mix-blend-multiply" />
+                <div className="absolute inset-0 bg-grid-slate opacity-30" />
+                <div className="relative z-10 text-center px-6">
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight uppercase">
+                        Enterprise Risk Intelligence <br /> <span className="text-risk-safe">For Every Fleet Size</span>
+                    </h2>
+                    <p className="text-slate-300 text-lg max-w-2xl mx-auto">
+                        DOT Risk Radar delivers enterprise-grade FMCSA risk intelligence for fleets of any size — from single owner-operators to multi-state carriers managing complex compliance exposure.
+                    </p>
+                </div>
+            </section>
+
+            {/* --- SECTION 2: WHAT INSPECTORS SEE (Split Layout - MOVED DOWN) --- */}
+            <section className="py-24 bg-slate-900 border-y border-slate-800 relative">
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="grid lg:grid-cols-2 gap-16 items-center">
                         {/* LEFT: CONTENT & CARDS */}
                         <div className="text-left">
                             <div className="text-amber-500 font-mono text-xs font-bold tracking-widest uppercase mb-4">
-                                The Invisible Threat
+                                THE INVISIBLE THREAT
                             </div>
                             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
-                                What Inspectors See <br />
-                                <span className="text-slate-500">(That You Don’t)</span>
+                                The DOT Enforcement Profile <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-risk-elevated to-amber-200 text-glow-amber">Behind Your Number</span>
                             </h2>
                             <p className="text-slate-400 text-lg mb-10 leading-relaxed">
-                                Every roadside inspection, every warning letter, and every OOS violation feeds into a predictive score. Enforcement software flags you <span className="text-white italic">before</span> they pull you over.
+                                Every DOT number is associated with an enforcement profile built from inspection results, violations, Out-of-Service events, and ISS score trends. This profile is what FMCSA inspectors and auditors review when determining enforcement priority.
                             </p>
 
                             <div className="space-y-4">
@@ -245,7 +438,7 @@ export default function ClientPage({ copy }: { copy: any }) {
                                     <div>
                                         <h4 className="text-white font-bold mb-1">Hidden Violation Patterns</h4>
                                         <p className="text-slate-400 text-sm leading-relaxed">
-                                            One bad tire inspection in Ohio triggers brake checks in Texas. We verify these cross-state triggers.
+                                            Violations that appear isolated to carriers are connected at the federal level. FMCSA systems correlate inspection outcomes across states to detect broader enforcement patterns.
                                         </p>
                                     </div>
                                 </div>
@@ -258,7 +451,7 @@ export default function ClientPage({ copy }: { copy: any }) {
                                     <div>
                                         <h4 className="text-white font-bold mb-1">ISS Score Velocity</h4>
                                         <p className="text-slate-400 text-sm leading-relaxed">
-                                            Your score might be "passing" today, but the 30-day trend predicts a conditional rating next month.
+                                            ISS scores reflect how enforcement risk is changing — not just where it stands today. Directional movement is often more important than the current score itself.
                                         </p>
                                     </div>
                                 </div>
@@ -320,35 +513,17 @@ export default function ClientPage({ copy }: { copy: any }) {
 
                             {/* Decorative Glow */}
                             <div className="absolute -inset-4 bg-red-500/5 blur-2xl -z-10 rounded-full" />
+
+                            {/* Comparison Cards (Added per request) */}
+                            <div className="mt-8">
+                                <ComparisonCards />
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* --- NEW SECTION 2: YOU CANT FIX WHAT YOU CANT SEE --- */}
-            <section className="py-24 bg-slate-950 border-y border-slate-800 relative shadow-2xl z-20">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950 opacity-80" />
-                <div className="container mx-auto px-6 relative z-10">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-8 tracking-tight">You Can’t Fix What You Can’t See</h2>
-                        <div className="max-w-4xl mx-auto mb-16 relative">
-                            {/* Glow Effect behind Input */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-32 bg-risk-elevated/10 blur-[60px] rounded-full pointer-events-none" />
-                            <HeroInput
-                                dotNumber={dotNumber}
-                                setDotNumber={setDotNumber}
-                                isTyping={isTyping}
-                                copy={copy}
-                                variant="expanded"
-                            />
-                        </div>
-                    </div>
 
-                    <div className="max-w-5xl mx-auto">
-                        <ComparisonCards />
-                    </div>
-                </div>
-            </section>
 
             {/* HOW IT WORKS (Enhanced) */}
             <section className="py-24 border-b border-slate-800 bg-brand-dark relative overflow-hidden">
@@ -359,7 +534,7 @@ export default function ClientPage({ copy }: { copy: any }) {
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">What Happens the Moment <br className="hidden md:block" /> Your DOT Number Is Seen</h2>
                         <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-                            FMCSA systems don’t wait for violations to pile up. Risk begins forming instantly.
+                            Once a DOT number enters an inspection or enforcement workflow, FMCSA systems begin evaluating frequency, severity, and historical context. This evaluation happens continuously — not only after repeated violations.
                         </p>
                     </div>
 
@@ -376,7 +551,7 @@ export default function ClientPage({ copy }: { copy: any }) {
                             </div>
 
                             <h4 className="text-xl font-bold text-white mb-3">DOT Signal Detected</h4>
-                            <p className="text-slate-400 leading-relaxed text-sm">The moment your DOT number appears, public FMCSA systems begin tracking inspection signals.</p>
+                            <p className="text-slate-400 leading-relaxed text-sm">FMCSA systems recognize the DOT number and immediately associate it with historical inspection and compliance records.</p>
                         </div>
 
                         {/* STEP 02 */}
@@ -388,7 +563,7 @@ export default function ClientPage({ copy }: { copy: any }) {
                             </div>
 
                             <h4 className="text-xl font-bold text-white mb-3">Patterns Begin Forming</h4>
-                            <p className="text-slate-400 leading-relaxed text-sm">Algorithms correlate inspections, warnings, OOS events, and history across states — not in isolation.</p>
+                            <p className="text-slate-400 leading-relaxed text-sm">Inspection outcomes, warnings, and OOS events are evaluated together to assess whether compliance risk is stabilizing or escalating.</p>
                         </div>
 
                         {/* STEP 03 */}
@@ -400,60 +575,11 @@ export default function ClientPage({ copy }: { copy: any }) {
                             </div>
 
                             <h4 className="text-xl font-bold text-white mb-3">Risk Trends Emerge</h4>
-                            <p className="text-slate-400 leading-relaxed text-sm">Before scores change, enforcement systems see momentum — and act on it.</p>
+                            <p className="text-slate-400 leading-relaxed text-sm">As enforcement risk increases, inspection likelihood, audit exposure, and regulatory attention rise accordingly.</p>
                         </div>
                     </div>
                 </div>
             </section>
-
-            {/* FEATURE GRID */}
-            <section className="py-24 bg-slate-900/50">
-                <div className="container mx-auto px-6">
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <FeatureCard
-                            icon={Eye}
-                            title="Know before scores jump"
-                            desc="Prevents surprise score jumps by watching 24/7."
-                        />
-                        <FeatureCard
-                            icon={TrendingUp}
-                            title="Stop violations from compounding"
-                            desc="Prevents creeping violation patterns from escalating."
-                        />
-                        <FeatureCard
-                            icon={Siren}
-                            title="Intervene before audits"
-                            desc="Stops silent violations from triggering an audit."
-                        />
-                        <FeatureCard
-                            icon={Lock}
-                            title="Never lose proof at renewal"
-                            desc="Secures your history for instant insurance validation."
-                        />
-                    </div>
-                </div>
-            </section>
-
-            {/* --- PHASE 4: MID-PAGE AUTHORITY (Image 3) --- */}
-            <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
-                <Image
-                    src="/images/clean-highway.jpg"
-                    alt="Safe Operations"
-                    fill
-                    className="object-cover opacity-60 grayscale"
-                />
-                <div className="absolute inset-0 bg-brand-dark/80 mix-blend-multiply" />
-                <div className="absolute inset-0 bg-grid-slate opacity-30" />
-                <div className="relative z-10 text-center px-6">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight uppercase">
-                        Enterprise Risk Intelligence <br /> <span className="text-risk-safe">For Every Fleet Size</span>
-                    </h2>
-                    <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-                        Whether you run 1 truck or 100, the FMCSA watches you the same way. So do we.
-                    </p>
-                </div>
-            </section>
-
             {/* --- PHASE 6: TESTIMONIALS (Image 4 BG) --- */}
             <section className="py-24 border-t border-slate-800 relative overflow-hidden bg-slate-950 min-h-[600px] flex items-center">
                 <div className="absolute inset-0 z-0">
@@ -511,6 +637,72 @@ export default function ClientPage({ copy }: { copy: any }) {
                 </div>
             </section>
 
+
+            {/* FEATURE GRID */}
+            <section className="py-24 bg-slate-900/50">
+                <div className="container mx-auto px-6">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <FeatureCard
+                            icon={Eye}
+                            title="Know before scores jump"
+                            desc="Understand enforcement risk direction before ISS or safety scores officially change."
+                        />
+                        <FeatureCard
+                            icon={TrendingUp}
+                            title="Stop violations from compounding"
+                            desc="Identify early compliance signals before they form patterns that attract enforcement attention."
+                        />
+                        <FeatureCard
+                            icon={Siren}
+                            title="Intervene before audits"
+                            desc="Gain visibility into audit risk while corrective action is still possible."
+                        />
+                        <FeatureCard
+                            icon={Lock}
+                            title="Never lose proof at renewal"
+                            desc="Maintain a clear, documented compliance history for insurance and regulatory review."
+                        />
+                    </div>
+                </div>
+            </section>
+
+            {/* FAQ SECTION */}
+            <section className="py-32 bg-slate-950 border-t border-slate-800 relative z-10">
+                <div className="container mx-auto px-6 max-w-3xl">
+                    <div className="text-center mb-20">
+                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight">DOT Risk & FMCSA Enforcement FAQs</h2>
+                        <div className="w-24 h-1 bg-risk-elevated mx-auto rounded-full opacity-60" />
+                    </div>
+
+                    <div className="space-y-4">
+                        {FAQS.map((faq, i) => (
+                            <div key={i} className={`border rounded-lg transition-all duration-300 ${openFAQ === i ? 'bg-slate-900/40 border-risk-elevated/30 shadow-[0_0_15px_rgba(245,158,11,0.05)]' : 'bg-transparent border-slate-800 hover:border-slate-700 hover:bg-slate-900/20'}`}>
+                                <button
+                                    onClick={() => setOpenFAQ(openFAQ === i ? null : i)}
+                                    className="w-full flex items-center justify-between p-6 text-left focus:outline-none group"
+                                >
+                                    <span className={`text-lg font-bold transition-colors ${openFAQ === i ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>
+                                        {faq.question}
+                                    </span>
+                                    <ChevronDown
+                                        className={`w-5 h-5 transition-transform duration-300 ${openFAQ === i ? 'rotate-180 text-risk-elevated' : 'text-slate-500 group-hover:text-slate-300'}`}
+                                    />
+                                </button>
+                                <div
+                                    className={`overflow-hidden transition-all duration-300 ease-in-out ${openFAQ === i ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'}`}
+                                >
+                                    <div className="px-6 pb-6 text-slate-400 leading-relaxed text-[15px] border-t border-slate-800/0">
+                                        {faq.answer}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+
+
             {/* --- PHASE 7: HIGH CONVERSION BLOCK (Image 5 BG) --- */}
             <section className="py-32 relative overflow-hidden min-h-[600px] flex items-center">
                 {/* Image 5 Background - Brightened */}
@@ -529,12 +721,12 @@ export default function ClientPage({ copy }: { copy: any }) {
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="tactical-glass rounded-3xl p-8 md:p-20 text-center shadow-2xl max-w-5xl mx-auto">
                         <h2 className="text-3xl md:text-6xl font-bold text-white mb-6 uppercase tracking-tight">
-                            Know Your DOT Risk <br /> <span className="text-slate-400">Before It Becomes a Problem</span>
+                            Know Your DOT Risk <br /> <span className="text-slate-400">Before It Becomes a Compliance Problem</span>
                         </h2>
 
                         {/* Testimonial Snippet */}
                         <div className="mb-10 text-risk-elevated font-mono text-sm tracking-wide uppercase">
-                            "{copy.authority}"
+                            Monitor FMCSA enforcement risk in real time — before inspections, audits, or insurance reviews occur.
                         </div>
 
                         <div className="max-w-3xl mx-auto">
@@ -548,6 +740,9 @@ export default function ClientPage({ copy }: { copy: any }) {
             <footer className="py-12 border-t border-slate-800 bg-brand-dark text-slate-500 text-sm font-mono text-center">
                 <p>&copy; {new Date().getFullYear()} DOT RISK RADAR. MISSION CRITICAL COMPLIANCE INTELLIGENCE.</p>
             </footer>
+
+            {/* Gating Modal */}
+            <PricingModal open={showPricing} onOpenChange={setShowPricing} />
         </div>
     );
 }
@@ -557,6 +752,26 @@ function HeroInput({ dotNumber, setDotNumber, isTyping, copy, variant = 'standar
     const [isFocused, setIsFocused] = useState(false);
     const [scanState, setScanState] = useState<'idle' | 'scanning' | 'analyzing' | 'complete'>('idle');
     const [scanProgress, setScanProgress] = useState(0);
+
+    // Auth & Subscription context for the hero input action
+    const { subscription, loading: subLoading, user } = useSubscription();
+    const [showPricing, setShowPricing] = useState(false);
+    const router = useRouter();
+
+    const handleViewFullBreakdown = () => {
+        if (subLoading) return;
+
+        if (!user) {
+            router.push('/login?next=/dashboard');
+            return;
+        }
+
+        if (subscription && isPremium(subscription.status)) {
+            router.push('/dashboard');
+        } else {
+            setShowPricing(true);
+        }
+    };
 
     const startScan = () => {
         if (!dotNumber) return;
@@ -612,9 +827,15 @@ function HeroInput({ dotNumber, setDotNumber, isTyping, copy, variant = 'standar
                             <span>Clustered OOS violations detected.</span>
                         </div>
 
-                        <Button className="w-full h-12 bg-risk-elevated hover:bg-amber-400 text-brand-dark font-bold rounded text-lg uppercase tracking-wide">
+
+                        <Button
+                            onClick={handleViewFullBreakdown}
+                            className="w-full h-12 bg-risk-elevated hover:bg-amber-400 text-brand-dark font-bold rounded text-lg uppercase tracking-wide">
                             View Full Risk Breakdown <ArrowRight className="w-5 h-5 ml-2" />
                         </Button>
+
+                        {/* Local Modal for Hero Scope */}
+                        <PricingModal open={showPricing} onOpenChange={setShowPricing} />
                     </div>
                 </div>
             </div>

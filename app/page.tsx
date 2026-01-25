@@ -1,7 +1,12 @@
 import React from 'react';
 import { headers } from 'next/headers';
+import type { Metadata } from 'next';
 import ClientPage from './client-page';
 
+export const metadata: Metadata = {
+    title: "Predictive DOT Risk Intelligence | FMCSA Inspection & Audit Risk Radar",
+    description: "Predict DOT enforcement risk before inspections, audits, or insurance reviews. DOT Risk Radar analyzes FMCSA inspection history, ISS score trends, violations, and Out-of-Service events to surface risk early.",
+};
 // --- GEO-LOCATION CONFIG ---
 const STATE_COPY: Record<string, { hero: string, authority: string, risk: string }> = {
     TX: {
@@ -68,5 +73,52 @@ export default async function LandingPage() {
     const region = headersList.get('x-vercel-ip-region') || 'DEFAULT';
     const copy = STATE_COPY[region] || DEFAULT_COPY;
 
-    return <ClientPage copy={copy} />;
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What is DOT enforcement risk?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "DOT enforcement risk reflects the likelihood of inspections, audits, or regulatory action based on FMCSA inspection history, violations, Out-of-Service events, and ISS score trends."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What is an ISS score?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The Inspection Selection System (ISS) score is used by FMCSA inspectors to prioritize which carriers are more likely to be inspected."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What triggers a DOT audit?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "DOT audits are often triggered by rising ISS scores, repeated violations, OOS patterns, or correlated inspection activity across states."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Does DOT risk affect insurance?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. Insurance providers often review FMCSA inspection data, ISS score trends, and enforcement history when evaluating carrier risk."
+                }
+            }
+        ]
+    };
+
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
+            <ClientPage copy={copy} />
+        </>
+    );
 }
