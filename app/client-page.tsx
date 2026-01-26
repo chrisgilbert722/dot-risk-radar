@@ -32,8 +32,8 @@ import { useRouter } from 'next/navigation';
 // --- PHASE 9: HERO VARIANTS ---
 const HERO_VARIANTS = {
     A: { // Authority
-        headline: "See Your DOT Risk Before Inspectors, Audits, or Insurance Reviews Do",
-        subheadline: "Real-time FMCSA inspection data, ISS score trends, and enforcement signals translated into actionable DOT risk intelligence for carriers, owner-operators, and fleet managers."
+        headline: "See DOT Risk Before Inspectors, Audits, or Insurance Do",
+        subheadline: "Predict inspections, audits, and insurance risk using real FMCSA data—before it becomes a problem."
     },
     B: { // Fear
         headline: "Your DOT Risk Is Already Scored — You Just Can't See It",
@@ -291,8 +291,11 @@ export default function ClientPage({ copy }: { copy: any }) {
                         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 uppercase tracking-tight">
                             You Can’t Fix What You Can’t See
                         </h2>
-                        <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-                            What DOT inspectors see about your company — before they ever pull you over
+                        <p className="text-slate-400 max-w-2xl mx-auto text-lg mb-4">
+                            DOT enforcement doesn’t happen randomly. Inspections, audits, and insurance reviews follow measurable risk signals—most carriers just don’t see them until it’s too late.
+                        </p>
+                        <p className="text-slate-500 max-w-2xl mx-auto text-md">
+                            DOT Risk Radar turns raw FMCSA data into clear, actionable risk intelligence.
                         </p>
                     </div>
 
@@ -394,19 +397,19 @@ export default function ClientPage({ copy }: { copy: any }) {
                         <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-10">
                             <div className="flex items-center gap-2 text-slate-400 text-sm">
                                 <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                                <span>Continuous risk scoring (not snapshots)</span>
+                                <span>Monitors FMCSA inspection and violation patterns</span>
                             </div>
                             <div className="flex items-center gap-2 text-slate-400 text-sm">
                                 <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                                <span>Inspection and violation trend tracking</span>
+                                <span>Tracks ISS score movement and enforcement signals</span>
                             </div>
                             <div className="flex items-center gap-2 text-slate-400 text-sm">
                                 <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                                <span>Early-warning enforcement indicators</span>
+                                <span>Alerts you when risk trends change</span>
                             </div>
                             <div className="flex items-center gap-2 text-slate-400 text-sm">
                                 <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                                <span>Built specifically for owner-operators and small fleets</span>
+                                <span>Shows how inspections impact insurance and audits</span>
                             </div>
                         </div>
 
@@ -922,8 +925,11 @@ export default function ClientPage({ copy }: { copy: any }) {
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">What Happens the Moment <br className="hidden md:block" /> Your DOT Number Is Seen</h2>
-                        <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-                            Once a DOT number enters an inspection or enforcement workflow, FMCSA systems begin evaluating frequency, severity, and historical context. This evaluation happens continuously — not only after repeated violations.
+                        <p className="text-slate-400 max-w-2xl mx-auto text-lg mb-4">
+                            DOT Risk Radar continuously analyzes FMCSA data to identify early warning signs of inspections, audits, and insurance scrutiny.
+                        </p>
+                        <p className="text-slate-500 max-w-2xl mx-auto text-md">
+                            It highlights risk movement, not just past violations—so you can act before enforcement hits.
                         </p>
                     </div>
 
@@ -1110,16 +1116,16 @@ export default function ClientPage({ copy }: { copy: any }) {
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="tactical-glass rounded-3xl p-8 md:p-20 text-center shadow-2xl max-w-5xl mx-auto">
                         <h2 className="text-3xl md:text-6xl font-bold text-white mb-6 uppercase tracking-tight">
-                            Know Your DOT Risk <br /> <span className="text-slate-400">Before It Becomes a Compliance Problem</span>
+                            Know your DOT risk <br /> <span className="text-slate-400">before it costs you.</span>
                         </h2>
 
                         {/* Testimonial Snippet */}
                         <div className="mb-10 text-risk-elevated font-mono text-sm tracking-wide uppercase">
-                            Monitor FMCSA enforcement risk in real time — before inspections, audits, or insurance reviews occur.
+                            Upgrade anytime. Cancel anytime.
                         </div>
 
                         <div className="max-w-3xl mx-auto">
-                            <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} />
+                            <HeroInput dotNumber={dotNumber} setDotNumber={setDotNumber} isTyping={isTyping} copy={copy} ctaText="Check My DOT Risk" />
                         </div>
                     </div>
                 </div>
@@ -1137,7 +1143,7 @@ export default function ClientPage({ copy }: { copy: any }) {
 }
 
 // Input Component (Reused)
-function HeroInput({ dotNumber, setDotNumber, isTyping, copy, variant = 'standard' }: { dotNumber: string, setDotNumber: (v: string) => void, isTyping: boolean, copy: any, variant?: 'standard' | 'expanded' }) {
+function HeroInput({ dotNumber, setDotNumber, isTyping, copy, variant = 'standard', ctaText = 'Check My DOT Risk (Free)' }: { dotNumber: string, setDotNumber: (v: string) => void, isTyping: boolean, copy: any, variant?: 'standard' | 'expanded', ctaText?: string }) {
     const [isFocused, setIsFocused] = useState(false);
     const [scanState, setScanState] = useState<'idle' | 'scanning' | 'analyzing' | 'complete'>('idle');
     const [scanProgress, setScanProgress] = useState(0);
@@ -1238,7 +1244,7 @@ function HeroInput({ dotNumber, setDotNumber, isTyping, copy, variant = 'standar
                                 </span>
                             ) : (
                                 <span className="flex items-center gap-2">
-                                    Check Risk (Free) <ArrowRight className="w-5 h-5" />
+                                    {ctaText} <ArrowRight className="w-5 h-5" />
                                 </span>
                             )}
                         </Button>

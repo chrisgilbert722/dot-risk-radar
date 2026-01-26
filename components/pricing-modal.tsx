@@ -21,6 +21,7 @@ const PLANS = [
         price: 49,
         priceId: 'price_1Stqfa2a1UrjaUn8Nu12GR9M',
         popular: false,
+        description: "Weekly DOT risk monitoring for a single carrier with delayed alerts.",
         features: [
             '1 DOT Profile',
             'Weekly Data Refresh',
@@ -38,6 +39,7 @@ const PLANS = [
         price: 119,
         priceId: 'price_1StqiA2a1UrjaUn8guhL2K7e',
         popular: true,
+        description: "Daily predictive DOT risk monitoring with real-time alerts and inspection risk signals.",
         features: [
             '1 DOT Profile',
             'Daily Risk Monitoring',
@@ -56,6 +58,7 @@ const PLANS = [
         price: 249,
         priceId: 'price_1Stqll2a1UrjaUn8us9WnIjP',
         popular: false,
+        description: "Fleet-level monitoring for multiple DOT numbers with priority alerts and expanded visibility.",
         features: [
             'Up to 5 DOT Profiles',
             'Daily Data Refresh',
@@ -125,9 +128,7 @@ export function PricingModal({ open, onOpenChange }: PricingModalProps) {
                         Unlock Full Risk Intelligence
                     </DialogTitle>
                     <DialogDescription className="text-center text-slate-400 text-base max-w-lg mx-auto">
-                        One inspection can cost thousands. Pro alerts cost $119/month.
-                        <br />
-                        <span className="text-slate-500 text-sm mt-2 block">Choose daily monitoring to catch risk signals before they escalate.</span>
+                        Start with a free DOT risk check. Upgrade when you’re ready to monitor risk continuously.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -147,7 +148,7 @@ export function PricingModal({ open, onOpenChange }: PricingModalProps) {
                                 </div>
                             )}
 
-                            <div className="flex justify-between items-start mb-6">
+                            <div className="flex justify-between items-start mb-4">
                                 <div className="space-y-4">
                                     <plan.icon className={`w-8 h-8 ${plan.color}`} />
                                     <h3 className="font-bold text-white text-lg">{plan.name}</h3>
@@ -162,6 +163,10 @@ export function PricingModal({ open, onOpenChange }: PricingModalProps) {
                                     </div>
                                 </div>
                             </div>
+
+                            <p className="text-xs text-slate-400 mb-6 leading-relaxed h-10">
+                                {plan.description}
+                            </p>
 
                             <ul className="space-y-3 text-sm text-slate-300 flex-1">
                                 {plan.features.map((feat, i) => (
