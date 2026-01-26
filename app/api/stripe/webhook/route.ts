@@ -48,6 +48,7 @@ export async function POST(req: Request) {
                         stripe_customer_id: session.customer as string,
                         stripe_subscription_id: subscriptionId,
                         status: 'active',
+                        plan: session.metadata?.plan || 'pro', // Save plan from metadata
                         // Explicitly access the property or fallback if typing is strict. 
                         // Casting to any to avoid intersection type issues with Stripe.Response<T>
                         current_period_end: new Date((sub as any).current_period_end * 1000).toISOString(),
@@ -56,11 +57,12 @@ export async function POST(req: Request) {
                 break;
 
             case 'customer.subscription.updated':
-                // Update status
+                // Update status and potentially plan if it changed (though traditionally handled via metadata update or separate event, assuming metadata stays on sub)
                 await supabaseAdmin
                     .from('subscriptions')
                     .update({
                         status: subscription.status,
+                        plan: subscription.metadata?.plan, // Update plan if present in metadata
                         current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
                     })
                     .eq('stripe_subscription_id', subscription.id);

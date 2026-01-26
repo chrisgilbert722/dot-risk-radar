@@ -34,6 +34,14 @@ export async function POST(req: Request) {
 
         let customerId = subscription?.stripe_customer_id;
 
+        const PLAN_MAP: Record<string, string> = {
+            'price_1Stqfa2a1UrjaUn8Nu12GR9M': 'starter',
+            'price_1StqiA2a1UrjaUn8guhL2K7e': 'pro',
+            'price_1Stqll2a1UrjaUn8us9WnIjP': 'fleet'
+        };
+
+        const planType = PLAN_MAP[priceId] || 'pro'; // Default to pro if unknown, though strict check preferred
+
         // Create Checkout Session
         const session = await stripe.checkout.sessions.create({
             customer: customerId || undefined,
@@ -50,10 +58,12 @@ export async function POST(req: Request) {
             cancel_url: `${req.headers.get('origin')}/?canceled=true`,
             metadata: {
                 userId: user.id,
+                plan: planType
             },
             subscription_data: {
                 metadata: {
                     userId: user.id,
+                    plan: planType
                 },
             },
             allow_promotion_codes: true,

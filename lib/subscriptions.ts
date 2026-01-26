@@ -16,6 +16,7 @@ export interface Subscription {
     user_id: string;
     status: SubscriptionStatus;
     current_period_end: string;
+    plan?: 'starter' | 'pro' | 'fleet';
 }
 
 /**

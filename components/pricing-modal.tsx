@@ -19,7 +19,7 @@ const PLANS = [
         id: 'starter',
         name: 'Starter',
         price: 49,
-        priceId: 'price_1StVvK2a1UrjaUn8meEwu1yt',
+        priceId: 'price_1Stqfa2a1UrjaUn8Nu12GR9M',
         popular: false,
         features: [
             '1 DOT Profile',
@@ -36,7 +36,7 @@ const PLANS = [
         id: 'pro',
         name: 'Professional',
         price: 119,
-        priceId: 'price_1StVza2a1UrjaUn8KwLOfodR',
+        priceId: 'price_1StqiA2a1UrjaUn8guhL2K7e',
         popular: true,
         features: [
             '1 DOT Profile',
@@ -54,7 +54,7 @@ const PLANS = [
         id: 'fleet',
         name: 'Fleet',
         price: 249,
-        priceId: 'price_1StW2A2a1UrjaUn872axtPVG',
+        priceId: 'price_1Stqll2a1UrjaUn8us9WnIjP',
         popular: false,
         features: [
             'Up to 5 DOT Profiles',
