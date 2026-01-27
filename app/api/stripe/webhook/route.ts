@@ -1,11 +1,10 @@
-import { headers } from 'next/headers';
 import { stripe } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
 export async function POST(req: Request) {
     const body = await req.text();
-    const signature = (await headers()).get('Stripe-Signature') as string;
+    const signature = req.headers.get('stripe-signature') as string;
 
     let event: Stripe.Event;
 
@@ -75,12 +74,12 @@ export async function POST(req: Request) {
                 break;
 
             case 'customer.subscription.updated':
-                // Update status and potentially plan if it changed (though traditionally handled via metadata update or separate event, assuming metadata stays on sub)
+                // Update status and potentially plan if it changed
                 await supabaseAdmin
                     .from('subscriptions')
                     .update({
                         status: subscription.status,
-                        plan: subscription.metadata?.plan, // Update plan if present in metadata
+                        plan: subscription.metadata?.plan,
                         current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
                     })
                     .eq('stripe_subscription_id', subscription.id);
