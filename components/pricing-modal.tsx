@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Check, ShieldCheck, Zap, Building, Truck } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { sendGTMEvent } from '@next/third-parties/google';
 import {
     Dialog,
     DialogContent,
@@ -81,6 +82,17 @@ export function PricingModal({ open, onOpenChange }: PricingModalProps) {
         setLoading(true);
         const plan = PLANS.find(p => p.id === selectedPlan);
         if (!plan) return;
+
+        sendGTMEvent({
+            event: 'begin_checkout',
+            currency: 'USD',
+            value: plan.price,
+            items: [{
+                item_id: plan.id,
+                item_name: plan.name,
+                price: plan.price
+            }]
+        });
 
         try {
             const response = await fetch('/api/stripe/checkout', {

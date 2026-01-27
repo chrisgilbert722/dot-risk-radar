@@ -28,6 +28,7 @@ import { useSubscription, isPremium } from '@/lib/subscriptions';
 import { PricingModal } from '@/components/pricing-modal';
 import { TrustScreen } from '@/components/trust-screen';
 import { useRouter } from 'next/navigation';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 // --- PHASE 9: HERO VARIANTS ---
 const HERO_VARIANTS = {
@@ -165,11 +166,15 @@ export default function ClientPage({ copy }: { copy: any }) {
                     </div>
 
                     <div className="flex items-center gap-6">
-                        <Link href="/login" className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors font-mono uppercase tracking-wider">
+                        <Link
+                            href="/login"
+                            className="hidden md:block text-sm font-medium text-slate-400 hover:text-white transition-colors font-mono uppercase tracking-wider"
+                            onClick={() => sendGTMEvent({ event: 'cta_click', label: 'nav_login' })}
+                        >
                             // Login
                         </Link>
                         <Button asChild className="bg-risk-elevated text-brand-dark hover:bg-amber-400 font-bold px-6 border-b-4 border-amber-600 active:border-b-0 active:translate-y-[4px] transition-all">
-                            <Link href="/signup">
+                            <Link href="/signup" onClick={() => sendGTMEvent({ event: 'cta_click', label: 'nav_get_access' })}>
                                 GET ACCESS
                             </Link>
                         </Button>
@@ -420,7 +425,10 @@ export default function ClientPage({ copy }: { copy: any }) {
 
                         <div className="flex flex-col items-center gap-3">
                             <Button
-                                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                                onClick={() => {
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    sendGTMEvent({ event: 'cta_click', label: 'see_my_risk_profile' });
+                                }}
                                 className="h-16 px-10 bg-amber-500 hover:bg-amber-400 text-brand-dark font-bold text-xl uppercase tracking-wide shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all"
                             >
                                 See My Risk Profile <ArrowRight className="w-6 h-6 ml-2" />
@@ -662,7 +670,10 @@ export default function ClientPage({ copy }: { copy: any }) {
 
                         <div className="flex flex-col items-center gap-3">
                             <Button
-                                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                                onClick={() => {
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    sendGTMEvent({ event: 'cta_click', label: 'check_my_dot_risk' });
+                                }}
                                 className="h-16 px-12 bg-amber-500 hover:bg-amber-400 text-brand-dark font-bold text-xl uppercase tracking-wide shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all"
                             >
                                 Check My DOT Risk <ArrowRight className="w-6 h-6 ml-2" />
@@ -1171,6 +1182,8 @@ function HeroInput({ dotNumber, setDotNumber, isTyping, copy, variant = 'standar
     const startScan = () => {
         if (!dotNumber) return;
         setScanState('scanning');
+
+        sendGTMEvent({ event: 'dot_submit', value: dotNumber });
 
         // Sequence
         setTimeout(() => {

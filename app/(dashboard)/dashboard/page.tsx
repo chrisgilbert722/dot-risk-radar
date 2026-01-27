@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2, AlertTriangle, ShieldAlert, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { isPremium, SubscriptionStatus } from '@/lib/subscriptions'; // Import helper logic (Note: server-side fetching differs, effectively re-implemented below for server context)
+import { DashboardTracker } from '@/components/dashboard-tracker';
 
 // --- Types & Helpers ---
 
@@ -93,6 +94,7 @@ export default async function DashboardPage() {
 
     return (
         <div className="min-h-screen bg-slate-950">
+            <DashboardTracker />
             {/* Navigation Bar */}
             <nav className="border-b border-slate-800 bg-slate-950/50 backdrop-blur-md sticky top-0 z-50">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">

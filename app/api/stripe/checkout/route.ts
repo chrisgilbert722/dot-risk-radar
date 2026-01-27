@@ -54,7 +54,7 @@ export async function POST(req: Request) {
                 },
             ],
             mode: 'subscription',
-            success_url: `${req.headers.get('origin')}/dashboard?success=true`,
+            success_url: `${req.headers.get('origin')}/dashboard?success=true&plan=${planType}`,
             cancel_url: `${req.headers.get('origin')}/?canceled=true`,
             metadata: {
                 userId: user.id,

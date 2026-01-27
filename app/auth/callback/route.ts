@@ -8,9 +8,28 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient()
-    await supabase.auth.exchangeCodeForSession(code)
+    const { error } = await supabase.auth.exchangeCodeForSession(code)
+
+    if (!error) {
+      // Check subscription status
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: subscription } = await supabase
+          .from('subscriptions')
+          .select('status')
+          .eq('user_id', user.id)
+          .single();
+
+        const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
+
+        if (!isActive) {
+          // Redirect to homepage with pricing modal open
+          return NextResponse.redirect(`${origin}/?pricing=true`)
+        }
+      }
+    }
   }
 
-  // Redirect to dashboard after successful authentication
+  // Default correct path (Dashboard if subscribed, or fallthrough if just logging in and active)
   return NextResponse.redirect(`${origin}/dashboard`)
 }
