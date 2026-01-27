@@ -22,6 +22,8 @@ export async function POST(req: Request) {
         return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
     }
 
+    console.log(`[Stripe Webhook] Received event: ${event.type}`);
+
     const session = event.data.object as Stripe.Checkout.Session;
     const subscription = event.data.object as Stripe.Subscription;
 
@@ -40,19 +42,35 @@ export async function POST(req: Request) {
             case 'checkout.session.completed':
                 if (session.mode === 'subscription') {
                     const subscriptionId = session.subscription as string;
+                    console.log(`[Stripe Webhook] Processing subscription: ${subscriptionId}`);
+                    console.log(`[Stripe Webhook] Metadata:`, session.metadata);
+
                     // Retrieve the subscription details to get the current period end
                     const sub = await stripe.subscriptions.retrieve(subscriptionId);
 
-                    await supabaseAdmin.from('subscriptions').upsert({
-                        user_id: session.metadata?.userId || session.client_reference_id,
+                    const userId = session.metadata?.userId || session.client_reference_id;
+                    const plan = session.metadata?.plan || 'pro';
+
+                    if (!userId) {
+                        console.error('[Stripe Webhook] Error: Missing userId in metadata');
+                        return new NextResponse('Webhook Error: Missing userId', { status: 400 });
+                    }
+
+                    const { error } = await supabaseAdmin.from('subscriptions').upsert({
+                        user_id: userId,
                         stripe_customer_id: session.customer as string,
                         stripe_subscription_id: subscriptionId,
                         status: 'active',
-                        plan: session.metadata?.plan || 'pro', // Save plan from metadata
-                        // Explicitly access the property or fallback if typing is strict. 
-                        // Casting to any to avoid intersection type issues with Stripe.Response<T>
+                        plan: plan,
                         current_period_end: new Date((sub as any).current_period_end * 1000).toISOString(),
                     });
+
+                    if (error) {
+                        console.error('[Stripe Webhook] Supabase Upsert Error:', error);
+                        return new NextResponse(`Supabase Error: ${error.message}`, { status: 500 });
+                    }
+
+                    console.log(`[Stripe Webhook] Successfully activated subscription for user: ${userId}`);
                 }
                 break;
 
