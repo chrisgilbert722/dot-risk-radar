@@ -9,6 +9,7 @@ import { CheckCircle2, AlertTriangle, ShieldAlert, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { isPremium, SubscriptionStatus } from '@/lib/subscriptions'; // Import helper logic (Note: server-side fetching differs, effectively re-implemented below for server context)
 import { DashboardTracker } from '@/components/dashboard-tracker';
+import { PurchaseSyncWrapper } from '@/components/purchase-sync-wrapper';
 
 // --- Types & Helpers ---
 
@@ -58,7 +59,15 @@ function groupByDate(items: RiskItem[]) {
     return groups;
 }
 
-export default async function DashboardPage() {
+// Next.js 15: searchParams is async
+type Props = {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function DashboardPage({ searchParams }: Props) {
+    const resolvedParams = await searchParams;
+    const isSuccess = resolvedParams.success === 'true';
+
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -78,15 +87,12 @@ export default async function DashboardPage() {
     const isActive = status === 'active' || status === 'trialing';
 
     if (!isActive) {
-        // Redirect to pricing or a "locked" state. 
-        // Ideally this would open the modal, but on server render we redirect to a dedicated pricing page
-        // OR we can rely on middleware. For now, redirecting to root with a query param to trigger modal could work,
-        // or a dedicated /locked page. 
-        // Directive says: "Redirect user to pricing / paywall modal."
-        // Since modal is client-side, let's redirect to home with ?pricing=true or similar, 
-        // BUT for a clean server-side gate, a dedicated "Upgrade Required" page is safer.
-        // Let's assume for this task that redirecting to '/' is the safest fallback to trigger the client experience,
-        // unless we built a /pricing page. I'll mock a simple redirect to home for now.
+        // Post-checkout: If they just bought, DO NOT redirect. Show sync wrapper.
+        if (isSuccess) {
+            return <PurchaseSyncWrapper />;
+        }
+
+        // Standard access attempt without sub: Redirect to pricing
         redirect('/?pricing=true');
     }
 
