@@ -71,12 +71,8 @@ export async function POST(req: Request) {
                         stripe_subscription_id: subscriptionId,
                         price_id: priceId,
                         status: sub.status,
-                        current_period_start: subAny.current_period_start
-                            ? new Date(subAny.current_period_start * 1000).toISOString()
-                            : null,
-                        current_period_end: subAny.current_period_end
-                            ? new Date(subAny.current_period_end * 1000).toISOString()
-                            : null,
+                        current_period_start: toIso(subAny.current_period_start),
+                        current_period_end: toIso(subAny.current_period_end),
                     });
 
                 if (error) throw error;
@@ -96,12 +92,8 @@ export async function POST(req: Request) {
                     .update({
                         status: subscription.status,
                         price_id: priceId,
-                        current_period_start: subscriptionAny.current_period_start
-                            ? new Date(subscriptionAny.current_period_start * 1000).toISOString()
-                            : null,
-                        current_period_end: subscriptionAny.current_period_end
-                            ? new Date(subscriptionAny.current_period_end * 1000).toISOString()
-                            : null,
+                        current_period_start: toIso(subscriptionAny.current_period_start),
+                        current_period_end: toIso(subscriptionAny.current_period_end),
                     })
                     .eq('stripe_subscription_id', subscription.id);
 
@@ -114,9 +106,7 @@ export async function POST(req: Request) {
                     .from('subscriptions')
                     .update({
                         status: subscription.status,
-                        current_period_end: subscriptionAny.current_period_end
-                            ? new Date(subscriptionAny.current_period_end * 1000).toISOString()
-                            : null,
+                        current_period_end: toIso(subscriptionAny.current_period_end),
                     })
                     .eq('stripe_subscription_id', subscription.id);
 
