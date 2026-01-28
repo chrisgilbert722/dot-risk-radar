@@ -65,7 +65,8 @@ export async function POST(req: Request) {
                         stripe_customer_id: session.customer as string,
                         stripe_subscription_id: subscriptionId,
                         price_id: priceId,
-                        status: 'active', // Should ideally come from sub.status but session completed usually implies active/trialing
+                        status: 'active',
+                        current_period_start: new Date((sub as any).current_period_start * 1000).toISOString(),
                         current_period_end: new Date((sub as any).current_period_end * 1000).toISOString(),
                     });
 
@@ -86,6 +87,7 @@ export async function POST(req: Request) {
                     .update({
                         status: subscription.status,
                         price_id: priceId,
+                        current_period_start: new Date((subscription as any).current_period_start * 1000).toISOString(),
                         current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
                     })
                     .eq('stripe_subscription_id', subscription.id);
