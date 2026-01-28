@@ -49,6 +49,9 @@ export async function POST(req: Request) {
                     subscriptionId
                 )) as Stripe.Subscription;
 
+                // Cast to any to safely access properties that might be missing in strict types
+                const subAny = sub as any;
+
                 const userId =
                     session.metadata?.userId || session.client_reference_id;
 
@@ -68,11 +71,11 @@ export async function POST(req: Request) {
                         stripe_subscription_id: subscriptionId,
                         price_id: priceId,
                         status: sub.status,
-                        current_period_start: (sub as any).current_period_start
-                            ? new Date((sub as any).current_period_start * 1000).toISOString()
+                        current_period_start: subAny.current_period_start
+                            ? new Date(subAny.current_period_start * 1000).toISOString()
                             : null,
-                        current_period_end: (sub as any).current_period_end
-                            ? new Date((sub as any).current_period_end * 1000).toISOString()
+                        current_period_end: subAny.current_period_end
+                            ? new Date(subAny.current_period_end * 1000).toISOString()
                             : null,
                     });
 
@@ -85,6 +88,7 @@ export async function POST(req: Request) {
             }
 
             case 'customer.subscription.updated': {
+                const subscriptionAny = subscription as any;
                 const priceId = subscription.items.data[0]?.price.id;
 
                 await supabaseAdmin
@@ -92,11 +96,11 @@ export async function POST(req: Request) {
                     .update({
                         status: subscription.status,
                         price_id: priceId,
-                        current_period_start: (subscription as any).current_period_start
-                            ? new Date((subscription as any).current_period_start * 1000).toISOString()
+                        current_period_start: subscriptionAny.current_period_start
+                            ? new Date(subscriptionAny.current_period_start * 1000).toISOString()
                             : null,
-                        current_period_end: (subscription as any).current_period_end
-                            ? new Date((subscription as any).current_period_end * 1000).toISOString()
+                        current_period_end: subscriptionAny.current_period_end
+                            ? new Date(subscriptionAny.current_period_end * 1000).toISOString()
                             : null,
                     })
                     .eq('stripe_subscription_id', subscription.id);
@@ -105,12 +109,13 @@ export async function POST(req: Request) {
             }
 
             case 'customer.subscription.deleted': {
+                const subscriptionAny = subscription as any;
                 await supabaseAdmin
                     .from('subscriptions')
                     .update({
                         status: subscription.status,
-                        current_period_end: (subscription as any).current_period_end
-                            ? new Date((subscription as any).current_period_end * 1000).toISOString()
+                        current_period_end: subscriptionAny.current_period_end
+                            ? new Date(subscriptionAny.current_period_end * 1000).toISOString()
                             : null,
                     })
                     .eq('stripe_subscription_id', subscription.id);
