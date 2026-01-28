@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server';
+import { requireActiveSubscription } from '@/lib/billing/requireActiveSubscription';
 
 export const dynamic = 'force-dynamic'
 
@@ -34,6 +36,20 @@ interface FMCSACarrierResponse {
 
 export async function GET(request: NextRequest) {
   try {
+    // --- AUTH & SUBSCRIPTION CHECK ---
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
+    try {
+      await requireActiveSubscription(user.id);
+    } catch (e) {
+      return NextResponse.json({ ok: false, error: 'Upgrade required to access this data' }, { status: 403 });
+    }
+
     // Extract DOT number from query params
     const searchParams = request.nextUrl.searchParams
     const dot = searchParams.get('dot')

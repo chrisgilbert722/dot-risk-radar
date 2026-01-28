@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, AlertTriangle, ShieldAlert, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { requireActiveSubscription } from '@/lib/billing/requireActiveSubscription';
 import { isPremium, SubscriptionStatus } from '@/lib/subscriptions'; // Import helper logic (Note: server-side fetching differs, effectively re-implemented below for server context)
 import { DashboardTracker } from '@/components/dashboard-tracker';
 import { PurchaseSyncWrapper } from '@/components/purchase-sync-wrapper';
@@ -77,16 +78,10 @@ export default async function DashboardPage({ searchParams }: Props) {
 
     // --- SUBSCRIPTION CHECK (Server-Side) ---
     // --- SUBSCRIPTION CHECK (Server-Side) ---
-    const { data: subscription } = await supabase
-        .from('subscriptions')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .single();
-
-    const isActive = !!subscription;
-
-    if (!isActive) {
+    // --- SUBSCRIPTION CHECK (Server-Side) ---
+    try {
+        await requireActiveSubscription(user.id);
+    } catch (error) {
         // Post-checkout: If they just bought, DO NOT redirect. Show sync wrapper.
         if (isSuccess) {
             return <PurchaseSyncWrapper />;
