@@ -76,15 +76,15 @@ export default async function DashboardPage({ searchParams }: Props) {
     }
 
     // --- SUBSCRIPTION CHECK (Server-Side) ---
+    // --- SUBSCRIPTION CHECK (Server-Side) ---
     const { data: subscription } = await supabase
         .from('subscriptions')
-        .select('status')
+        .select('*')
         .eq('user_id', user.id)
+        .eq('status', 'active')
         .single();
 
-    // Status check logic (mimicking isPremium helper but safely on server)
-    const status = subscription?.status as SubscriptionStatus;
-    const isActive = status === 'active' || status === 'trialing';
+    const isActive = !!subscription;
 
     if (!isActive) {
         // Post-checkout: If they just bought, DO NOT redirect. Show sync wrapper.

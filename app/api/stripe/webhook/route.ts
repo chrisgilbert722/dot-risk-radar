@@ -48,19 +48,24 @@ export async function POST(req: Request) {
                     const sub = await stripe.subscriptions.retrieve(subscriptionId);
 
                     const userId = session.metadata?.userId || session.client_reference_id;
-                    const plan = session.metadata?.plan || 'pro';
+                    const priceId = sub.items.data[0]?.price.id;
 
                     if (!userId) {
                         console.error('[Stripe Webhook] Error: Missing userId in metadata');
                         return new NextResponse('Webhook Error: Missing userId', { status: 400 });
                     }
 
+                    if (!priceId) {
+                        console.error('[Stripe Webhook] Error: Could not find price ID in subscription items');
+                        return new NextResponse('Webhook Error: Missing price info', { status: 400 });
+                    }
+
                     const { error } = await supabaseAdmin.from('subscriptions').upsert({
                         user_id: userId,
                         stripe_customer_id: session.customer as string,
                         stripe_subscription_id: subscriptionId,
-                        status: 'active',
-                        plan: plan,
+                        price_id: priceId,
+                        status: 'active', // Should ideally come from sub.status but session completed usually implies active/trialing
                         current_period_end: new Date((sub as any).current_period_end * 1000).toISOString(),
                     });
 
@@ -74,12 +79,13 @@ export async function POST(req: Request) {
                 break;
 
             case 'customer.subscription.updated':
-                // Update status and potentially plan if it changed
+                // Update status and price_id if changed
+                const priceId = subscription.items.data[0]?.price.id;
                 await supabaseAdmin
                     .from('subscriptions')
                     .update({
                         status: subscription.status,
-                        plan: subscription.metadata?.plan,
+                        price_id: priceId,
                         current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
                     })
                     .eq('stripe_subscription_id', subscription.id);

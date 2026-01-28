@@ -16,11 +16,12 @@ export async function GET(request: Request) {
       if (user) {
         const { data: subscription } = await supabase
           .from('subscriptions')
-          .select('status')
+          .select('*')
           .eq('user_id', user.id)
+          .eq('status', 'active')
           .single();
 
-        const isActive = subscription?.status === 'active' || subscription?.status === 'trialing';
+        const isActive = !!subscription;
 
         if (!isActive) {
           // Redirect to homepage with pricing modal open
