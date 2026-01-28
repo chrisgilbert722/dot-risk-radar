@@ -2,112 +2,112 @@ import { stripe } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
+// ✅ SAFE DATE CONVERTER
+const toIso = (unix?: number | null) =>
+  unix ? new Date(unix * 1000).toISOString() : null;
+
 export async function POST(req: Request) {
-    const body = await req.text();
-    const signature = req.headers.get('stripe-signature') as string;
+  const body = await req.text();
+  const signature = req.headers.get('stripe-signature') as string;
 
-    let event: Stripe.Event;
+  let event: Stripe.Event;
 
-    try {
-        if (!process.env.STRIPE_WEBHOOK_SECRET) {
-            throw new Error("STRIPE_WEBHOOK_SECRET is missing");
-        }
-        event = stripe.webhooks.constructEvent(
-            body,
-            signature,
-            process.env.STRIPE_WEBHOOK_SECRET
-        );
-    } catch (error: any) {
-        return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
+  try {
+    if (!process.env.STRIPE_WEBHOOK_SECRET) {
+      throw new Error('STRIPE_WEBHOOK_SECRET is missing');
     }
 
-    console.log(`[Stripe Webhook] Received event: ${event.type}`);
+    event = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (error: any) {
+    return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
+  }
 
-    const session = event.data.object as Stripe.Checkout.Session;
-    const subscription = event.data.object as Stripe.Subscription;
+  console.log(`[Stripe Webhook] Received event: ${event.type}`);
 
-    // Initialize Supabase Admin Client
-    // We use the manually created admin client for webhooks
-    const supabaseAdmin = await (async () => {
-        const { createClient: createSupabaseClient } = await import('@supabase/supabase-js');
-        return createSupabaseClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.SUPABASE_SERVICE_ROLE_KEY!
-        );
-    })();
+  const session = event.data.object as Stripe.Checkout.Session;
+  const subscription = event.data.object as Stripe.Subscription;
 
-    try {
-        switch (event.type) {
-            case 'checkout.session.completed':
-                if (session.mode === 'subscription') {
-                    const subscriptionId = session.subscription as string;
-                    console.log(`[Stripe Webhook] Processing subscription: ${subscriptionId}`);
-                    console.log(`[Stripe Webhook] Metadata:`, session.metadata);
+  const { createClient } = await import('@supabase/supabase-js');
 
-                    // Retrieve the subscription details to get the current period end
-                    const sub = await stripe.subscriptions.retrieve(subscriptionId);
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
-                    const userId = session.metadata?.userId || session.client_reference_id;
-                    const priceId = sub.items.data[0]?.price.id;
+  try {
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        if (session.mode !== 'subscription') break;
 
-                    if (!userId) {
-                        console.error('[Stripe Webhook] Error: Missing userId in metadata');
-                        return new NextResponse('Webhook Error: Missing userId', { status: 400 });
-                    }
+        const subscriptionId = session.subscription as string;
+        const sub = await stripe.subscriptions.retrieve(subscriptionId);
 
-                    if (!priceId) {
-                        console.error('[Stripe Webhook] Error: Could not find price ID in subscription items');
-                        return new NextResponse('Webhook Error: Missing price info', { status: 400 });
-                    }
+        const userId =
+          session.metadata?.userId || session.client_reference_id;
 
-                    const { error } = await supabaseAdmin.from('subscriptions').upsert({
-                        user_id: userId,
-                        stripe_customer_id: session.customer as string,
-                        stripe_subscription_id: subscriptionId,
-                        price_id: priceId,
-                        status: 'active',
-                        current_period_start: new Date((sub as any).current_period_start * 1000).toISOString(),
-                        current_period_end: new Date((sub as any).current_period_end * 1000).toISOString(),
-                    });
+        const priceId = sub.items.data[0]?.price.id;
 
-                    if (error) {
-                        console.error('[Stripe Webhook] Supabase Upsert Error:', error);
-                        return new NextResponse(`Supabase Error: ${error.message}`, { status: 500 });
-                    }
-
-                    console.log(`[Stripe Webhook] Successfully activated subscription for user: ${userId}`);
-                }
-                break;
-
-            case 'customer.subscription.updated':
-                // Update status and price_id if changed
-                const priceId = subscription.items.data[0]?.price.id;
-                await supabaseAdmin
-                    .from('subscriptions')
-                    .update({
-                        status: subscription.status,
-                        price_id: priceId,
-                        current_period_start: new Date((subscription as any).current_period_start * 1000).toISOString(),
-                        current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
-                    })
-                    .eq('stripe_subscription_id', subscription.id);
-                break;
-
-            case 'customer.subscription.deleted':
-                // Mark as canceled
-                await supabaseAdmin
-                    .from('subscriptions')
-                    .update({
-                        status: subscription.status,
-                        current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
-                    })
-                    .eq('stripe_subscription_id', subscription.id);
-                break;
+        if (!userId || !priceId) {
+          console.error('[Stripe Webhook] Missing userId or priceId');
+          break;
         }
-    } catch (error: any) {
-        console.error('Webhook handler failed:', error);
-        return new NextResponse('Webhook handler failed', { status: 500 });
-    }
 
-    return new NextResponse(null, { status: 200 });
+        const { error } = await supabaseAdmin
+          .from('subscriptions')
+          .upsert({
+            user_id: userId,
+            stripe_customer_id: session.customer as string,
+            stripe_subscription_id: subscriptionId,
+            price_id: priceId,
+            status: sub.status,
+            current_period_start: toIso(sub.current_period_start),
+            current_period_end: toIso(sub.current_period_end),
+          });
+
+        if (error) throw error;
+
+        console.log(
+          `[Stripe Webhook] Subscription activated for user ${userId}`
+        );
+        break;
+      }
+
+      case 'customer.subscription.updated': {
+        const priceId = subscription.items.data[0]?.price.id;
+
+        await supabaseAdmin
+          .from('subscriptions')
+          .update({
+            status: subscription.status,
+            price_id: priceId,
+            current_period_start: toIso(subscription.current_period_start),
+            current_period_end: toIso(subscription.current_period_end),
+          })
+          .eq('stripe_subscription_id', subscription.id);
+
+        break;
+      }
+
+      case 'customer.subscription.deleted': {
+        await supabaseAdmin
+          .from('subscriptions')
+          .update({
+            status: subscription.status,
+            current_period_end: toIso(subscription.current_period_end),
+          })
+          .eq('stripe_subscription_id', subscription.id);
+
+        break;
+      }
+    }
+  } catch (error) {
+    console.error('Webhook handler failed:', error);
+    return new NextResponse('Webhook handler failed', { status: 500 });
+  }
+
+  return new NextResponse(null, { status: 200 });
 }
