@@ -27,7 +27,7 @@ export interface FMCSACarrierData {
 
 export type FMCSAResult =
   | { success: true, data: FMCSACarrierData }
-  | { success: false, error: string, statusCode: number }
+  | { success: false, error: string, statusCode: number };
 
 export async function fetchFMCSACarrierData(dotNumber: string): Promise<FMCSAResult> {
   const webKey = process.env.FMCSA_WEB_KEY

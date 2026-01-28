@@ -3,8 +3,7 @@
 // NO RISK SCORING - only data fetching and normalization
 
 import { createClient } from '@/lib/supabase/server';
-import { fetchCarrierSnapshotWithRetry, FMCSAClientError } from './client';
-import { parseCarrierSnapshotXML, normalizeFMCSASnapshot, FMCSAParseError } from './parser';
+import { fetchFMCSACarrierData } from './client';
 import type { DotProfile, NormalizedDotProfile } from './types';
 
 const CACHE_TTL_HOURS = 12;
@@ -93,6 +92,10 @@ async function storeDotProfile(
  * Fetch FMCSA data and store in database
  * Returns raw data only - NO risk scoring
  */
+/**
+ * Fetch FMCSA data and store in database
+ * Returns raw data only - NO risk scoring
+ */
 export async function fetchAndStoreDotProfile(
   dotNumber: string
 ): Promise<FetchResult> {
@@ -112,16 +115,46 @@ export async function fetchAndStoreDotProfile(
       }
     }
 
-    // 2. Fetch from FMCSA WebKey API
-    const xmlData = await fetchCarrierSnapshotWithRetry(dotNumber);
+    // 2. Fetch from FMCSA WebKey API (JSON)
+    const result = await fetchFMCSACarrierData(dotNumber);
 
-    // 3. Parse XML to structured JSON
-    const snapshot = parseCarrierSnapshotXML(xmlData);
+    if (!result.success) {
+      // Return error with user-friendly message
+      return {
+        success: false,
+        error: result.error || 'Unknown error',
+        userMessage: 'Unable to retrieve carrier data. Please try again later.',
+        code: result.statusCode ? result.statusCode.toString() : 'UNKNOWN',
+      };
+    }
 
-    // 4. Normalize to dot_profiles schema
-    const normalized = normalizeFMCSASnapshot(snapshot);
+    // 3. Normalize to dot_profiles schema
+    const data = result.data;
 
-    // 5. Store in database (upsert by dot_number)
+    // Map JSON data to NormalizedDotProfile
+    const normalized: NormalizedDotProfile = {
+      dot_number: data.dotNumber,
+      legal_name: data.legalName,
+      dba_name: data.dbaName || null,
+      physical_address: data.physicalAddress?.street || null,
+      physical_city: data.physicalAddress?.city || null,
+      physical_state: data.physicalAddress?.state || null,
+      physical_zip: data.physicalAddress?.zipCode || null,
+      operating_status: data.operatingStatus || null,
+      entity_type: null,
+      fmcsa_safety_rating: null,
+      safety_rating_date: null,
+      vehicle_oos_rate: null,
+      driver_oos_rate: null,
+      hazmat_oos_rate: null,
+      total_inspections: 0,
+      total_vehicles: data.numberOfPowerUnits || 0,
+      total_drivers: data.numberOfDrivers || 0,
+      raw_fmcsa_data: data as object,
+      last_fetched_at: new Date(),
+    };
+
+    // 4. Store in database (upsert by dot_number)
     const profile = await storeDotProfile(normalized);
 
     return {
@@ -130,40 +163,6 @@ export async function fetchAndStoreDotProfile(
       source: 'fmcsa',
     };
   } catch (error) {
-    // Handle FMCSA API errors
-    if (error instanceof FMCSAClientError) {
-      // Try to return cached data on service errors
-      if (error.status && error.status >= 500) {
-        const cached = await getCachedProfile(dotNumber);
-        if (cached) {
-          return {
-            success: true,
-            data: cached,
-            source: 'cache',
-            staleness: calculateStaleness(cached.last_fetched_at),
-          };
-        }
-      }
-
-      // Return error with user-friendly message
-      return {
-        success: false,
-        error: error.message,
-        userMessage: getUserMessage(error),
-        code: error.code,
-      };
-    }
-
-    // Handle parse errors
-    if (error instanceof FMCSAParseError) {
-      return {
-        success: false,
-        error: error.message,
-        userMessage: 'Unable to process FMCSA data format. Our team has been notified.',
-        code: 'PARSE_ERROR',
-      };
-    }
-
     // Generic error
     return {
       success: false,
@@ -174,23 +173,7 @@ export async function fetchAndStoreDotProfile(
   }
 }
 
-/**
- * Get user-friendly error message
- */
-function getUserMessage(error: FMCSAClientError): string {
-  switch (error.code) {
-    case 'NOT_FOUND':
-      return 'DOT number not found. Please verify the number is correct.';
-    case 'RATE_LIMIT':
-      return 'Too many requests. Please wait a moment and try again.';
-    case 'SERVICE_UNAVAILABLE':
-      return 'FMCSA service temporarily unavailable. Please try again later.';
-    case 'MISSING_CONFIG':
-      return 'System configuration error. Please contact support.';
-    default:
-      return 'Unable to retrieve carrier data. Please try again later.';
-  }
-}
+
 
 /**
  * Get DOT profile (cached or fetch)
