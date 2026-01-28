@@ -45,7 +45,9 @@ export async function POST(req: Request) {
                     console.log(`[Stripe Webhook] Metadata:`, session.metadata);
 
                     // Retrieve the subscription details to get the current period end
-                    const sub = await stripe.subscriptions.retrieve(subscriptionId);
+                    const sub = await stripe.subscriptions.retrieve(
+                        subscriptionId
+                    ) as Stripe.Subscription;
 
                     const userId = session.metadata?.userId || session.client_reference_id;
                     const priceId = sub.items.data[0]?.price.id;
