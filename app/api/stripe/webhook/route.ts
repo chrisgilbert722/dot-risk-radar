@@ -73,6 +73,8 @@ export async function POST(req: Request) {
                         status: sub.status,
                         current_period_start: toIso(subAny.current_period_start),
                         current_period_end: toIso(subAny.current_period_end),
+                    }, {
+                        onConflict: 'user_id'
                     });
 
                 if (error) throw error;
