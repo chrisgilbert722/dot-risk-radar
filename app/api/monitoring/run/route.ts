@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { cookies } from "next/headers";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@supabase/supabase-js";
 import { fetchFMCSACarrierData, FMCSACarrierData } from '@/lib/fmcsa/client';
 import { resend, EMAIL_FROM } from '@/lib/email';
 import {
@@ -23,14 +25,17 @@ export async function POST(request: NextRequest) {
         return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const supabase = await createClient();
+    // User-scoped client (cookies-based)
+    const supabase = createRouteHandlerClient({ cookies });
+
+    // Admin client (service role)
     const supabaseAdmin = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
     try {
-        const { data: dots, error: dotError } = await supabase
+        const { data: dots, error: dotError } = await supabaseAdmin
             .from('monitored_dots')
             .select('dot_number')
             .order('dot_number');
