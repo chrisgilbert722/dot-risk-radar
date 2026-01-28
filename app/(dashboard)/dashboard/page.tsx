@@ -11,6 +11,7 @@ import { requireActiveSubscription } from '@/lib/billing/requireActiveSubscripti
 import { isPremium, SubscriptionStatus } from '@/lib/subscriptions'; // Import helper logic (Note: server-side fetching differs, effectively re-implemented below for server context)
 import { DashboardTracker } from '@/components/dashboard-tracker';
 import { PurchaseSyncWrapper } from '@/components/purchase-sync-wrapper';
+import { AlertsFeed } from '@/components/alerts-feed';
 
 // --- Types & Helpers ---
 
@@ -91,6 +92,14 @@ export default async function DashboardPage({ searchParams }: Props) {
         redirect('/?pricing=true');
     }
 
+    // --- FETCH DATA ---
+    const { data: alerts } = await supabase
+        .from('alerts')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
     const data = await getRiskData();
 
     return (
@@ -130,6 +139,9 @@ export default async function DashboardPage({ searchParams }: Props) {
                         Last updated: {new Date().toLocaleTimeString()}
                     </div>
                 </div>
+
+                {/* Alerts Feed */}
+                <AlertsFeed initialAlerts={alerts || []} />
 
                 <RiskSection
                     title={DASHBOARD_STRINGS.HEADERS.HIGH}
