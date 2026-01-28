@@ -137,9 +137,14 @@ export async function POST(req: Request) {
             case 'invoice.payment_succeeded':
             case 'invoice.payment_failed': {
                 const invoice = event.data.object as Stripe.Invoice;
-                if (!invoice.subscription) break;
 
-                const subscriptionId = invoice.subscription as string;
+                // Fix: Check type of subscription before using it
+                const subscriptionId = typeof (invoice as any).subscription === 'string'
+                    ? (invoice as any).subscription
+                    : null;
+
+                if (!subscriptionId) break;
+
                 const sub = (await stripe.subscriptions.retrieve(
                     subscriptionId
                 )) as Stripe.Subscription;
