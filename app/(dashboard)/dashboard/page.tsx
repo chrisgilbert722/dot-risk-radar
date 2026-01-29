@@ -121,9 +121,11 @@ export default async function DashboardPage({ searchParams }: Props) {
                 </div>
 
                 {subscription?.plan !== 'fleet' && (
-                    <Button className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 shadow-lg shadow-indigo-900/20 transition-all hover:scale-105 active:scale-95">
-                        <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
-                        Upgrade to Fleet
+                    <Button className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 shadow-lg shadow-indigo-900/20 transition-all hover:scale-105 active:scale-95" asChild>
+                        <a href="/dashboard/billing">
+                            <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
+                            Upgrade to Fleet
+                        </a>
                     </Button>
                 )}
             </header>
