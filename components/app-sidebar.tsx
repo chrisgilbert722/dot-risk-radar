@@ -22,11 +22,8 @@ export function AppSidebar({ userEmail, planName }: { userEmail: string, planNam
             <div className="h-16 flex items-center px-6 border-b border-slate-800/50">
                 <div className="flex items-center gap-3">
                     {/* Official Logo */}
-                    <div className="w-8 h-8 relative rounded-md overflow-hidden shadow-lg shadow-indigo-500/20">
-                        <img src="/logo.png" alt="DOT Risk Radar" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="font-bold text-lg tracking-tight text-white">
-                        Risk Radar
+                    <div className="h-8 w-auto relative">
+                        <img src="/logo.png" alt="DOT Risk Radar" className="h-full w-auto object-contain" />
                     </div>
                 </div>
             </div>
