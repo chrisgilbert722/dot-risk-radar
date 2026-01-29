@@ -189,12 +189,14 @@ export default async function DashboardPage({ searchParams }: Props) {
                     </section>
 
                     {/* Recent Activity Feed */}
-                    <section className="pt-8 border-t border-slate-800/50">
-                        <div className="flex items-center gap-3 mb-5 px-1">
-                            <Clock className="w-5 h-5 text-slate-400" />
-                            <h2 className="text-lg font-bold tracking-tight text-white">Recent Activity Log</h2>
-                        </div>
-                        <AlertsFeed initialAlerts={alerts || []} />
+                    {/* Recent Activity / View All */}
+                    <section className="pt-8 border-t border-slate-800/50 flex justify-center">
+                        <Button variant="ghost" className="text-slate-400 hover:text-white" asChild>
+                            <a href="/dashboard/alerts" className="flex items-center gap-2 group">
+                                View Full Alert History
+                                <Clock className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </a>
+                        </Button>
                     </section>
                 </main>
 

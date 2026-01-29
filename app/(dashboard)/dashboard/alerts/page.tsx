@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { RiskCard, RiskItem } from '@/components/risk-card';
 import { RISK_LEVELS } from '@/lib/constants/messages';
+import { AlertsView } from '@/components/alerts-view';
 
 // Mock data fetcher (Duplicated for Phase 1.7 presentation)
 async function getAlertsData() {
@@ -95,37 +96,7 @@ export default async function AlertsPage() {
             </header>
 
             <div className="p-8 max-w-[1920px] mx-auto">
-                {/* Visual Filters */}
-                <div className="flex flex-wrap items-center gap-2 mb-8 p-1 bg-slate-900/50 rounded-lg border border-slate-800 w-fit">
-                    <Button variant="secondary" size="sm" className="bg-slate-800 text-white hover:bg-slate-700 shadow-sm">
-                        All Alerts
-                        <Badge className="ml-2 bg-slate-700 text-slate-300 hover:bg-slate-600 border-none">{alerts.length}</Badge>
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-slate-400 hover:text-rose-400 hover:bg-rose-950/30" disabled>
-                        High Priority
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-slate-400 hover:text-amber-400 hover:bg-amber-950/30" disabled>
-                        Elevated
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-slate-400 hover:text-emerald-400 hover:bg-emerald-950/30" disabled>
-                        Acknowledged
-                    </Button>
-                </div>
-
-                {/* Alerts List */}
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-                    {alerts.map((item) => (
-                        <RiskCard
-                            key={item.id}
-                            risk={item}
-                            level={item.level as any}
-                            planName={planName}
-                        // Note: RiskCard might need visual adjustment for 'Acknowledged' state if passed specifically, 
-                        // but currently it renders based on level. We can assume 'low' or passing a specific prop if RiskCard supported it.
-                        // For this pass, we use existing RiskCard.
-                        />
-                    ))}
-                </div>
+                <AlertsView initialAlerts={alerts} planName={planName} />
             </div>
         </div>
     );

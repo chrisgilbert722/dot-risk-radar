@@ -52,18 +52,7 @@ export function AppSidebar({ userEmail, planName }: { userEmail: string, planNam
 
             {/* User Footer */}
             <div className="p-4 border-t border-slate-800/50 bg-slate-950 space-y-4">
-                {planName !== 'fleet' && (
-                    <Button
-                        asChild
-                        className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 border border-indigo-500/30 shadow-lg shadow-indigo-500/10 text-white"
-                        size="sm"
-                    >
-                        <Link href="/dashboard/billing" className="flex items-center gap-2">
-                            <Zap className="w-3 h-3 fill-amber-300 text-amber-300" />
-                            <span className="truncate">Unlock 90-Day Risk History</span>
-                        </Link>
-                    </Button>
-                )}
+                {/* Upgrade Button Removed for Phase 1.7 */}
 
                 <div>
                     <div className="flex items-center gap-3 mb-3">
