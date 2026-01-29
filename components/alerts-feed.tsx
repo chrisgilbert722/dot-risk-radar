@@ -3,9 +3,10 @@
 import { useState, useMemo } from 'react'
 import { markAlertAsRead } from '@/app/actions/alerts'
 import { cn } from '@/lib/utils'
-import { Bell, Check, Info, AlertTriangle, ShieldAlert, Circle, Activity, AlertOctagon } from 'lucide-react'
+import { Check, Info, AlertTriangle, ShieldAlert, Activity, AlertOctagon, Circle } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { RiskDetailsDialog, RiskDetail } from "@/components/risk-details-dialog"
 
 type AlertSeverity = 'info' | 'warning' | 'critical'
 
@@ -27,16 +28,16 @@ const SEVERITY_WEIGHT = {
 
 export function AlertsFeed({ initialAlerts }: { initialAlerts: Alert[] }) {
     const [alerts, setAlerts] = useState(initialAlerts)
+    const [selectedDetail, setSelectedDetail] = useState<RiskDetail | null>(null)
+    const [dialogOpen, setDialogOpen] = useState(false)
 
     const sortedAlerts = useMemo(() => {
         return [...alerts].sort((a, b) => {
-            // 1. Sort by Unread first? (User didn't ask, but good UX. User asked for "Sort newest first" originally, now "critical first...")
-            // Prompt: "Sort order: critical first, then warning, then info; within each group newest first."
-            // Also "Unread vs read distinction" exists visually.
-            // Let's strictly follow prompt: Severity > Newest.
-
             const sevA = SEVERITY_WEIGHT[a.severity || 'info'] || 1
             const sevB = SEVERITY_WEIGHT[b.severity || 'info'] || 1
+
+            // Sort unread first
+            if (a.is_read !== b.is_read) return a.is_read ? 1 : -1
 
             if (sevA !== sevB) {
                 return sevB - sevA // Higher severity first
@@ -46,13 +47,35 @@ export function AlertsFeed({ initialAlerts }: { initialAlerts: Alert[] }) {
         })
     }, [alerts])
 
-    const handleRead = async (id: string) => {
+    const handleAcknowledge = async (id: string) => {
+        // Optimistic update
         setAlerts(prev => prev.map(a => a.id === id ? { ...a, is_read: true } : a))
+
+        // Also update the selected detail if open
+        if (selectedDetail && selectedDetail.id === id) {
+            setSelectedDetail(prev => prev ? { ...prev, status: 'acknowledged' } : null)
+        }
+
         try {
             await markAlertAsRead(id)
         } catch (e) {
             console.error('Failed to mark alert as read', e)
         }
+    }
+
+    const openDetail = (alert: Alert) => {
+        const severity = alert.severity || 'info'
+        setSelectedDetail({
+            id: alert.id,
+            title: alert.alert_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), // crude title formatting
+            subtitle: `DOT: ${alert.dot_number}`,
+            severity: severity === 'critical' || severity === 'warning' || severity === 'info' ? severity : 'info',
+            description: alert.summary,
+            timestamp: alert.created_at,
+            status: alert.is_read ? 'acknowledged' : 'active',
+            source: 'Monitoring Engine'
+        })
+        setDialogOpen(true)
     }
 
     if (!alerts || alerts.length === 0) return null
@@ -61,7 +84,7 @@ export function AlertsFeed({ initialAlerts }: { initialAlerts: Alert[] }) {
         <div className="mb-8">
             <div className="flex items-center gap-2 mb-4 px-1">
                 <Activity className="w-5 h-5 text-indigo-500" />
-                <h2 className="text-lg font-semibold tracking-tight text-white">Recent Activity</h2>
+                <h2 className="text-lg font-bold tracking-tight text-white">Recent Activity</h2>
             </div>
 
             <Card className="border-slate-800 bg-slate-900/50 backdrop-blur-sm overflow-hidden">
@@ -72,14 +95,15 @@ export function AlertsFeed({ initialAlerts }: { initialAlerts: Alert[] }) {
                             <div
                                 key={alert.id}
                                 className={cn(
-                                    "p-4 flex gap-4 transition-all duration-200 cursor-pointer group relative",
+                                    "p-4 flex gap-4 transition-all duration-200 cursor-pointer group relative hover:bg-slate-800/50",
+                                    // Highlight unread
                                     // Base styles
-                                    !alert.is_read && severity === 'critical' ? "bg-rose-950/20 hover:bg-rose-950/30 border-l-2 border-rose-500" :
-                                        !alert.is_read && severity === 'warning' ? "bg-amber-950/20 hover:bg-amber-950/30 border-l-2 border-amber-500" :
-                                            !alert.is_read ? "bg-indigo-500/5 hover:bg-indigo-500/10 border-l-2 border-indigo-500" :
-                                                "opacity-60 hover:opacity-100 hover:bg-slate-800/50 border-l-2 border-transparent"
+                                    !alert.is_read && severity === 'critical' ? "bg-rose-950/20 border-l-2 border-rose-500" :
+                                        !alert.is_read && severity === 'warning' ? "bg-amber-950/20 border-l-2 border-amber-500" :
+                                            !alert.is_read ? "bg-indigo-500/5 border-l-2 border-indigo-500" :
+                                                "opacity-70 hover:opacity-100 border-l-2 border-transparent"
                                 )}
-                                onClick={() => !alert.is_read && handleRead(alert.id)}
+                                onClick={() => openDetail(alert)}
                             >
                                 <div className="mt-1 shrink-0">
                                     <AlertIcon type={alert.alert_type} severity={severity} />
@@ -119,7 +143,7 @@ export function AlertsFeed({ initialAlerts }: { initialAlerts: Alert[] }) {
                                         <span>•</span>
                                         <span>{new Date(alert.created_at).toLocaleDateString()}</span>
 
-                                        {alert.is_read && <span className="ml-auto text-xs flex items-center gap-1"><Check className="w-3 h-3" /> Read</span>}
+                                        {alert.is_read && <span className="ml-auto text-xs flex items-center gap-1 text-emerald-500/80"><Check className="w-3 h-3" /> Acknowledged</span>}
                                     </div>
                                 </div>
                             </div>
@@ -127,6 +151,13 @@ export function AlertsFeed({ initialAlerts }: { initialAlerts: Alert[] }) {
                     })}
                 </div>
             </Card>
+
+            <RiskDetailsDialog
+                open={dialogOpen}
+                onOpenChange={setDialogOpen}
+                data={selectedDetail}
+                onAcknowledge={handleAcknowledge}
+            />
         </div>
     )
 }

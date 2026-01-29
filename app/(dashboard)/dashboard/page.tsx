@@ -1,64 +1,60 @@
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { RISK_LEVELS, DASHBOARD_STRINGS, ALERT_TEMPLATES } from '@/lib/constants/messages';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { RISK_LEVELS, DASHBOARD_STRINGS } from '@/lib/constants/messages';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, AlertTriangle, ShieldAlert, LogOut } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { CheckCircle2, AlertTriangle, ShieldAlert, LogOut, Zap, LayoutDashboard, Clock } from 'lucide-react';
 import { requireActiveSubscription } from '@/lib/billing/requireActiveSubscription';
-import { isPremium, SubscriptionStatus } from '@/lib/subscriptions'; // Import helper logic (Note: server-side fetching differs, effectively re-implemented below for server context)
 import { DashboardTracker } from '@/components/dashboard-tracker';
 import { PurchaseSyncWrapper } from '@/components/purchase-sync-wrapper';
 import { AlertsFeed } from '@/components/alerts-feed';
+import { RiskCard, RiskItem } from '@/components/risk-card';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 // --- Types & Helpers ---
 
-type RiskItem = {
-    id: string;
-    dotNumber: string;
-    name: string;
-    issue: string; // This would map to an ALERT_TEMPLATE in real logic
-    date: string; // ISO Date
-    level: string;
-};
-
-// Mock data fetcher
+// Mock data fetcher with strict Intelligence Data
 async function getRiskData() {
-    // Simulating data structure with dates
     const today = new Date().toISOString().split('T')[0];
     const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    const lastWeek = new Date(Date.now() - 86400000 * 5).toISOString().split('T')[0];
 
     return {
         high: [
-            { id: '1', dotNumber: '123456', name: 'Fast Freight Inc', issue: 'Risk Level Escalated to High', date: today, level: RISK_LEVELS.HIGH },
-            { id: '2', dotNumber: '999999', name: 'Danger Transport', issue: 'Out-of-Service Rate Increase Detected', date: yesterday, level: RISK_LEVELS.HIGH }
+            {
+                id: '1',
+                dotNumber: '123456',
+                name: 'Fast Freight Inc',
+                issue: 'Risk Level Escalated to High',
+                date: today,
+                level: RISK_LEVELS.HIGH,
+                changeLabel: '+15 pts Risk Score',
+                changeType: 'negative'
+            },
+            {
+                id: '2',
+                dotNumber: '999999',
+                name: 'Danger Transport',
+                issue: 'Out-of-Service Rate Increase Detected',
+                date: yesterday,
+                level: RISK_LEVELS.HIGH,
+                changeLabel: '+2.4% OOS Rate',
+                changeType: 'negative'
+            }
         ] as RiskItem[],
         elevated: [
-            { id: '3', dotNumber: '789012', name: 'Safe Haulers LLC', issue: 'Significant Risk Score Increase (+15 pts)', date: today, level: RISK_LEVELS.ELEVATED }
+            {
+                id: '3',
+                dotNumber: '789012',
+                name: 'Safe Haulers LLC',
+                issue: 'New Inspection Report with Violations',
+                date: today,
+                level: RISK_LEVELS.ELEVATED,
+                changeLabel: 'New Inspection',
+                changeType: 'neutral'
+            }
         ] as RiskItem[],
-        low: [] as RiskItem[]
     };
-}
-
-// Date Grouping Logic
-function groupByDate(items: RiskItem[]) {
-    const today = new Date().toISOString().split('T')[0];
-    const groups = {
-        today: [] as RiskItem[],
-        yesterday: [] as RiskItem[],
-        older: [] as RiskItem[],
-    };
-
-    items.forEach(item => {
-        const itemDate = item.date.split('T')[0];
-        if (itemDate === today) groups.today.push(item);
-        else if (new Date(itemDate).getTime() >= new Date().getTime() - 86400000 * 2) groups.yesterday.push(item);
-        else groups.older.push(item);
-    });
-    return groups;
 }
 
 // Next.js 15: searchParams is async
@@ -78,19 +74,24 @@ export default async function DashboardPage({ searchParams }: Props) {
     }
 
     // --- SUBSCRIPTION CHECK (Server-Side) ---
-    // --- SUBSCRIPTION CHECK (Server-Side) ---
-    // --- SUBSCRIPTION CHECK (Server-Side) ---
     try {
         await requireActiveSubscription(user.id);
     } catch (error) {
-        // Post-checkout: If they just bought, DO NOT redirect. Show sync wrapper.
         if (isSuccess) {
             return <PurchaseSyncWrapper />;
         }
-
-        // Standard access attempt without sub: Redirect to pricing
         redirect('/?pricing=true');
     }
+
+    // Fetch subscription details for UI
+    const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('plan, status')
+        .eq('user_id', user.id)
+        .single();
+
+    const planName = subscription?.plan === 'fleet' ? 'Fleet Plan' : subscription?.plan === 'pro' ? 'Pro Plan' : 'Starter Plan';
+    const planKey = subscription?.plan || 'starter';
 
     // --- FETCH DATA ---
     const { data: alerts } = await supabase
@@ -98,159 +99,142 @@ export default async function DashboardPage({ searchParams }: Props) {
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(10);
 
     const data = await getRiskData();
 
     return (
-        <div className="min-h-screen bg-slate-950">
+        <div className="min-h-screen bg-slate-950 text-slate-100 pb-12">
             <DashboardTracker />
-            {/* Navigation Bar */}
-            <nav className="border-b border-slate-800 bg-slate-950/50 backdrop-blur-md sticky top-0 z-50">
-                <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                    <div className="font-bold text-xl tracking-tight text-white">
-                        DOT Risk Radar
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="text-sm text-slate-400">
-                            {user.email}
-                        </div>
-                        <form action="/auth/signout" method="post">
-                            <Button
-                                type="submit"
-                                variant="ghost"
-                                size="sm"
-                                className="text-slate-400 hover:text-white"
-                            >
-                                <LogOut className="w-4 h-4 mr-2" />
-                                Sign out
-                            </Button>
-                        </form>
-                    </div>
-                </div>
-            </nav>
 
-            <div className="p-6 space-y-8 max-w-7xl mx-auto">
-                <div className="flex justify-between items-center">
-                    <h1 className="text-3xl font-bold tracking-tight text-white">
-                        Risk Radar Dashboard
+            {/* Header Area */}
+            <header className="border-b border-slate-800 bg-slate-950/50 backdrop-blur-md sticky top-0 z-40 px-8 py-6 flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+                        <LayoutDashboard className="w-6 h-6 text-indigo-500" />
+                        Operational Overview
                     </h1>
-                    <div className="text-sm text-slate-500">
-                        Last updated: {new Date().toLocaleTimeString()}
-                    </div>
+                    <p className="text-sm text-slate-400 mt-1 ml-8">
+                        Monitoring {subscription?.plan === 'fleet' ? 'unlimited' : 'active'} fleets • Updated {new Date().toLocaleTimeString()}
+                    </p>
                 </div>
 
-                {/* Alerts Feed */}
-                <AlertsFeed initialAlerts={alerts || []} />
-
-                <RiskSection
-                    title={DASHBOARD_STRINGS.HEADERS.HIGH}
-                    items={data.high}
-                    level={RISK_LEVELS.HIGH}
-                    icon={<ShieldAlert className="w-5 h-5" />}
-                />
-
-                <RiskSection
-                    title={DASHBOARD_STRINGS.HEADERS.ELEVATED}
-                    items={data.elevated}
-                    level={RISK_LEVELS.ELEVATED}
-                    icon={<AlertTriangle className="w-5 h-5" />}
-                />
-
-                {/* Low Risk / Monitoring Section */}
-                <section aria-label="Monitored Fleets" className="space-y-4">
-                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                        <CheckCircle2 className="w-5 h-5" />
-                        <h2 className="text-lg font-semibold tracking-tight">{DASHBOARD_STRINGS.HEADERS.LOW}</h2>
-                    </div>
-                    <p className="text-sm text-slate-500 italic">All monitored fleets verified within safe limits.</p>
-                </section>
-            </div>
-        </div>
-    );
-}
-
-function RiskSection({ title, items, level, icon }: { title: string, items: RiskItem[], level: string, icon: any }) {
-    if (items.length === 0) {
-        return (
-            <section className="space-y-4">
-                <div className="flex items-center gap-2 text-slate-500">
-                    {icon}
-                    <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
-                </div>
-                <div className="p-4 rounded-lg border border-dashed border-slate-200 text-slate-500 text-sm">
-                    {level === RISK_LEVELS.HIGH ? DASHBOARD_STRINGS.EMPTY_STATES.HIGH : DASHBOARD_STRINGS.EMPTY_STATES.ELEVATED}
-                </div>
-            </section>
-        );
-    }
-
-    const { today, yesterday, older } = groupByDate(items);
-
-    return (
-        <section className="space-y-4">
-            <div className={cn("flex items-center gap-2",
-                level === RISK_LEVELS.HIGH ? "text-slate-900 dark:text-slate-100" : "text-slate-700"
-            )}>
-                {icon}
-                <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
-            </div>
-
-            {today.length > 0 && <DateGroup title="Today" items={today} level={level} />}
-            {yesterday.length > 0 && <DateGroup title="Yesterday" items={yesterday} level={level} />}
-            {older.length > 0 && <DateGroup title="Last 7 Days" items={older} level={level} />}
-        </section>
-    )
-}
-
-function DateGroup({ title, items, level }: { title: string, items: RiskItem[], level: string }) {
-    return (
-        <div className="space-y-2">
-            <h3 className="text-xs font-semibold uppercase text-slate-400 tracking-wider pl-1">{title}</h3>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {items.map(item => <RiskCard key={item.id} risk={item} level={level} />)}
-            </div>
-        </div>
-    )
-}
-
-function RiskCard({ risk, level }: { risk: RiskItem, level: string }) {
-    // Styles based on risk level - SEMANTIC VARIANTS
-    const borderColors: Record<string, string> = {
-        [RISK_LEVELS.HIGH]: 'border-rose-200 dark:border-rose-900',
-        [RISK_LEVELS.ELEVATED]: 'border-amber-200 dark:border-amber-900',
-        [RISK_LEVELS.LOW]: 'border-slate-200',
-    };
-
-    // Semantic badge styling (simulating logical variants)
-    const badgeClasses: Record<string, string> = {
-        [RISK_LEVELS.HIGH]: 'bg-rose-100 text-rose-700 hover:bg-rose-100 dark:bg-rose-900 dark:text-rose-100',
-        [RISK_LEVELS.ELEVATED]: 'bg-amber-100 text-amber-700 hover:bg-amber-100 dark:bg-amber-900 dark:text-amber-100',
-        [RISK_LEVELS.LOW]: 'bg-slate-100 text-slate-700',
-    };
-
-    return (
-        <Card className={`transition-colors duration-300 ease-in-out border ${borderColors[level] || borderColors[RISK_LEVELS.LOW]}`}>
-            <CardHeader className="pb-2">
-                <div className="flex justify-between items-start">
-                    <CardTitle className="text-base font-medium leading-none">
-                        {risk.name}
-                    </CardTitle>
-                    <Badge className={cn("shadow-none", badgeClasses[level] || badgeClasses[RISK_LEVELS.LOW])}>{level}</Badge>
-                </div>
-                <p className="text-sm text-muted-foreground">DOT: {risk.dotNumber}</p>
-            </CardHeader>
-            <CardContent className="space-y-4 pt-2">
-                <div className="text-sm">
-                    <p className="font-medium">{risk.issue}</p>
-                    <p className="text-xs text-muted-foreground mt-1">Updated: {risk.date}</p>
-                </div>
-                <div className="flex justify-end">
-                    <Button variant="ghost" size="sm" className="text-xs hover:bg-slate-100 dark:hover:bg-slate-800">
-                        {DASHBOARD_STRINGS.ACTIONS.ACKNOWLEDGE}
+                {subscription?.plan !== 'fleet' && (
+                    <Button className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 shadow-lg shadow-indigo-900/20 transition-all hover:scale-105 active:scale-95">
+                        <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
+                        Upgrade to Fleet
                     </Button>
-                </div>
-            </CardContent>
-        </Card>
+                )}
+            </header>
+
+            <div className="p-8 max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                {/* Main Content Area (Risk Cards) */}
+                <main className="lg:col-span-8 xl:col-span-9 space-y-10">
+                    {/* High Risk Section */}
+                    <section>
+                        <div className="flex items-center gap-3 mb-5 px-1">
+                            <div className="p-2 bg-rose-500/10 rounded-lg border border-rose-500/20 shadow-[0_0_15px_-3px_rgba(244,63,94,0.2)]">
+                                <ShieldAlert className="w-5 h-5 text-rose-500" />
+                            </div>
+                            <div>
+                                <h2 className="text-lg font-bold tracking-tight text-white">High Priority Risks</h2>
+                                <p className="text-xs text-slate-500">Immediate attention required</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                            {data.high.length > 0 ? (
+                                data.high.map(item => (
+                                    <RiskCard key={item.id} risk={item} level={RISK_LEVELS.HIGH} planName={planKey} />
+                                ))
+                            ) : (
+                                <div className="col-span-full p-8 rounded-xl border border-dashed border-slate-800 bg-slate-900/20 text-center text-slate-500">
+                                    No high priority risks detected.
+                                </div>
+                            )}
+                        </div>
+                    </section>
+
+                    {/* Elevated Risk Section */}
+                    <section>
+                        <div className="flex items-center gap-3 mb-5 px-1">
+                            <div className="p-2 bg-amber-500/10 rounded-lg border border-amber-500/20 shadow-[0_0_15px_-3px_rgba(245,158,11,0.2)]">
+                                <AlertTriangle className="w-5 h-5 text-amber-500" />
+                            </div>
+                            <div>
+                                <h2 className="text-lg font-bold tracking-tight text-white">Elevated Risks</h2>
+                                <p className="text-xs text-slate-500">Monitor closely for changes</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                            {data.elevated.length > 0 ? (
+                                data.elevated.map(item => (
+                                    <RiskCard key={item.id} risk={item} level={RISK_LEVELS.ELEVATED} planName={planKey} />
+                                ))
+                            ) : (
+                                <div className="col-span-full p-8 rounded-xl border border-dashed border-slate-800 bg-slate-900/20 text-center text-slate-500">
+                                    No elevated risks detected.
+                                </div>
+                            )}
+                        </div>
+                    </section>
+
+                    {/* Recent Activity Feed */}
+                    <section className="pt-8 border-t border-slate-800/50">
+                        <div className="flex items-center gap-3 mb-5 px-1">
+                            <Clock className="w-5 h-5 text-slate-400" />
+                            <h2 className="text-lg font-bold tracking-tight text-white">Recent Activity Log</h2>
+                        </div>
+                        <AlertsFeed initialAlerts={alerts || []} />
+                    </section>
+                </main>
+
+                {/* Right Sidebar Area */}
+                <aside className="lg:col-span-4 xl:col-span-3 space-y-6">
+                    {/* Subscription Card */}
+                    <div className="rounded-xl border border-slate-800 bg-gradient-to-b from-slate-900 to-slate-950 p-6 shadow-xl">
+                        <div className="flex items-start justify-between mb-6">
+                            <div>
+                                <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider">Current Plan</h3>
+                                <div className="text-2xl font-bold text-white mt-1">{planName}</div>
+                            </div>
+                            <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">Active</Badge>
+                        </div>
+
+                        <div className="space-y-4 mb-6">
+                            <div className="flex justify-between text-sm">
+                                <span className="text-slate-500">Monitoring Engine</span>
+                                <span className="text-slate-200">Online</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                                <span className="text-slate-500">Next Billing</span>
+                                <span className="text-slate-200">Auto-renew</span>
+                            </div>
+                        </div>
+
+                        <Button variant="outline" className="w-full border-slate-700 hover:bg-slate-800 text-slate-300 transition-colors" asChild>
+                            <a href="/dashboard/billing">Manage Subscription</a>
+                        </Button>
+                    </div>
+
+                    {/* Status Card */}
+                    <div className="rounded-xl border border-slate-800 bg-slate-900/30 p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="relative">
+                                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse absolute top-0 right-0"></div>
+                                <ShieldAlert className="w-5 h-5 text-emerald-500" />
+                            </div>
+                            <h3 className="font-semibold text-white">System Status</h3>
+                        </div>
+                        <div className="space-y-3 text-sm text-slate-400">
+                            <p>All monitoring systems operational.</p>
+                            <p>FMCSA connection stable.</p>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
     );
 }
