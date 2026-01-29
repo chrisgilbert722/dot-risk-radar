@@ -22,8 +22,8 @@ export function DashboardSidebar({ userEmail, planName }: { userEmail: string, p
             <div className="h-16 flex items-center px-6 border-b border-slate-800/50">
                 <div className="flex items-center gap-3">
                     {/* Official Logo */}
-                    <Link href="/dashboard" className="h-8 w-48 relative block">
-                        <img src="/dot-brand-transparent.png" alt="DOT Risk Radar" className="h-full w-full object-contain object-left" />
+                    <Link href="/dashboard" className="h-10 w-48 relative block">
+                        <img src="/dot-brand-transparent-v2.png" alt="DOT Risk Radar" className="h-full w-full object-contain object-left" />
                     </Link>
                 </div>
             </div>
