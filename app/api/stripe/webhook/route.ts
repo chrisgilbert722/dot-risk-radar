@@ -1,6 +1,73 @@
 import { stripe } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { createClient } from '@supabase/supabase-js';
+
+// ✅ SAFE DATE CONVERTER
+const toIso = (unix?: number | null) =>
+    unix ? new Date(unix * 1000).toISOString() : null;
+
+// Helper to upsert subscription state
+async function manageSubscriptionStatusChange(
+    subscription: Stripe.Subscription,
+    supabaseAdmin: any,
+    userId?: string
+) {
+    const subscriptionAny = subscription as any;
+    const priceId = subscription.items.data[0]?.price.id;
+
+    const subscriptionData: any = {
+        stripe_subscription_id: subscription.id,
+        stripe_customer_id: subscription.customer as string,
+        price_id: priceId,
+        status: subscription.status,
+        current_period_start: toIso(subscriptionAny.current_period_start),
+        current_period_end: toIso(subscriptionAny.current_period_end),
+    };
+
+    // If userId is provided (e.g. from checkout session metadata), upsert with it.
+    // Otherwise, we need to rely on the existing record or try to find it (omitted for strictness, assume exists for updates).
+    if (userId) {
+        subscriptionData.user_id = userId;
+    }
+
+    // Status Mapping Normalization
+    if (subscription.status === 'trialing') {
+        subscriptionData.status = 'active';
+    }
+
+    if (subscription.status === 'unpaid') {
+        subscriptionData.status = 'past_due';
+    }
+
+    if (subscription.status === 'canceled') {
+        // Ensure canceled status is explicit
+        subscriptionData.status = 'canceled';
+    }
+
+    // If we have a user_id, we can safely upsert.
+    if (subscriptionData.user_id) {
+        const { error } = await supabaseAdmin
+            .from('subscriptions')
+            .upsert(subscriptionData, {
+                onConflict: 'user_id'
+            });
+        if (error) throw error;
+        console.log(`[Stripe Webhook] Upserted subscription for user ${subscriptionData.user_id} [${subscriptionData.status}]`);
+    } else {
+        // If no user_id, we can only update existing by stripe_subscription_id
+        // But our requirement is 'onConflict: user_id', which implies we should ideally known the user_id.
+        // For 'updated'/'deleted' events, the row should exist.
+        // We will try an update by subscription ID if user_id is missing (fallback).
+        const { error } = await supabaseAdmin
+            .from('subscriptions')
+            .update(subscriptionData)
+            .eq('stripe_subscription_id', subscription.id);
+
+        if (error) throw error;
+        console.log(`[Stripe Webhook] Updated subscription ${subscription.id} [${subscriptionData.status}]`);
+    }
+}
 
 export async function POST(req: Request) {
     const body = await req.text();
@@ -10,8 +77,9 @@ export async function POST(req: Request) {
 
     try {
         if (!process.env.STRIPE_WEBHOOK_SECRET) {
-            throw new Error("STRIPE_WEBHOOK_SECRET is missing");
+            throw new Error('STRIPE_WEBHOOK_SECRET is missing');
         }
+
         event = stripe.webhooks.constructEvent(
             body,
             signature,
@@ -23,90 +91,69 @@ export async function POST(req: Request) {
 
     console.log(`[Stripe Webhook] Received event: ${event.type}`);
 
-    const session = event.data.object as Stripe.Checkout.Session;
-    const subscription = event.data.object as Stripe.Subscription;
-
-    // Initialize Supabase Admin Client
-    // We use the manually created admin client for webhooks
-    const supabaseAdmin = await (async () => {
-        const { createClient: createSupabaseClient } = await import('@supabase/supabase-js');
-        return createSupabaseClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.SUPABASE_SERVICE_ROLE_KEY!
-        );
-    })();
+    const supabaseAdmin = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
 
     try {
         switch (event.type) {
-            case 'checkout.session.completed':
-                if (session.mode === 'subscription') {
-                    const subscriptionId = session.subscription as string;
-                    console.log(`[Stripe Webhook] Processing subscription: ${subscriptionId}`);
-                    console.log(`[Stripe Webhook] Metadata:`, session.metadata);
+            case 'checkout.session.completed': {
+                const session = event.data.object as Stripe.Checkout.Session;
+                if (session.mode !== 'subscription') break;
 
-                    // Retrieve the subscription details to get the current period end
-                    const sub = await stripe.subscriptions.retrieve(
-                        subscriptionId
-                    ) as Stripe.Subscription;
+                const subscriptionId = session.subscription as string;
+                // Always fetch fresh subscription logic
+                const sub = (await stripe.subscriptions.retrieve(
+                    subscriptionId
+                )) as Stripe.Subscription;
 
-                    const userId = session.metadata?.userId || session.client_reference_id;
-                    const priceId = sub.items.data[0]?.price.id;
+                const userId = session.metadata?.userId || session.client_reference_id;
 
-                    if (!userId) {
-                        console.error('[Stripe Webhook] Error: Missing userId in metadata');
-                        return new NextResponse('Webhook Error: Missing userId', { status: 400 });
-                    }
-
-                    if (!priceId) {
-                        console.error('[Stripe Webhook] Error: Could not find price ID in subscription items');
-                        return new NextResponse('Webhook Error: Missing price info', { status: 400 });
-                    }
-
-                    const { error } = await supabaseAdmin.from('subscriptions').upsert({
-                        user_id: userId,
-                        stripe_customer_id: session.customer as string,
-                        stripe_subscription_id: subscriptionId,
-                        price_id: priceId,
-                        status: 'active',
-                        current_period_start: new Date((sub as any).current_period_start * 1000).toISOString(),
-                        current_period_end: new Date((sub as any).current_period_end * 1000).toISOString(),
-                    });
-
-                    if (error) {
-                        console.error('[Stripe Webhook] Supabase Upsert Error:', error);
-                        return new NextResponse(`Supabase Error: ${error.message}`, { status: 500 });
-                    }
-
-                    console.log(`[Stripe Webhook] Successfully activated subscription for user: ${userId}`);
+                if (!userId) {
+                    console.error('[Stripe Webhook] Missing userId in checkout session');
+                    break;
                 }
-                break;
 
+                await manageSubscriptionStatusChange(sub, supabaseAdmin, userId);
+                break;
+            }
+
+            case 'customer.subscription.created':
             case 'customer.subscription.updated':
-                // Update status and price_id if changed
-                const priceId = subscription.items.data[0]?.price.id;
-                await supabaseAdmin
-                    .from('subscriptions')
-                    .update({
-                        status: subscription.status,
-                        price_id: priceId,
-                        current_period_start: new Date((subscription as any).current_period_start * 1000).toISOString(),
-                        current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
-                    })
-                    .eq('stripe_subscription_id', subscription.id);
-                break;
+            case 'customer.subscription.deleted': {
+                const subscription = event.data.object as Stripe.Subscription;
+                // For these events, we might not have userId locally if it's not in metadata.
+                // ideally subscription.metadata has it if we put it there, or we rely on existing row.
+                // Checkout session put it in subscription metadata? No, typically checkout session metadata isn't auto-copied to sub metadata unless configured.
+                // However, we rely on checkout.session.completed to create the row with user_id.
+                // Subsequent updates will hit 'manageSubscriptionStatusChange' and fall through to the .update() by stripe_subscription_id if logic handles it.
+                // Let's ensure manageSubscriptionLogic handles "no user_id provided" by updating via subscription_id.
 
-            case 'customer.subscription.deleted':
-                // Mark as canceled
-                await supabaseAdmin
-                    .from('subscriptions')
-                    .update({
-                        status: subscription.status,
-                        current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
-                    })
-                    .eq('stripe_subscription_id', subscription.id);
+                await manageSubscriptionStatusChange(subscription, supabaseAdmin);
                 break;
+            }
+
+            case 'invoice.payment_succeeded':
+            case 'invoice.payment_failed': {
+                const invoice = event.data.object as Stripe.Invoice;
+
+                // Fix: Check type of subscription before using it
+                const subscriptionId = typeof (invoice as any).subscription === 'string'
+                    ? (invoice as any).subscription
+                    : null;
+
+                if (!subscriptionId) break;
+
+                const sub = (await stripe.subscriptions.retrieve(
+                    subscriptionId
+                )) as Stripe.Subscription;
+
+                await manageSubscriptionStatusChange(sub, supabaseAdmin);
+                break;
+            }
         }
-    } catch (error: any) {
+    } catch (error) {
         console.error('Webhook handler failed:', error);
         return new NextResponse('Webhook handler failed', { status: 500 });
     }
