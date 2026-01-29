@@ -13,7 +13,7 @@ const navigation = [
     { name: 'Billing', href: '/dashboard/billing', icon: CreditCard },
 ]
 
-export function AppSidebar({ userEmail, planName }: { userEmail: string, planName: string }) {
+export function DashboardSidebar({ userEmail, planName }: { userEmail: string, planName: string }) {
     const pathname = usePathname()
 
     return (
@@ -23,7 +23,7 @@ export function AppSidebar({ userEmail, planName }: { userEmail: string, planNam
                 <div className="flex items-center gap-3">
                     {/* Official Logo */}
                     <Link href="/dashboard" className="h-8 w-48 relative block">
-                        <img src="/logo.png" alt="DOT Risk Radar" className="h-full w-full object-contain object-left" />
+                        <img src="/dot-brand.png" alt="DOT Risk Radar" className="h-full w-full object-contain object-left" />
                     </Link>
                 </div>
             </div>

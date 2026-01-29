@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { AppSidebar } from '@/components/app-sidebar';
+import { DashboardSidebar } from '@/components/dashboard-sidebar';
 
 export default async function DashboardLayout({
     children,
@@ -25,7 +25,7 @@ export default async function DashboardLayout({
 
     return (
         <div className="flex h-screen bg-slate-950">
-            <AppSidebar userEmail={user.email!} planName={planName} />
+            <DashboardSidebar userEmail={user.email!} planName={planName} />
             <main className="flex-1 overflow-y-auto">
                 {children}
             </main>
