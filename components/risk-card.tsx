@@ -62,7 +62,15 @@ export function RiskCard({ risk, level, planName = 'starter' }: RiskCardProps) {
         description: risk.issue,
         timestamp: risk.date,
         status: acknowledged ? 'acknowledged' : 'active',
-        source: 'Automated Risk Engine'
+        source: 'Automated Risk Engine',
+        // Mock Metrics for Phase 1 Visuals
+        metrics: [
+            { label: 'Risk Score', value: '78', delta: risk.changeType === 'negative' ? '+15' : '+0', trend: risk.changeType === 'negative' ? 'down' : 'neutral' },
+            { label: 'OOS Rate', value: '12.5%', delta: '+2.1%', trend: 'down' },
+            { label: 'Inspections', value: '24', delta: 'New', trend: 'neutral' },
+            { label: 'Violations', value: '8', delta: '+3', trend: 'down' }
+        ],
+        context: "This carrier has exceeded the alert threshold for unsafe driving indicators in the last 30 days."
     }
 
     const handleAcknowledge = (e: React.MouseEvent) => {
