@@ -32,6 +32,8 @@ export function RiskDetailsDialog({ open, onOpenChange, data, planName = 'starte
     const isCritical = data.severity === 'critical'
     const isWarning = data.severity === 'warning'
     const isPremium = planName === 'pro' || planName === 'fleet'
+    // Starter gets 1 rec, Premium gets all (mocking 1 for now, but UI should reflect "Unlock more")
+
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -140,17 +142,21 @@ export function RiskDetailsDialog({ open, onOpenChange, data, planName = 'starte
                         )}
                     </div>
 
-                    {/* 5. Recommended Action */}
+                    {/* 5. Recommended Action (Unlocked for Startup Value) */}
                     <div className="space-y-3">
-                        <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500">Recommended Action</h4>
-                        <div className="flex gap-4 items-start bg-slate-900 p-4 rounded-lg">
-                            <div className="bg-indigo-500/10 p-2 rounded-full text-indigo-400 mt-0.5">
+                        <div className="flex justify-between items-center">
+                            <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500">Immediate Action Required</h4>
+                            {!isPremium && <span className="text-[10px] text-indigo-400 cursor-pointer hover:underline">Unlock 3 more actions</span>}
+                        </div>
+
+                        <div className="flex gap-4 items-start bg-slate-900 border border-slate-800 p-4 rounded-lg">
+                            <div className="bg-emerald-500/10 p-2 rounded-full text-emerald-500 mt-0.5 border border-emerald-500/20">
                                 <CheckCircle2 className="w-5 h-5" />
                             </div>
                             <div className="space-y-1">
-                                <p className="font-medium text-slate-200">Review Compliance Profile</p>
-                                <p className="text-sm text-slate-400">
-                                    Check recent inspection reports and driver logs for the identified period.
+                                <p className="font-bold text-slate-100">Audit Driver Qualification Files</p>
+                                <p className="text-sm text-slate-400 leading-relaxed">
+                                    Request and review MVRs for all drivers operating under this DOT number within the last 30 days. ensuring medical certs are current.
                                 </p>
                             </div>
                         </div>

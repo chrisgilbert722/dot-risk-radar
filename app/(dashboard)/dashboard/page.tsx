@@ -11,6 +11,7 @@ import { AlertsFeed } from '@/components/alerts-feed';
 import { RiskCard, RiskItem } from '@/components/risk-card';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { FleetSummaryCard } from '@/components/fleet-summary-card';
 
 // --- Types & Helpers ---
 
@@ -131,6 +132,10 @@ export default async function DashboardPage({ searchParams }: Props) {
 
                 {/* Main Content Area (Risk Cards) */}
                 <main className="lg:col-span-8 xl:col-span-9 space-y-10">
+
+                    {/* Phase 1.5 Polish: Fleet Summary Card */}
+                    <FleetSummaryCard score="Good" riskCount={data.high.length + data.elevated.length} />
+
                     {/* High Risk Section */}
                     <section>
                         <div className="flex items-center gap-3 mb-5 px-1">

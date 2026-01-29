@@ -33,10 +33,10 @@ export function RiskCard({ risk, level, planName = 'starter' }: RiskCardProps) {
     // Semantic colors - Halo Lab Style (Darker, crisper borders)
     const severityStyles = {
         [RISK_LEVELS.HIGH]: {
-            border: 'border-rose-900/50 hover:border-rose-500',
-            badge: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+            border: 'border-rose-600 dark:border-rose-500 shadow-[0_0_15px_-3px_rgba(225,29,72,0.3)] hover:border-rose-400',
+            badge: 'bg-rose-500 text-white border-none font-bold shadow-sm',
             icon: 'text-rose-500',
-            glow: 'hover:shadow-[0_0_20px_-12px_rgba(244,63,94,0.3)]'
+            glow: 'hover:shadow-[0_0_25px_-5px_rgba(225,29,72,0.5)] ring-1 ring-rose-500/20'
         },
         [RISK_LEVELS.ELEVATED]: {
             border: 'border-amber-900/50 hover:border-amber-500',

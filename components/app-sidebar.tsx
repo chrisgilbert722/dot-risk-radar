@@ -20,9 +20,9 @@ export function AppSidebar({ userEmail, planName }: { userEmail: string, planNam
         <div className="flex flex-col w-64 bg-slate-950 border-r border-slate-800 min-h-screen">
             {/* Logo Area */}
             <div className="h-16 flex items-center px-6 border-b border-slate-800/50">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-900/20">
-                        <span className="font-bold text-white text-lg">R</span>
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-indigo-600 rounded-md flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                        <span className="font-bold text-white text-lg leading-none pt-0.5">R</span>
                     </div>
                     <div className="font-bold text-lg tracking-tight text-white">
                         Risk Radar
