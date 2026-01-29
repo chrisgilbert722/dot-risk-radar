@@ -130,11 +130,11 @@ export function RiskDetailsDialog({ open, onOpenChange, data, planName = 'starte
                                         <TrendingUp className="w-5 h-5 text-white" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-white">Unlock Historical Trends</h3>
+                                        <h3 className="font-bold text-white">Unlock 90-Day Risk History</h3>
                                         <p className="text-sm text-slate-400 mt-1">Upgrade to Pro to view 90-day risk history and violation patterns.</p>
                                     </div>
                                     <Button asChild size="sm" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-                                        <Link href="/dashboard/billing">Upgrade Now</Link>
+                                        <Link href="/dashboard/billing">Unlock 90-Day Risk History</Link>
                                     </Button>
                                     <p className="text-[10px] text-slate-500">Includes CSV exports & multi-fleet support</p>
                                 </div>

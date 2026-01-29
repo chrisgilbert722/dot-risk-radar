@@ -22,9 +22,9 @@ export function AppSidebar({ userEmail, planName }: { userEmail: string, planNam
             <div className="h-16 flex items-center px-6 border-b border-slate-800/50">
                 <div className="flex items-center gap-3">
                     {/* Official Logo */}
-                    <div className="h-8 w-48 relative">
+                    <Link href="/dashboard" className="h-8 w-48 relative block">
                         <img src="/logo.png" alt="DOT Risk Radar" className="h-full w-full object-contain object-left" />
-                    </div>
+                    </Link>
                 </div>
             </div>
 
@@ -60,7 +60,7 @@ export function AppSidebar({ userEmail, planName }: { userEmail: string, planNam
                     >
                         <Link href="/dashboard/billing" className="flex items-center gap-2">
                             <Zap className="w-3 h-3 fill-amber-300 text-amber-300" />
-                            Upgrade Plan
+                            <span className="truncate">Unlock 90-Day Risk History</span>
                         </Link>
                     </Button>
                 )}

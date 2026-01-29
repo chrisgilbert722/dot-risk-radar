@@ -124,7 +124,7 @@ export default async function DashboardPage({ searchParams }: Props) {
                     <Button className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 shadow-lg shadow-indigo-900/20 transition-all hover:scale-105 active:scale-95" asChild>
                         <a href="/dashboard/billing">
                             <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
-                            Upgrade to Fleet
+                            Unlock 90-Day Risk History
                         </a>
                     </Button>
                 )}
