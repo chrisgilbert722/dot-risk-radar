@@ -19,13 +19,14 @@ export function DashboardSidebar({ userEmail, planName }: { userEmail: string, p
     return (
         <div className="flex flex-col w-64 bg-slate-950 border-r border-slate-800 min-h-screen">
             {/* Logo Area */}
-            <div className="h-16 flex items-center px-6 border-b border-slate-800/50">
-                <div className="flex items-center gap-3">
-                    {/* Official Logo */}
-                    <Link href="/dashboard" className="h-10 w-48 relative block">
-                        <img src="/dot-brand-matched-hd.png" alt="DOT Risk Radar" className="h-full w-full object-contain object-left" />
-                    </Link>
-                </div>
+            <div className="pt-4 pl-4 pb-4">
+                <Link href="/dashboard" className="block">
+                    <img
+                        src="/dot-risk-radar-logo.png"
+                        alt="DOT Risk Radar"
+                        className="h-7 w-auto object-contain object-left"
+                    />
+                </Link>
             </div>
 
             {/* Navigation */}

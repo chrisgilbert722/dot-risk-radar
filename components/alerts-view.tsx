@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { RiskItem, RiskCard } from "@/components/risk-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,12 +15,27 @@ interface AlertsViewProps {
 }
 
 export function AlertsView({ initialAlerts, planName }: AlertsViewProps) {
-    const [filter, setFilter] = useState<FilterType>("ALL");
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+
+    // Get filter from URL or default to ALL
+    const filter = (searchParams.get("filter") as FilterType) || "ALL";
+
+    const setFilter = (newFilter: FilterType) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (newFilter === "ALL") {
+            params.delete("filter");
+        } else {
+            params.set("filter", newFilter);
+        }
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    };
 
     const filteredAlerts = initialAlerts.filter((item) => {
         if (filter === "ALL") return true;
         if (filter === "ACKNOWLEDGED") return item.isAcknowledged;
-        if (filter === "HIGH") return item.level === RISK_LEVELS.HIGH || item.level === 'critical'; // Handle both string/enum if consistent
+        if (filter === "HIGH") return item.level === RISK_LEVELS.HIGH || item.level === 'critical';
         if (filter === "ELEVATED") return item.level === RISK_LEVELS.ELEVATED || item.level === 'warning';
         return true;
     });

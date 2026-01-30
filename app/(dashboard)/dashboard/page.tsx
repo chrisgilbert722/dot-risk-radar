@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/server';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { RISK_LEVELS, DASHBOARD_STRINGS } from '@/lib/constants/messages';
 import { Button } from '@/components/ui/button';
@@ -122,10 +123,10 @@ export default async function DashboardPage({ searchParams }: Props) {
 
                 {subscription?.plan !== 'fleet' && (
                     <Button className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 shadow-lg shadow-indigo-900/20 transition-all hover:scale-105 active:scale-95" asChild>
-                        <a href="/dashboard/billing">
+                        <Link href="/dashboard/billing">
                             <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
                             Unlock 90-Day Risk History
-                        </a>
+                        </Link>
                     </Button>
                 )}
             </header>
@@ -153,7 +154,13 @@ export default async function DashboardPage({ searchParams }: Props) {
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                             {data.high.length > 0 ? (
                                 data.high.map(item => (
-                                    <RiskCard key={item.id} risk={item} level={RISK_LEVELS.HIGH} planName={planKey} />
+                                    <RiskCard
+                                        key={item.id}
+                                        risk={item}
+                                        level={RISK_LEVELS.HIGH}
+                                        planName={planKey}
+                                        href={`/dashboard/alerts?filter=HIGH`}
+                                    />
                                 ))
                             ) : (
                                 <div className="col-span-full p-8 rounded-xl border border-dashed border-slate-800 bg-slate-900/20 text-center text-slate-500">
@@ -178,7 +185,13 @@ export default async function DashboardPage({ searchParams }: Props) {
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                             {data.elevated.length > 0 ? (
                                 data.elevated.map(item => (
-                                    <RiskCard key={item.id} risk={item} level={RISK_LEVELS.ELEVATED} planName={planKey} />
+                                    <RiskCard
+                                        key={item.id}
+                                        risk={item}
+                                        level={RISK_LEVELS.ELEVATED}
+                                        planName={planKey}
+                                        href={`/dashboard/alerts?filter=ELEVATED`}
+                                    />
                                 ))
                             ) : (
                                 <div className="col-span-full p-8 rounded-xl border border-dashed border-slate-800 bg-slate-900/20 text-center text-slate-500">

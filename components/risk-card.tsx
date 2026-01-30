@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { RISK_LEVELS } from '@/lib/constants/messages'
 import { RiskDetailsDialog, RiskDetail } from "@/components/risk-details-dialog"
+import Link from 'next/link'
 import { Check, ChevronRight, TrendingUp, AlertCircle, Clock } from 'lucide-react'
 
 export type RiskItem = {
@@ -24,9 +25,10 @@ interface RiskCardProps {
     risk: RiskItem
     level: string
     planName?: string
+    href?: string
 }
 
-export function RiskCard({ risk, level, planName = 'starter' }: RiskCardProps) {
+export function RiskCard({ risk, level, planName = 'starter', href }: RiskCardProps) {
     const [open, setOpen] = useState(false)
     const [acknowledged, setAcknowledged] = useState(false)
 
@@ -80,72 +82,128 @@ export function RiskCard({ risk, level, planName = 'starter' }: RiskCardProps) {
 
     return (
         <>
-            <Card
-                className={cn(
-                    "group relative transition-all duration-300 bg-slate-950/50 backdrop-blur-sm",
-                    style.border,
-                    style.glow,
-                    acknowledged ? "opacity-50 grayscale sm:hover:opacity-100 sm:hover:grayscale-0" : ""
-                )}
-                onClick={() => setOpen(true)}
-            >
-                {/* Header: Company + Severity */}
-                <div className="p-4 flex justify-between items-start border-b border-slate-800/50">
-                    <div>
-                        <h3 className="font-bold text-slate-100 leading-tight group-hover:text-indigo-300 transition-colors">
-                            {risk.name}
-                        </h3>
-                        <p className="text-xs font-mono text-slate-500 mt-1">
-                            DOT: {risk.dotNumber}
-                        </p>
-                    </div>
-                    <Badge variant="outline" className={cn("uppercase text-[10px] tracking-wider", style.badge)}>
-                        {level}
-                    </Badge>
-                </div>
+            {href ? (
+                <Link href={href} className="block group relative transition-all duration-300">
+                    <Card
+                        className={cn(
+                            "h-full bg-slate-950/50 backdrop-blur-sm transition-all duration-300",
+                            style.border,
+                            style.glow,
+                            acknowledged ? "opacity-50 grayscale sm:hover:opacity-100 sm:hover:grayscale-0" : ""
+                        )}
+                    >
+                        {/* Header: Company + Severity */}
+                        <div className="p-4 flex justify-between items-start border-b border-slate-800/50">
+                            <div>
+                                <h3 className="font-bold text-slate-100 leading-tight group-hover:text-indigo-300 transition-colors">
+                                    {risk.name}
+                                </h3>
+                                <p className="text-xs font-mono text-slate-500 mt-1">
+                                    DOT: {risk.dotNumber}
+                                </p>
+                            </div>
+                            <Badge variant="outline" className={cn("uppercase text-[10px] tracking-wider", style.badge)}>
+                                {level}
+                            </Badge>
+                        </div>
 
-                {/* Body: Issue + what changed */}
-                <div className="p-4 space-y-4">
-                    <p className="text-sm font-medium text-slate-300 leading-snug">
-                        {risk.issue}
-                    </p>
+                        {/* Body: Issue + what changed */}
+                        <div className="p-4 space-y-4">
+                            <p className="text-sm font-medium text-slate-300 leading-snug">
+                                {risk.issue}
+                            </p>
 
-                    <div className="flex items-center gap-2">
-                        <Badge variant="secondary" className="bg-slate-900 text-xs font-normal border border-slate-800 text-slate-400 flex items-center gap-1.5 px-2 py-1">
-                            {risk.changeType === 'negative' ? <TrendingUp className="w-3 h-3 text-rose-400" /> : <AlertCircle className="w-3 h-3 text-amber-400" />}
-                            {risk.changeLabel}
+                            <div className="flex items-center gap-2">
+                                <Badge variant="secondary" className="bg-slate-900 text-xs font-normal border border-slate-800 text-slate-400 flex items-center gap-1.5 px-2 py-1">
+                                    {risk.changeType === 'negative' ? <TrendingUp className="w-3 h-3 text-rose-400" /> : <AlertCircle className="w-3 h-3 text-amber-400" />}
+                                    {risk.changeLabel}
+                                </Badge>
+                            </div>
+                        </div>
+
+                        {/* Footer: Time + Actions */}
+                        <div className="p-3 bg-slate-900/30 border-t border-slate-800/50 flex items-center justify-between">
+                            <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                                <Clock className="w-3 h-3" />
+                                {new Date(risk.date).toLocaleDateString()}
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <Button size="icon" variant="ghost" className="h-7 w-7 text-slate-500 group-hover:text-white">
+                                    <ChevronRight className="w-4 h-4" />
+                                </Button>
+                            </div>
+                        </div>
+                    </Card>
+                </Link>
+            ) : (
+                <Card
+                    className={cn(
+                        "group relative transition-all duration-300 bg-slate-950/50 backdrop-blur-sm cursor-pointer",
+                        style.border,
+                        style.glow,
+                        acknowledged ? "opacity-50 grayscale sm:hover:opacity-100 sm:hover:grayscale-0" : ""
+                    )}
+                    onClick={() => setOpen(true)}
+                >
+                    {/* Header: Company + Severity */}
+                    <div className="p-4 flex justify-between items-start border-b border-slate-800/50">
+                        <div>
+                            <h3 className="font-bold text-slate-100 leading-tight group-hover:text-indigo-300 transition-colors">
+                                {risk.name}
+                            </h3>
+                            <p className="text-xs font-mono text-slate-500 mt-1">
+                                DOT: {risk.dotNumber}
+                            </p>
+                        </div>
+                        <Badge variant="outline" className={cn("uppercase text-[10px] tracking-wider", style.badge)}>
+                            {level}
                         </Badge>
                     </div>
-                </div>
 
-                {/* Footer: Time + Actions */}
-                <div className="p-3 bg-slate-900/30 border-t border-slate-800/50 flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                        <Clock className="w-3 h-3" />
-                        {new Date(risk.date).toLocaleDateString()}
+                    {/* Body: Issue + what changed */}
+                    <div className="p-4 space-y-4">
+                        <p className="text-sm font-medium text-slate-300 leading-snug">
+                            {risk.issue}
+                        </p>
+
+                        <div className="flex items-center gap-2">
+                            <Badge variant="secondary" className="bg-slate-900 text-xs font-normal border border-slate-800 text-slate-400 flex items-center gap-1.5 px-2 py-1">
+                                {risk.changeType === 'negative' ? <TrendingUp className="w-3 h-3 text-rose-400" /> : <AlertCircle className="w-3 h-3 text-amber-400" />}
+                                {risk.changeLabel}
+                            </Badge>
+                        </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        {acknowledged ? (
-                            <span className="text-xs font-medium text-emerald-500 flex items-center gap-1">
-                                <Check className="w-3 h-3" /> Ack
-                            </span>
-                        ) : (
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-7 text-xs text-slate-400 hover:text-white hover:bg-slate-800 px-2"
-                                onClick={handleAcknowledge}
-                            >
-                                Acknowledge
+                    {/* Footer: Time + Actions */}
+                    <div className="p-3 bg-slate-900/30 border-t border-slate-800/50 flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                            <Clock className="w-3 h-3" />
+                            {new Date(risk.date).toLocaleDateString()}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            {acknowledged ? (
+                                <span className="text-xs font-medium text-emerald-500 flex items-center gap-1">
+                                    <Check className="w-3 h-3" /> Ack
+                                </span>
+                            ) : (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-7 text-xs text-slate-400 hover:text-white hover:bg-slate-800 px-2"
+                                    onClick={handleAcknowledge}
+                                >
+                                    Acknowledge
+                                </Button>
+                            )}
+                            <Button size="icon" variant="ghost" className="h-7 w-7 text-slate-500 group-hover:text-white">
+                                <ChevronRight className="w-4 h-4" />
                             </Button>
-                        )}
-                        <Button size="icon" variant="ghost" className="h-7 w-7 text-slate-500 group-hover:text-white">
-                            <ChevronRight className="w-4 h-4" />
-                        </Button>
+                        </div>
                     </div>
-                </div>
-            </Card>
+                </Card>
+            )}
 
             <RiskDetailsDialog
                 open={open}
