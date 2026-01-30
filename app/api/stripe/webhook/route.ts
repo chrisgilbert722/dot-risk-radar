@@ -16,17 +16,30 @@ async function manageSubscriptionStatusChange(
     const subscriptionAny = subscription as any;
     const priceId = subscription.items.data[0]?.price.id;
 
+    // AUTHORITATIVE PLAN MAPPING
+    const PLAN_MAP: Record<string, string> = {
+        'price_1Stqfa2a1UrjaUn8Nu12GR9M': 'starter',
+        'price_1StqiA2a1UrjaUn8guhL2K7e': 'pro',
+        'price_1Stqll2a1UrjaUn8us9WnIjP': 'fleet'
+    };
+
+    const plan = PLAN_MAP[priceId] || 'starter'; // Default to starter if unknown, but should log warning
+
+    if (!PLAN_MAP[priceId]) {
+        console.warn(`[Stripe Webhook] Unknown Price ID: ${priceId}. Defaulting to starter.`);
+    }
+
     const subscriptionData: any = {
         stripe_subscription_id: subscription.id,
         stripe_customer_id: subscription.customer as string,
         price_id: priceId,
+        plan: plan, // Mapped plan
         status: subscription.status,
         current_period_start: toIso(subscriptionAny.current_period_start),
         current_period_end: toIso(subscriptionAny.current_period_end),
     };
 
     // If userId is provided (e.g. from checkout session metadata), upsert with it.
-    // Otherwise, we need to rely on the existing record or try to find it (omitted for strictness, assume exists for updates).
     if (userId) {
         subscriptionData.user_id = userId;
     }
@@ -41,31 +54,45 @@ async function manageSubscriptionStatusChange(
     }
 
     if (subscription.status === 'canceled') {
-        // Ensure canceled status is explicit
         subscriptionData.status = 'canceled';
     }
 
-    // If we have a user_id, we can safely upsert.
+    // Upsert logic
     if (subscriptionData.user_id) {
+        // Analytics: Fetch previous state to detect change
+        const { data: existingSub } = await supabaseAdmin
+            .from('subscriptions')
+            .select('plan, status')
+            .eq('user_id', subscriptionData.user_id)
+            .single();
+
+        // Check for Plan Change (Upgrade/Downgrade)
+        if (existingSub && existingSub.plan !== plan) {
+            console.log(`[Analytics] event: plan_changed | user_id: ${subscriptionData.user_id} | from: ${existingSub.plan} | to: ${plan}`);
+            // potential: await analytics.track({ event: 'plan_changed', userId: subscriptionData.user_id, properties: { from: existingSub.plan, to: plan } });
+        }
+
+        // Check for Churn (Active -> Canceled)
+        if (existingSub && existingSub.status === 'active' && subscriptionData.status === 'canceled') {
+            console.log(`[Analytics] event: subscription_churned | user_id: ${subscriptionData.user_id}`);
+        }
+
         const { error } = await supabaseAdmin
             .from('subscriptions')
             .upsert(subscriptionData, {
                 onConflict: 'user_id'
             });
         if (error) throw error;
-        console.log(`[Stripe Webhook] Upserted subscription for user ${subscriptionData.user_id} [${subscriptionData.status}]`);
+        console.log(`[Stripe Webhook] Upserted subscription for user ${subscriptionData.user_id} [Plan: ${plan}, Status: ${subscriptionData.status}]`);
     } else {
-        // If no user_id, we can only update existing by stripe_subscription_id
-        // But our requirement is 'onConflict: user_id', which implies we should ideally known the user_id.
-        // For 'updated'/'deleted' events, the row should exist.
-        // We will try an update by subscription ID if user_id is missing (fallback).
+        // Fallback: Update by subscription ID if user_id is missing (e.g. renewal events)
         const { error } = await supabaseAdmin
             .from('subscriptions')
             .update(subscriptionData)
             .eq('stripe_subscription_id', subscription.id);
 
         if (error) throw error;
-        console.log(`[Stripe Webhook] Updated subscription ${subscription.id} [${subscriptionData.status}]`);
+        console.log(`[Stripe Webhook] Updated subscription ${subscription.id} [Plan: ${plan}, Status: ${subscriptionData.status}]`);
     }
 }
 

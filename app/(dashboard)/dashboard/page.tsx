@@ -13,6 +13,9 @@ import { RiskCard, RiskItem } from '@/components/risk-card';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { FleetSummaryCard } from '@/components/fleet-summary-card';
+import { PlanGuard } from '@/components/plan-guard';
+import { TrendChart } from '@/components/trend-chart';
+import { TrustPanel } from '@/components/trust-panel';
 
 // --- Types & Helpers ---
 
@@ -137,7 +140,13 @@ export default async function DashboardPage({ searchParams }: Props) {
                 <main className="lg:col-span-8 xl:col-span-9 space-y-10">
 
                     {/* Phase 1.5 Polish: Fleet Summary Card */}
-                    <FleetSummaryCard score="Good" riskCount={data.high.length + data.elevated.length} />
+                    <PlanGuard
+                        userPlan={planKey}
+                        minPlan="fleet"
+                        blurText="Unlock multi-fleet monitoring and advanced tracking"
+                    >
+                        <FleetSummaryCard score="Good" riskCount={data.high.length + data.elevated.length} />
+                    </PlanGuard>
 
                     {/* High Risk Section */}
                     <section>
@@ -202,6 +211,16 @@ export default async function DashboardPage({ searchParams }: Props) {
                     </section>
 
                     {/* Recent Activity Feed */}
+                    <section>
+                        <PlanGuard
+                            userPlan={planKey}
+                            minPlan="pro"
+                            blurText="Upgrade to Pro to view 90-day risk trends and historical analysis"
+                        >
+                            <TrendChart />
+                        </PlanGuard>
+                    </section>
+
                     {/* Recent Activity / View All */}
                     <section className="pt-8 border-t border-slate-800/50 flex justify-center">
                         <Button variant="ghost" className="text-slate-400 hover:text-white" asChild>
@@ -241,20 +260,8 @@ export default async function DashboardPage({ searchParams }: Props) {
                         </Button>
                     </div>
 
-                    {/* Status Card */}
-                    <div className="rounded-xl border border-slate-800 bg-slate-900/30 p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="relative">
-                                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse absolute top-0 right-0"></div>
-                                <ShieldAlert className="w-5 h-5 text-emerald-500" />
-                            </div>
-                            <h3 className="font-semibold text-white">System Status</h3>
-                        </div>
-                        <div className="space-y-3 text-sm text-slate-400">
-                            <p>All monitoring systems operational.</p>
-                            <p>FMCSA connection stable.</p>
-                        </div>
-                    </div>
+                    {/* Status Card -> Trust Panel */}
+                    <TrustPanel />
                 </aside>
             </div>
         </div>
