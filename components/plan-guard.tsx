@@ -43,9 +43,9 @@ export function PlanGuard({
 
     // Blurred implementation
     return (
-        <div className="relative group overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50">
+        <div className="relative w-full h-full">
             {/* Blurred Content */}
-            <div className="filter blur-sm opacity-50 pointer-events-none select-none p-4" aria-hidden="true">
+            <div className="filter blur-sm opacity-50 pointer-events-none select-none" aria-hidden="true">
                 {children}
             </div>
 

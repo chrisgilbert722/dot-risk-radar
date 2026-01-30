@@ -13,7 +13,6 @@ import { RiskCard, RiskItem } from '@/components/risk-card';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { FleetSummaryCard } from '@/components/fleet-summary-card';
-import { PlanGuard } from '@/components/plan-guard';
 import { TrendChart } from '@/components/trend-chart';
 import { TrustPanel } from '@/components/trust-panel';
 
@@ -140,13 +139,7 @@ export default async function DashboardPage({ searchParams }: Props) {
                 <main className="lg:col-span-8 xl:col-span-9 space-y-10">
 
                     {/* Phase 1.5 Polish: Fleet Summary Card */}
-                    <PlanGuard
-                        userPlan={planKey}
-                        minPlan="fleet"
-                        blurText="Unlock multi-fleet monitoring and advanced tracking"
-                    >
-                        <FleetSummaryCard score="Good" riskCount={data.high.length + data.elevated.length} />
-                    </PlanGuard>
+                    <FleetSummaryCard score="Good" riskCount={data.high.length + data.elevated.length} userPlan={planKey} />
 
                     {/* High Risk Section */}
                     <section>
@@ -212,13 +205,7 @@ export default async function DashboardPage({ searchParams }: Props) {
 
                     {/* Recent Activity Feed */}
                     <section>
-                        <PlanGuard
-                            userPlan={planKey}
-                            minPlan="pro"
-                            blurText="Upgrade to Pro to view 90-day risk trends and historical analysis"
-                        >
-                            <TrendChart />
-                        </PlanGuard>
+                        <TrendChart userPlan={planKey} />
                     </section>
 
                     {/* Recent Activity / View All */}
