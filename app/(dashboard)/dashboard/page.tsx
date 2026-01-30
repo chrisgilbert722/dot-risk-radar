@@ -13,6 +13,7 @@ import { RiskCard, RiskItem } from '@/components/risk-card';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { FleetSummaryCard } from '@/components/fleet-summary-card';
+import { FleetUpgradeCard } from '@/components/fleet-upgrade-card';
 import { TrendChart } from '@/components/trend-chart';
 import { TrustPanel } from '@/components/trust-panel';
 
@@ -138,8 +139,13 @@ export default async function DashboardPage({ searchParams }: Props) {
                 {/* Main Content Area (Risk Cards) */}
                 <main className="lg:col-span-8 xl:col-span-9 space-y-10">
 
-                    {/* Phase 1.5 Polish: Fleet Summary Card */}
-                    <FleetSummaryCard score="Good" riskCount={data.high.length + data.elevated.length} userPlan={planKey} />
+                    {/* Phase 1.5 Polish: Fleet Summary Card (Ungated) */}
+                    <FleetSummaryCard score="Good" riskCount={data.high.length + data.elevated.length} />
+
+                    {/* Advanced Fleet Upgrade Opportunity */}
+                    {planKey !== 'fleet' && (
+                        <FleetUpgradeCard />
+                    )}
 
                     {/* High Risk Section */}
                     <section>
